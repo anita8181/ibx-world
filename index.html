@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>心问 — 什么都可以问 AI，只有一件事得问自己。</title>
+<meta name="description" content="心问。什么都可以问 AI，只有一件事得问自己。八个问题帮你找到真问题，七个问题帮你造出能验证它的最小物件。只提问，不给答案。">
+<meta property="og:title" content="心问">
+<meta property="og:description" content="什么都可以问 AI，只有一件事得问自己。">
+<meta property="og:type" content="website">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/favicon-180.png">
+<style>
+:root{
+  --ink:#2E2E2C; --zhu:#C1272D; --sub:#8A8880;
+  --paper:#F4F3F0; --line:#DEDBD4; --field:#FBFAF8;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --ink:#E8E6E1; --zhu:#D6413F; --sub:#9A9895;
+         --paper:#1C1C1A; --line:#3A3A37; --field:#232320; }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:'Source Han Serif SC','Noto Serif SC','Songti SC','SimSun',serif;
+  font-size:15px; line-height:1.75;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:680px; margin:0 auto; padding:0 24px}
+section{padding:44px 0; border-top:1px solid var(--line); scroll-margin-top:64px}
+section:first-of-type{border-top:none}
+h1,h2,h3{font-weight:500; letter-spacing:.02em; margin:0}
+a{color:inherit}
+
+/* —— 页眉 / 导航 —— */
+.nav{position:sticky; top:0; z-index:50; background:var(--paper); border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex; align-items:center; gap:14px; min-height:58px; flex-wrap:wrap}
+.nav .brand{flex:0 0 auto; display:flex; align-items:center}
+.nav .brand svg{height:26px; width:auto; display:block}
+.menu{list-style:none; display:flex; align-items:center; margin:0 0 0 auto; padding:0; gap:2px; flex-wrap:wrap}
+.menu>li{position:relative}
+.menu .top{font:inherit; font-size:15.5px; letter-spacing:.08em; color:var(--ink);
+  background:transparent; border:0; padding:8px 11px; cursor:pointer; border-radius:2px; white-space:nowrap}
+.menu .top:hover{color:var(--zhu)}
+.has-sub>.top::after{content:"⌄"; margin-left:5px; font-size:12px; color:var(--sub); vertical-align:2px}
+.sub{list-style:none; margin:0; padding:6px; position:absolute; right:0; top:calc(100% + 4px);
+  min-width:220px; background:var(--field); border:1px solid var(--line); border-radius:3px;
+  box-shadow:0 10px 28px rgba(0,0,0,.10);
+  opacity:0; visibility:hidden; transform:translateY(-4px); transition:opacity .15s, transform .15s, visibility .15s}
+.menu li.open>.sub, .menu li:hover>.sub{opacity:1; visibility:visible; transform:none}
+.sub a{display:block; padding:9px 12px; font-size:15px; line-height:1.45; color:var(--ink);
+  border-radius:2px; text-decoration:none; white-space:nowrap}
+.sub a:hover{background:var(--paper); color:var(--zhu)}
+.sub .no{color:var(--sub); margin-right:9px; font-size:13px}
+.sub .dd{display:block; color:var(--sub); font-size:12.5px; letter-spacing:.01em; margin-top:2px; white-space:normal}
+.menu .soon>span{display:inline-block; padding:8px 11px; font-size:15.5px; letter-spacing:.08em; color:var(--sub); cursor:default; white-space:nowrap}
+.menu .soon i{font-style:normal; font-size:11px; letter-spacing:.08em; color:var(--sub);
+  border:1px solid var(--line); border-radius:999px; padding:1px 6px; margin-left:6px; vertical-align:1.5px}
+@media (max-width:520px){
+  .nav .wrap{gap:8px; min-height:52px}
+  .menu{width:100%; margin-left:0; justify-content:space-between; gap:0}
+  .menu .top,.menu .soon>span{padding:7px 6px; font-size:14.5px; letter-spacing:.04em}
+  .menu .soon i{display:none}
+  .sub{right:auto; left:0}
+}
+
+/* —— 首屏 —— */
+.hero{padding:40px 0 48px; text-align:left}
+.hero .mark{width:58px; height:58px; margin:0 0 24px}
+.hero h1{font-size:30px; letter-spacing:.16em; margin-bottom:18px}
+.claim{font-size:19px; line-height:1.7; margin:0 0 20px; max-width:20em}
+.bound{color:var(--sub); font-size:14.5px; line-height:1.8; max-width:26em; margin:0}
+
+/* —— 通用文本 —— */
+.eyebrow{font-size:12px; letter-spacing:.28em; color:var(--sub); margin:0 0 14px}
+h2{font-size:21px; letter-spacing:.06em; margin-bottom:12px}
+.lead{color:var(--sub); font-size:14.5px; margin:0 0 26px; max-width:30em}
+p{margin:0 0 14px}
+.note{color:var(--sub); font-size:14px}
+
+/* —— 入口自检 —— */
+.gate{list-style:none; padding:0; margin:0 0 24px; counter-reset:g}
+.gate li{
+  counter-increment:g; position:relative; padding:0 0 0 34px; margin:0 0 11px;
+  font-size:16.5px; line-height:1.6;
+}
+.gate li::before{
+  content:counter(g); position:absolute; left:0; top:.15em;
+  font-size:13px; color:var(--sub); letter-spacing:.05em;
+}
+.turnaway{
+  border-left:2px solid var(--line); padding:2px 0 2px 18px;
+  color:var(--sub); font-size:14.5px; max-width:30em;
+}
+
+/* —— 问题 —— */
+.q{margin:0 0 20px}
+.q .n{font-size:12px; color:var(--sub); letter-spacing:.14em; display:block; margin-bottom:5px}
+.q label{display:block; font-size:16.5px; line-height:1.55; margin-bottom:4px; cursor:text}
+.q .hint{color:var(--sub); font-size:13.5px; line-height:1.6; margin:0 0 8px}
+textarea{
+  width:100%; min-height:44px; resize:none; overflow:hidden;
+  background:var(--field); color:var(--ink);
+  border:1px solid var(--line); border-radius:2px;
+  padding:9px 12px; font:inherit; font-size:15px; line-height:1.7;
+}
+textarea:focus{outline:none; border-color:var(--sub)}
+
+/* —— 元问：全站唯一用朱的地方（logo 之外） —— */
+.meta{border-left:2px solid var(--zhu); padding:4px 0 4px 20px; margin:28px 0 22px}
+.meta .n{color:var(--zhu); letter-spacing:.2em}
+.meta label{font-size:17px}
+.meta .why{color:var(--sub); font-size:13.5px; line-height:1.7; margin:10px 0 0; max-width:30em}
+
+/* —— 三行 —— */
+.three .q{margin-bottom:16px}
+.three label{font-size:16px}
+
+/* —— 按钮 —— */
+.acts{display:flex; flex-wrap:wrap; gap:10px; margin:22px 0 0}
+button, .btn{
+  font:inherit; font-size:14.5px; background:transparent; color:var(--ink);
+  border:1px solid var(--ink); border-radius:2px; padding:9px 18px;
+  cursor:pointer; text-decoration:none; display:inline-block; letter-spacing:.04em;
+  transition:background .15s, color .15s;
+}
+button:hover, .btn:hover{background:var(--ink); color:var(--paper)}
+button.ghost{border-color:var(--line); color:var(--sub)}
+button.ghost:hover{background:transparent; color:var(--ink); border-color:var(--ink)}
+
+/* —— 出口 —— */
+.exit{margin:0 0 28px}
+.exit h3{font-size:16.5px; margin-bottom:7px}
+.exit p{color:var(--sub); font-size:14.5px; margin:0}
+.placeholder{
+  border:1px dashed var(--line); border-radius:2px; padding:12px 16px;
+  color:var(--sub); font-size:14px; margin:14px 0 0;
+}
+
+/* —— 循环图 —— */
+.loop{
+  border:1px solid var(--line); border-radius:2px; padding:16px 20px;
+  margin:0 0 26px; color:var(--sub); font-size:14.5px; line-height:1.95;
+}
+.loop b{color:var(--ink); font-weight:500}
+
+footer{
+  border-top:1px solid var(--line); padding:32px 0 48px;
+  color:var(--sub); font-size:13.5px; line-height:1.85;
+}
+footer svg{height:20px; width:auto; display:block; margin-bottom:14px; opacity:.75}
+
+/* —— 首屏彩蛋：先画圆，心落上 —— */
+@media (prefers-reduced-motion: no-preference){
+  .hero .mark .ring{stroke-dasharray:132 19; stroke-dashoffset:151; animation:draw .85s ease-out forwards}
+  .hero .mark .heart{opacity:0; transform-origin:32px 30px; animation:drop .45s ease-out .8s forwards}
+}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes drop{from{opacity:0; transform:translateY(-9px) scale(.86)} to{opacity:1; transform:none}}
+
+@media (max-width:520px){
+  body{font-size:15px}
+  .hero h1{font-size:26px}
+  .claim{font-size:17.5px}
+  section{padding:36px 0}
+  .q label,.gate li{font-size:16px}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="心问 首页">
+      <svg viewBox="0 0 232 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="心问">
+        <title>心问</title>
+        <circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="132 19" transform="rotate(-58 32 32)"/>
+        <path d="M32 37 C23.5 30.5 22 23.5 27 23.5 C29.6 23.5 32 26 32 26 C32 26 34.4 23.5 37 23.5 C42 23.5 40.5 30.5 32 37 Z" fill="#C1272D"/>
+        <g transform="translate(78 44) scale(0.034 -0.034)" fill="currentColor"><path d="M435 831 422 823C484 754 561 644 582 561C662 501 712 679 435 831ZM397 648 298 659V50C298 -16 326 -34 423 -34H568C774 -34 815 -22 815 13C815 27 808 35 783 42L780 220H767C752 138 738 70 729 50C724 40 719 35 703 34C682 31 635 30 570 30H429C373 30 363 40 363 65V622C386 625 395 635 397 648ZM766 518 755 509C843 412 881 263 898 175C965 102 1031 322 766 518ZM175 533H157C159 394 111 261 59 207C43 186 36 166 36 146C36 106 60 76 92 76C112 76 130 88 143 113C171 165 182 292 175 533Z"/></g>
+      </svg>
+    </a>
+    <ul class="menu">
+      <li class="has-sub">
+        <button type="button" class="top" aria-haspopup="true" aria-expanded="false">提问</button>
+        <ul class="sub">
+          <li><a href="#ask"><span class="no">八问</span>初心 · 为什么<span class="dd">把一团模糊，问成一个真问题</span></a></li>
+          <li><a href="#make"><span class="no">七问</span>原型验证 · 造什么<span class="dd">把一个真问题，问成一个最小物件</span></a></li>
+        </ul>
+      </li>
+      <li class="has-sub">
+        <button type="button" class="top" aria-haspopup="true" aria-expanded="false">基石</button>
+        <ul class="sub">
+          <li><a href="/gongli/yuanli.html"><span class="no">〇</span>第一性原理<span class="dd">什么才算公理</span></a></li>
+          <li><a href="/gongli/santiao.html"><span class="no">一</span>经济学的三条公理<span class="dd">A1 稀缺 · A2 目的性行动 · A3 主观价值</span></a></li>
+          <li><a href="/gongli/agi.html"><span class="no">二</span>AGI 三阶段<span class="dd">公理不废，废的是稀缺的标的物</span></a></li>
+          <li><a href="/gongli/gongcheng.html"><span class="no">三</span>工程的本质<span class="dd">A1 稀缺的应用</span></a></li>
+          <li><a href="/gongli/yingxiao.html"><span class="no">四</span>营销的本质<span class="dd">A3 主观价值的应用</span></a></li>
+        </ul>
+      </li>
+      <li class="soon"><span>案例和感悟<i>待上传</i></span></li>
+      <li class="soon"><span>生态伙伴<i>待添加</i></span></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<!-- ① 定位 -->
+<div class="hero">
+  <svg class="mark" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <circle class="ring" cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" transform="rotate(-58 32 32)"/>
+    <path class="heart" d="M32 37 C23.5 30.5 22 23.5 27 23.5 C29.6 23.5 32 26 32 26 C32 26 34.4 23.5 37 23.5 C42 23.5 40.5 30.5 32 37 Z" fill="#C1272D"/>
+  </svg>
+  <h1>心问</h1>
+  <p class="claim">什么都可以问 AI，只有一件事得问自己。</p>
+  <p class="bound">它不会让你更轻松。它可能让你觉得，这一段是你自己的。</p>
+</div>
+
+<!-- ② 入口自检 -->
+<section id="gate">
+  <p class="eyebrow">入 口 自 检</p>
+  <h2>先看这三个问题</h2>
+  <p class="lead">不用写下来。心里过一遍，看答不答得出。</p>
+  <ol class="gate">
+    <li>你手上正在做的那件事是什么？</li>
+    <li>它卡在哪一步？</li>
+    <li>这件事你自己想过多久了？</li>
+  </ol>
+  <p class="turnaway">三个都答得出，往下走。<br>
+  答不出——现在还不是用它的时候。先去做一件事，做到卡住，再回来。</p>
+</section>
+
+<!-- ③ 八问 -->
+<section id="ask">
+  <p class="eyebrow">八 问 · 问 什 么</p>
+  <h2>把一团模糊，问成一个真问题</h2>
+  <p class="lead">下面只有问题，没有答案，也没有模板。写多写少都行，写不出来的那一格，本身就是信息。</p>
+
+  <form id="f8" autocomplete="off">
+    <div class="q"><span class="n">1</span>
+      <label for="a1">你手上正在做的那件事，一句话是什么？</label>
+      <textarea id="a1" name="你手上正在做的那件事，一句话是什么？"></textarea></div>
+
+    <div class="q"><span class="n">2</span>
+      <label for="a2">它卡在哪一步？越具体越好。</label>
+      <textarea id="a2" name="它卡在哪一步？"></textarea></div>
+
+    <div class="q"><span class="n">3</span>
+      <label for="a3">这件事你自己想过多久了？</label>
+      <textarea id="a3" name="这件事你自己想过多久了？"></textarea></div>
+
+    <div class="q"><span class="n">4</span>
+      <label for="a4">你现在要解的这个问题，是谁给你的？</label>
+      <p class="hint">你自己？客户？某本书？还是行业里大家都这么做？</p>
+      <textarea id="a4" name="你现在要解的这个问题，是谁给你的？"></textarea></div>
+
+    <div class="q"><span class="n">5</span>
+      <label for="a5">谁真的在乎这件事成不成？谁会为结果付钱？</label>
+      <p class="hint">不是谁用它，是谁在乎它。</p>
+      <textarea id="a5" name="谁真的在乎这件事成不成？谁会为结果付钱？"></textarea></div>
+
+    <div class="q"><span class="n">6</span>
+      <label for="a6">你刚才说的这些里，哪些是你验证过的事实，哪些是你以为的？</label>
+      <textarea id="a6" name="哪些是你验证过的事实，哪些是你以为的？"></textarea></div>
+
+    <div class="q"><span class="n">7</span>
+      <label for="a7">如果这件事成了，什么数字会变？变多少？</label>
+      <textarea id="a7" name="如果这件事成了，什么数字会变？变多少？"></textarea></div>
+
+    <div class="q"><span class="n">8</span>
+      <label for="a8">假设你现在解的这个问题其实是个假问题——最可能假在哪？</label>
+      <textarea id="a8" name="假设它是个假问题——最可能假在哪？"></textarea></div>
+
+    <!-- ④ 元问 -->
+    <div class="q meta"><span class="n">元 问</span>
+      <label for="a9">上面这些问题，哪一个问错了？<br>你想被问、但没有被问到的，是什么？</label>
+      <textarea id="a9" name="上面哪一个问错了？我想被问但没被问到的是什么？"></textarea>
+      <p class="why">这一问不是客套。上面八问是我们给的框架，框架也是别人给你的东西。<br>
+      推翻它的次数，是这件事有没有走样的唯一刻度。</p>
+    </div>
+  </form>
+
+  <div class="acts">
+    <button type="button" data-copy="f8">复制这一组，粘到任何 AI 里继续</button>
+    <button type="button" class="ghost" data-clear="f8">清空</button>
+  </div>
+</section>
+
+<!-- 半圈之间 -->
+<section id="loop">
+  <p class="eyebrow">另 外 半 圈</p>
+  <h2>想清楚之后，还差一个能被推翻的东西</h2>
+  <div class="loop">
+    <b>八问</b>　模糊　→　一个真问题 ＋ 一个待验的解法假设<br>
+    <b>七问</b>　真问题　→　一个能验证那个假设的最小物件<br>
+    <span style="opacity:.8">物件产生反馈　→　回到八问，新一轮</span>
+  </div>
+  <p class="note">只想清楚，不做东西，判断永远停在纸上。做出来才会有人反对你。</p>
+</section>
+
+<!-- 创造七问 -->
+<section id="make">
+  <p class="eyebrow">七 问 · 造 什 么</p>
+  <h2>把一个真问题，问成一个最小物件</h2>
+  <p class="lead">同样只有问题。这里要找的不是「我能做出什么」，是「什么能最快证明我错了」。</p>
+
+  <form id="f7" autocomplete="off">
+    <div class="q"><span class="n">1</span>
+      <label for="b1">你要验的那个假设，一句话是什么？</label>
+      <textarea id="b1" name="你要验的那个假设，一句话是什么？"></textarea></div>
+
+    <div class="q"><span class="n">2</span>
+      <label for="b2">如果它是假的，最早会在哪里露出来？</label>
+      <textarea id="b2" name="如果它是假的，最早会在哪里露出来？"></textarea></div>
+
+    <div class="q"><span class="n">3</span>
+      <label for="b3">什么东西能让它最快露出来？</label>
+      <p class="hint">不是「我能做出什么」，是「什么能证伪它」。</p>
+      <textarea id="b3" name="什么东西能让它最快露出来？"></textarea></div>
+
+    <div class="q"><span class="n">4</span>
+      <label for="b4">这东西最少需要哪几个部件才能跑起来？</label>
+      <textarea id="b4" name="最少需要哪几个部件才能跑起来？"></textarea></div>
+
+    <div class="q"><span class="n">5</span>
+      <label for="b5">上面这些部件，哪些是你以为需要、其实不需要的？</label>
+      <textarea id="b5" name="哪些部件是你以为需要、其实不需要的？"></textarea></div>
+
+    <div class="q"><span class="n">6</span>
+      <label for="b6">谁会用它？他做完哪一个动作，你就知道答案了？</label>
+      <textarea id="b6" name="谁会用它？他做完哪一个动作，你就知道答案了？"></textarea></div>
+
+    <div class="q"><span class="n">7</span>
+      <label for="b7">多久能做出来？如果超过一周——砍掉什么能变短？</label>
+      <textarea id="b7" name="多久能做出来？超过一周的话，砍掉什么能变短？"></textarea></div>
+
+    <div class="q meta"><span class="n">元 问</span>
+      <label for="b8">如果做出来没人用，你还会觉得当初值得做吗？<br>如果不会——你真正在乎的，其实是什么？</label>
+      <textarea id="b8" name="如果没人用，还值得做吗？我真正在乎的其实是什么？"></textarea>
+    </div>
+  </form>
+
+  <div class="acts">
+    <button type="button" data-copy="f7">复制这一组，粘到任何 AI 里继续</button>
+    <button type="button" class="ghost" data-clear="f7">清空</button>
+  </div>
+</section>
+
+<!-- ⑤ 收尾三行 -->
+<section id="three">
+  <p class="eyebrow">收 尾 三 行</p>
+  <h2>今天真正发生的，只有这三行</h2>
+  <p class="lead">两个半圈共用同一套判据。不看你觉得多清楚，只看你砍掉了什么。</p>
+
+  <form id="f3" class="three" autocomplete="off">
+    <div class="q">
+      <label for="c1">我砍掉的假问题：</label>
+      <p class="hint">原来我在解 ____</p>
+      <textarea id="c1" name="我砍掉的假问题"></textarea></div>
+    <div class="q">
+      <label for="c2">我证伪的假设：</label>
+      <p class="hint">原来我以为 ____，现在发现 ____</p>
+      <textarea id="c2" name="我证伪的假设"></textarea></div>
+    <div class="q">
+      <label for="c3">剩下的那个真问题：</label>
+      <textarea id="c3" name="剩下的那个真问题"></textarea></div>
+  </form>
+
+  <div class="acts">
+    <button type="button" data-copy="f3">复制这三行</button>
+    <button type="button" class="ghost" data-clear="f3">清空</button>
+  </div>
+</section>
+
+<!-- ⑥ 出口 -->
+<section id="exits">
+  <p class="eyebrow">出 口</p>
+  <div class="exit">
+    <h3>复制给 AI</h3>
+    <p>上面每一组都可以整组复制，带着元问，粘进任何一个 AI 里继续问下去。<br>
+    不锁定任何一家——这本身就是中立性的一部分。</p>
+  </div>
+</section>
+
+<!-- ⑦ 反馈 -->
+<section id="feedback">
+  <p class="eyebrow">反 馈</p>
+  <h2>有问题、有想法，写给我们</h2>
+  <p class="lead">这一页哪里别扭、哪一问该改、你想被问却没被问到的——都可以写下来，用于后续迭代。</p>
+  <form id="ff" autocomplete="off">
+    <div class="q">
+      <label for="fb">你的反馈</label>
+      <textarea id="fb" name="反馈"></textarea>
+    </div>
+  </form>
+  <div class="acts">
+    <button type="button" id="fb-send">发送反馈</button>
+  </div>
+  <p class="note">点「发送」会用你自己的邮件客户端，把上面的文字发到我们的邮箱；站点不经手、也不留存。</p>
+</section>
+
+<footer>
+  <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="132 19" transform="rotate(-58 32 32)"/>
+    <path d="M32 37 C23.5 30.5 22 23.5 27 23.5 C29.6 23.5 32 26 32 26 C32 26 34.4 23.5 37 23.5 C42 23.5 40.5 30.5 32 37 Z" fill="#C1272D"/>
+  </svg>
+  <p>心问 · ibx.world<br>
+  你写在这一页上的东西，只存在你自己的浏览器里。没有账号，没有后台，没有统计，我们看不到。<br>
+  圆有个缺口，因为还在问。</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var KEY='xinwen.v1';
+  var boxes=[].slice.call(document.querySelectorAll('textarea'));
+
+  // 自增高
+  function grow(t){ t.style.height='auto'; t.style.height=(t.scrollHeight+2)+'px'; }
+
+  // 本地草稿（只在本机，不外发）
+  var saved={};
+  try{ saved=JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){}
+  function save(){
+    var o={}; boxes.forEach(function(t){ if(t.value) o[t.id]=t.value; });
+    try{ localStorage.setItem(KEY, JSON.stringify(o)); }catch(e){}
+  }
+  boxes.forEach(function(t){
+    if(saved[t.id]) t.value=saved[t.id];
+    grow(t);
+    t.addEventListener('input', function(){ grow(t); save(); });
+  });
+
+  var HEAD = {
+    f8:'下面是我正在想的一件事，和我对八个问题的回答。\n\n请只对我提问，不要给我答案、建议、框架或模板。\n每次只问一个问题，等我回答完再问下一个。\n如果我的回答含糊，追问细节；如果我在复述别人的框架，问我那是谁给我的；如果我把判断交给你，把它推回来。\n\n最后请留这三行让我自己填：\n我砍掉的假问题：____\n我证伪的假设：____\n剩下的那个真问题：____\n\n———\n',
+    f7:'下面是我要验的一个假设，和我对七个问题的回答。\n\n请只对我提问，不要给我答案、方案或工具清单。\n每次只问一个问题。重点追问：什么能最快证伪它，以及哪些部件其实可以砍掉。\n不要替我决定做什么。\n\n———\n',
+    f3:'这是我今天的三行结论。\n\n请只对我提问，不要评价对错，不要给建议。\n如果这三行之间有矛盾，指出来并问我。\n\n———\n'
+  };
+
+  function collect(id){
+    var form=document.getElementById(id);
+    var out=[HEAD[id]];
+    [].slice.call(form.querySelectorAll('textarea')).forEach(function(t){
+      var v=t.value.trim();
+      out.push('【'+t.name+'】\n'+(v||'（还没想清楚）')+'\n');
+    });
+    return out.join('\n');
+  }
+
+  function copy(text, btn){
+    var done=function(){
+      var old=btn.textContent;
+      btn.textContent='已复制，去粘给 AI';
+      setTimeout(function(){ btn.textContent=old; }, 2200);
+    };
+    if(navigator.clipboard && window.isSecureContext){
+      navigator.clipboard.writeText(text).then(done, function(){ fallback(text, done); });
+    } else { fallback(text, done); }
+  }
+  function fallback(text, done){
+    var ta=document.createElement('textarea');
+    ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); done(); }catch(e){ window.prompt('手动复制：', text); }
+    document.body.removeChild(ta);
+  }
+
+  document.addEventListener('click', function(e){
+    var b=e.target.closest('button'); if(!b) return;
+    var c=b.getAttribute('data-copy');
+    if(c){ copy(collect(c), b); return; }
+    var k=b.getAttribute('data-clear');
+    if(k){
+      var form=document.getElementById(k);
+      [].slice.call(form.querySelectorAll('textarea')).forEach(function(t){ t.value=''; grow(t); });
+      save();
+    }
+  });
+})();
+
+// —— 导航下拉（点击/触屏展开，桌面端 hover 也可）——
+(function(){
+  var menu=document.querySelector('.menu'); if(!menu) return;
+  function closeAll(){ [].forEach.call(menu.querySelectorAll('li.open'), function(x){
+    x.classList.remove('open'); var b=x.querySelector('.top'); if(b) b.setAttribute('aria-expanded','false'); }); }
+  menu.addEventListener('click', function(e){
+    var btn=e.target.closest('.has-sub>.top'); if(!btn) return;
+    e.preventDefault(); e.stopPropagation();
+    var li=btn.parentNode, was=li.classList.contains('open');
+    closeAll();
+    if(!was){ li.classList.add('open'); btn.setAttribute('aria-expanded','true'); }
+  });
+  menu.addEventListener('click', function(e){ if(e.target.closest('.sub a')) closeAll(); });
+  document.addEventListener('click', closeAll);
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeAll(); });
+})();
+
+// —— 反馈：用访客本地邮件客户端投递，站点不经手 ——
+(function(){
+  var btn=document.getElementById('fb-send'); if(!btn) return;
+  var MAIL='zhenda.liang@gmail.com';
+  btn.addEventListener('click', function(){
+    var t=document.getElementById('fb'); var v=(t?t.value.trim():'');
+    if(!v){ if(t) t.focus(); return; }
+    var url='mailto:'+MAIL+'?subject='+encodeURIComponent('心问 · 反馈')+'&body='+encodeURIComponent(v);
+    window.location.href=url;
+    var old=btn.textContent; btn.textContent='已打开邮件…';
+    setTimeout(function(){ btn.textContent=old; }, 2200);
+  });
+})();
+</script>
+</body>
+</html>

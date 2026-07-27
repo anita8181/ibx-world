@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>工程的本质 · A1 稀缺的应用</title>
+<style>
+  :root{
+    --bg:#FAF7F2; --ink:#1F2421; --ink2:#4A4F4B; --line:#DCD5C9;
+    --a1:#B4541E; --a2:#2E5E7E; --a3:#4A7C59; --warn:#8A5A83; --muted:#8A8579;
+    --card:#FFFDF9;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Songti SC","Source Han Serif SC","Noto Serif CJK SC",Georgia,serif;
+    line-height:1.85;font-size:17px}
+  .wrap{max-width:920px;margin:0 auto;padding:56px 28px 100px}
+  h1{font-size:33px;line-height:1.35;margin:0 0 8px}
+  .sub{color:var(--muted);font-size:15px;margin:0 0 4px}
+  h2{font-size:24px;margin:66px 0 6px;padding-top:26px;border-top:2px solid var(--ink)}
+  h3{font-size:18.5px;margin:34px 0 8px}
+  h4{font-size:16.5px;margin:24px 0 6px;color:var(--ink2)}
+  p{margin:12px 0}
+  .lead{font-size:18px;color:var(--ink2)}
+  figure{margin:26px 0;padding:20px 18px 12px;background:var(--card);border:1px solid var(--line);border-radius:10px}
+  figcaption{font-size:13.5px;color:var(--muted);margin-top:10px;text-align:center;line-height:1.6}
+  svg{display:block;width:100%;height:auto}
+  .note{background:#F2EEE6;border-left:4px solid var(--muted);padding:12px 16px;margin:20px 0;font-size:15.5px;color:var(--ink2)}
+  .fail{background:#FBF1F6;border-left:4px solid var(--warn);padding:14px 18px;margin:24px 0;font-size:15.5px}
+  .fail b{color:var(--warn)}
+  .key{background:#FFF3EB;border-left:4px solid var(--a1);padding:14px 18px;margin:22px 0;font-size:15.5px}
+  table{width:100%;border-collapse:collapse;margin:20px 0;font-size:14.5px}
+  th,td{border:1px solid var(--line);padding:9px 11px;text-align:left;vertical-align:top}
+  th{background:#F1ECE3;font-weight:600}
+  code{font-family:ui-monospace,Menlo,monospace;font-size:14px;background:#EFEAE1;padding:1px 5px;border-radius:3px}
+  .tag{display:inline-block;font-size:12.5px;padding:2px 9px;border-radius:20px;color:#fff;margin-right:6px;vertical-align:2px;font-family:system-ui,sans-serif}
+  .t1{background:var(--a1)} .t2{background:var(--a2)} .t3{background:var(--a3)}
+  ul,ol{padding-left:22px} li{margin:7px 0}
+  hr{border:0;border-top:1px solid var(--line);margin:44px 0}
+  .foot{color:var(--muted);font-size:13.5px;margin-top:60px;text-align:center}
+  @media print{body{font-size:11pt}.wrap{padding:0}h2{page-break-after:avoid}figure{page-break-inside:avoid}}
+</style>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/favicon-180.png">
+
+<style>
+  .sitebar{display:flex; align-items:center; gap:14px; padding:22px 0 0; margin:0 0 34px}
+  .sitebar svg{height:26px; width:auto; display:block}
+  .sitebar a{margin-left:auto; color:#8A8579; text-decoration:none; font-size:14.5px;
+    letter-spacing:.04em; border-bottom:1px solid #DCD5C9; padding-bottom:2px}
+  .sitebar a:hover{color:#1F2421; border-color:#1F2421}
+  .series{margin:56px 0 0; border-top:1px solid #DCD5C9; padding-top:24px}
+  .series .st{font-size:12.5px; letter-spacing:.26em; color:#8A8579;
+    font-family:system-ui,sans-serif; margin:0 0 14px}
+  .series ol{list-style:none; padding:0; margin:0; counter-reset:none}
+  .series li{margin:0 0 2px}
+  .series a, .series span.cur{display:flex; align-items:baseline; gap:12px;
+    text-decoration:none; color:#4A4F4B; padding:9px 12px; border-radius:6px}
+  .series a:hover{background:#F1ECE3; color:#1F2421}
+  .series span.cur{background:#F1ECE3; color:#1F2421}
+  .series .no{font-size:14px; color:#8A8579; width:1.4em; flex:none; text-align:center}
+  .series .role{font-size:12.5px; color:#8A8579; font-family:system-ui,sans-serif;
+    border:1px solid #DCD5C9; border-radius:3px; padding:0 6px; flex:none}
+  .series .tt{font-size:16px}
+  .series .dd{font-size:13.5px; color:#8A8579; margin-left:auto; text-align:right}
+  @media (max-width:620px){ .series .dd{display:none} }
+  .backq{border-left:2px solid #C1272D; padding:6px 0 6px 22px; margin:48px 0 0}
+  .backq .k{font-size:12.5px; letter-spacing:.24em; color:#C1272D; font-family:system-ui,sans-serif}
+  .backq p{font-size:17.5px; margin:10px 0}
+  .backq .three{color:#4A4F4B; font-size:16px; line-height:2.1; margin:16px 0 0}
+  .backq a{color:#1F2421}
+  @media print{ .sitebar,.series,.backq{display:none} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+
+<div class="sitebar">
+  <svg viewBox="0 0 232 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="心问"><title>心问</title><circle cx="32" cy="32" r="24" fill="none" stroke="#1F2421" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="132 19" transform="rotate(-58 32 32)"/><path d="M32 37 C23.5 30.5 22 23.5 27 23.5 C29.6 23.5 32 26 32 26 C32 26 34.4 23.5 37 23.5 C42 23.5 40.5 30.5 32 37 Z" fill="#C1272D"/><g transform="translate(78 44) scale(0.034 -0.034)" fill="#1F2421"><path d="M435 831 422 823C484 754 561 644 582 561C662 501 712 679 435 831ZM397 648 298 659V50C298 -16 326 -34 423 -34H568C774 -34 815 -22 815 13C815 27 808 35 783 42L780 220H767C752 138 738 70 729 50C724 40 719 35 703 34C682 31 635 30 570 30H429C373 30 363 40 363 65V622C386 625 395 635 397 648ZM766 518 755 509C843 412 881 263 898 175C965 102 1031 322 766 518ZM175 533H157C159 394 111 261 59 207C43 186 36 166 36 146C36 106 60 76 92 76C112 76 130 88 143 113C171 165 182 292 175 533Z"/></g></svg>
+  <a href="/">← 回心问</a>
+</div>
+
+<h1>工程的本质</h1>
+<p class="sub">三公理系列 · 第三篇 · <span class="tag t1">A1 稀缺</span>的应用 · 面向高中文科生的图解说明</p>
+<p class="lead">这一篇不讲怎么造桥、怎么写代码。它回答一个更前面的问题：<b>为什么会有"工程"这回事？</b>答案短得出奇——因为资源有限。如果材料、能源、时间、人手都无限，工程就不存在了，任何东西直接堆到最好即可。<b>工程是稀缺逼出来的学问，它的每一条法则都能从 A1 推出来。</b></p>
+
+<div class="note">
+本篇是《经济学的三条公理》的第三篇。前情：<b>A1 稀缺</b>（资源有限，用途更多）、<b>A2 目的性行动</b>（人选自己更想要的）、<b>A3 主观价值</b>（价值因人而异）。本篇只用 A1，A2/A3 只在标注处出场。
+</div>
+
+<h2>〇 · 先定位：科学、工程、营销各干什么</h2>
+
+<p>这三个词经常被混着用，但它们回答的是三个不同的问题，而且各自扣在不同的公理上。分清楚了，后面才不会串味。</p>
+
+<figure>
+<svg viewBox="0 0 860 336" xmlns="http://www.w3.org/2000/svg" font-family="'Songti SC',serif">
+  <text x="430" y="24" text-anchor="middle" font-size="16" font-weight="bold" fill="#1F2421">三件事，三个问题，三条公理</text>
+
+  <g font-size="13">
+    <rect x="18" y="44" width="268" height="164" rx="9" fill="#F7F4EE" stroke="#C9C0B0"/>
+    <text x="152" y="70" text-anchor="middle" font-size="15" font-weight="bold" fill="#4A4F4B">科学</text>
+    <text x="152" y="94" text-anchor="middle" font-size="13.5" fill="#1F2421">问：世界<tspan font-weight="bold">是</tspan>什么样？</text>
+    <text x="34" y="122" fill="#4A4F4B">追求：真</text>
+    <text x="34" y="144" fill="#4A4F4B">允许：慢、贵、无限逼近</text>
+    <text x="34" y="166" fill="#4A4F4B">失败判据：与事实不符</text>
+    <text x="34" y="194" fill="#8A8579" font-size="12.5">不受 A1 约束（结论不因资源变）</text>
+
+    <rect x="296" y="44" width="268" height="164" rx="9" fill="#FFF3EB" stroke="#B4541E" stroke-width="1.5"/>
+    <text x="430" y="70" text-anchor="middle" font-size="15" font-weight="bold" fill="#B4541E">工程　← 本篇</text>
+    <text x="430" y="94" text-anchor="middle" font-size="13.5" fill="#1F2421">问：在<tspan font-weight="bold">给定资源</tspan>下能造出什么？</text>
+    <text x="312" y="122" fill="#1F2421">追求：可行的"够好"</text>
+    <text x="312" y="144" fill="#1F2421">必须：有交付截止线</text>
+    <text x="312" y="166" fill="#1F2421">失败判据：超预算 / 误期 / 不可靠</text>
+    <text x="312" y="194" fill="#B4541E" font-size="12.5" font-weight="bold">A1 稀缺 的直接应用</text>
+
+    <rect x="574" y="44" width="268" height="164" rx="9" fill="#EDF6EC" stroke="#4A7C59"/>
+    <text x="708" y="70" text-anchor="middle" font-size="15" font-weight="bold" fill="#4A7C59">营销　← 第四篇</text>
+    <text x="708" y="94" text-anchor="middle" font-size="13.5" fill="#1F2421">问：造出来的东西<tspan font-weight="bold">对谁</tspan>值钱？</text>
+    <text x="590" y="122" fill="#1F2421">追求：挪到更看重它的人手里</text>
+    <text x="590" y="144" fill="#1F2421">必须：双方都觉得自己赚了</text>
+    <text x="590" y="166" fill="#1F2421">失败判据：造好了，没人要</text>
+    <text x="590" y="194" fill="#4A7C59" font-size="12.5" font-weight="bold">A3 主观价值 的直接应用</text>
+  </g>
+
+  <g stroke="#A79E8E" fill="none">
+    <line x1="288" y1="126" x2="292" y2="126"/>
+    <path d="M240,216 C240,240 300,246 380,246" stroke-dasharray="4 4"/>
+    <path d="M620,216 C620,240 560,246 480,246" stroke-dasharray="4 4"/>
+  </g>
+
+  <rect x="18" y="256" width="824" height="64" rx="8" fill="#F1ECE3" stroke="#DCD5C9"/>
+  <text x="430" y="280" text-anchor="middle" font-size="14" fill="#1F2421">三者是<tspan font-weight="bold">乘法</tspan>关系，不是并列：<tspan font-family="ui-monospace,monospace" fill="#B4541E">企业创造的价值 ＝ 工程造出的可用价值 × 营销实现的比例</tspan></text>
+  <text x="430" y="304" text-anchor="middle" font-size="13" fill="#8A8579">任何一项为零，乘积就是零。造得再好没人要 = 0；卖得再好没东西 = 0。</text>
+</svg>
+<figcaption>图 1 · 科学不受资源约束（真理不因你有多少钱而改变），工程受。这就是两者的分界线。</figcaption>
+</figure>
+
+<h2>一 · 工程的定义式：从 A1 一步推出</h2>
+
+<p>A1 说：你能支配的资源是有限的，而它们的用途多于这个数量。把这句话摆到"要造个东西出来"的场景里，立刻得到：</p>
+
+<div class="key">
+<b>工程 ＝ 在资源约束下，让"可用价值 ÷ 消耗资源"这个比值最大化。</b><br>
+注意两件事：① 它是个<b>比值</b>，不是分子，所以"不惜代价做到最好"根本不是工程；② 有<b>约束</b>，所以工程没有"最优解"，只有"给定约束下的最优点"。约束一变，答案就变。
+</div>
+
+<p>把这个比值做乘法分解（恒等式优先，因为恒等式天然不重不漏）：</p>
+
+<figure>
+<svg viewBox="0 0 860 400" xmlns="http://www.w3.org/2000/svg" font-family="'Songti SC',serif">
+  <text x="430" y="24" text-anchor="middle" font-size="16" font-weight="bold" fill="#1F2421">工程效率的恒等式分解</text>
+
+  <!-- 顶层 -->
+  <rect x="270" y="42" width="320" height="52" rx="8" fill="#B4541E"/>
+  <text x="430" y="66" text-anchor="middle" font-size="15" fill="#fff" font-weight="bold">工程效率 η</text>
+  <text x="430" y="85" text-anchor="middle" font-size="12.5" fill="#F6DCCD">＝ 交付的可用价值 ÷ 消耗的稀缺资源</text>
+
+  <line x1="360" y1="96" x2="250" y2="124" stroke="#A79E8E"/>
+  <line x1="500" y1="96" x2="610" y2="124" stroke="#A79E8E"/>
+
+  <!-- 分子 -->
+  <rect x="24" y="126" width="404" height="30" rx="6" fill="#FFF3EB" stroke="#B4541E"/>
+  <text x="226" y="147" text-anchor="middle" font-size="14" fill="#B4541E" font-weight="bold">分子 · 可用价值（乘法，任一为 0 则全 0）</text>
+
+  <g font-size="13">
+    <rect x="24" y="166" width="94" height="86" rx="6" fill="#FFFDF9" stroke="#E0C4AF"/>
+    <text x="71" y="188" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#1F2421">F 功能</text>
+    <text x="71" y="210" text-anchor="middle" fill="#4A4F4B">覆盖了多少</text>
+    <text x="71" y="228" text-anchor="middle" fill="#4A4F4B">真实需求</text>
+    <text x="71" y="246" text-anchor="middle" fill="#8A8579" font-size="11.5">做多了＝浪费</text>
+
+    <rect x="126" y="166" width="94" height="86" rx="6" fill="#FFFDF9" stroke="#E0C4AF"/>
+    <text x="173" y="188" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#1F2421">R 可靠</text>
+    <text x="173" y="210" text-anchor="middle" fill="#4A4F4B">多大比例的</text>
+    <text x="173" y="228" text-anchor="middle" fill="#4A4F4B">场合下有效</text>
+    <text x="173" y="246" text-anchor="middle" fill="#8A8579" font-size="11.5">99% vs 99.9%</text>
+
+    <rect x="228" y="166" width="94" height="86" rx="6" fill="#FFFDF9" stroke="#E0C4AF"/>
+    <text x="275" y="188" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#1F2421">U 可用</text>
+    <text x="275" y="210" text-anchor="middle" fill="#4A4F4B">目标使用者</text>
+    <text x="275" y="228" text-anchor="middle" fill="#4A4F4B">真能用上吗</text>
+    <text x="275" y="246" text-anchor="middle" fill="#8A8579" font-size="11.5">学不会＝0</text>
+
+    <rect x="330" y="166" width="98" height="86" rx="6" fill="#FFFDF9" stroke="#E0C4AF"/>
+    <text x="379" y="188" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#1F2421">L 寿命</text>
+    <text x="379" y="210" text-anchor="middle" fill="#4A4F4B">能用多久，</text>
+    <text x="379" y="228" text-anchor="middle" fill="#4A4F4B">改起来多贵</text>
+    <text x="379" y="246" text-anchor="middle" fill="#8A8579" font-size="11.5">见"技术债"</text>
+  </g>
+
+  <!-- 分母 -->
+  <rect x="440" y="126" width="402" height="30" rx="6" fill="#EDF4F8" stroke="#2E5E7E"/>
+  <text x="641" y="147" text-anchor="middle" font-size="14" fill="#2E5E7E" font-weight="bold">分母 · 稀缺资源（加法，但每项都按机会成本计价）</text>
+
+  <g font-size="13">
+    <rect x="440" y="166" width="128" height="86" rx="6" fill="#FFFDF9" stroke="#B9CEDA"/>
+    <text x="504" y="188" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#1F2421">物料 · 能源</text>
+    <text x="504" y="212" text-anchor="middle" fill="#4A4F4B">看得见，最常</text>
+    <text x="504" y="230" text-anchor="middle" fill="#4A4F4B">被当成"成本"</text>
+
+    <rect x="576" y="166" width="128" height="86" rx="6" fill="#FFFDF9" stroke="#B9CEDA"/>
+    <text x="640" y="188" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#1F2421">人的时间</text>
+    <text x="640" y="212" text-anchor="middle" fill="#4A4F4B">含注意力与</text>
+    <text x="640" y="230" text-anchor="middle" fill="#4A4F4B">协作带宽</text>
+
+    <rect x="712" y="166" width="130" height="86" rx="6" fill="#FFFDF9" stroke="#B9CEDA"/>
+    <text x="777" y="188" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#1F2421">工期占用</text>
+    <text x="777" y="212" text-anchor="middle" fill="#4A4F4B">这段时间不能</text>
+    <text x="777" y="230" text-anchor="middle" fill="#4A4F4B">做的别的事</text>
+  </g>
+
+  <rect x="24" y="270" width="818" height="46" rx="7" fill="#F2EEE6" stroke="#DCD5C9"/>
+  <text x="433" y="290" text-anchor="middle" font-size="13.5" fill="#1F2421">量纲检查：分子是"可用价值"（可折算成钱），分母也折算成钱 → η 无量纲，可跨项目比较。</text>
+  <text x="433" y="310" text-anchor="middle" font-size="13" fill="#8A8579">分母之所以是加法，是因为不同资源可以互相替代（多花钱少花时间）；分子之所以是乘法，是因为它们不能互相替代。</text>
+
+  <rect x="24" y="330" width="818" height="58" rx="7" fill="#FBF1F6" stroke="#8A5A83"/>
+  <text x="44" y="352" font-size="13.5" fill="#8A5A83" font-weight="bold">最常见的一类工程错误，就藏在这张图里：</text>
+  <text x="44" y="374" font-size="13.5" fill="#1F2421">只优化分母里"看得见的那一格"（省物料），却让分子里某一格掉到接近 0（不可靠、没人会用）。乘法一票否决。</text>
+</svg>
+<figcaption>图 2 · 分子用乘法、分母用加法，不是随手写的——它反映了"哪些东西可以互相替代"这个事实。</figcaption>
+</figure>
+
+<h2>二 · 主图：设计空间与帕累托前沿</h2>
+
+<p>这是全篇最重要的一张图。工程里几乎所有争论——"能不能又快又好又便宜""这算不算创新"——放到这张图上，答案都是自明的。</p>
+
+<figure>
+<svg viewBox="0 0 860 440" xmlns="http://www.w3.org/2000/svg" font-family="'Songti SC',serif">
+  <defs>
+    <marker id="ea" markerWidth="9" markerHeight="9" refX="7" refY="3.2" orient="auto">
+      <path d="M0,0 L6.5,3.2 L0,6.4 z" fill="#B4541E"/>
+    </marker>
+    <marker id="eg" markerWidth="9" markerHeight="9" refX="7" refY="3.2" orient="auto">
+      <path d="M0,0 L6.5,3.2 L0,6.4 z" fill="#4A7C59"/>
+    </marker>
+  </defs>
+  <text x="430" y="24" text-anchor="middle" font-size="16" font-weight="bold" fill="#1F2421">设计空间：三种"改进"，只有一种是真进步</text>
+
+  <g transform="translate(70,46)">
+    <!-- 坐标 -->
+    <line x1="0" y1="0" x2="0" y2="320" stroke="#1F2421" stroke-width="1.5"/>
+    <line x1="0" y1="320" x2="470" y2="320" stroke="#1F2421" stroke-width="1.5"/>
+    <text x="2" y="-10" font-size="13" fill="#4A4F4B">↑ 性能 / 可靠度（越上越好）</text>
+    <text x="470" y="346" font-size="13" fill="#4A4F4B" text-anchor="end">投入的资源（越右越贵）→</text>
+
+    <!-- 不可能区（在"明天的前沿"之上） -->
+    <path d="M0,268 C110,110 240,50 460,30 L460,0 L0,0 Z" fill="#FBF1F6" opacity=".8"/>
+    <text x="20" y="30" font-size="13.5" fill="#8A5A83" font-weight="bold">物理不可能区</text>
+    <text x="20" y="52" font-size="12.5" fill="#8A5A83">永动机 · 无限压缩 · 零延迟</text>
+    <text x="20" y="72" font-size="12.5" fill="#8A5A83">承诺落在这里 ＝ 骗局或无知</text>
+
+    <!-- 当前前沿 -->
+    <path d="M0,300 C110,150 240,90 460,70" stroke="#B4541E" stroke-width="2.8" fill="none"/>
+    <text x="464" y="102" font-size="13" fill="#B4541E" font-weight="bold" text-anchor="end">当前技术前沿</text>
+
+    <!-- 未来前沿 -->
+    <path d="M0,268 C110,110 240,50 460,30" stroke="#4A7C59" stroke-width="2" stroke-dasharray="6 4" fill="none"/>
+    <text x="464" y="22" font-size="12.5" fill="#4A7C59" text-anchor="end">明天的前沿</text>
+
+    <!-- 点 -->
+    <circle cx="180" cy="240" r="6" fill="#8A8579"/>
+    <text x="194" y="245" font-size="13" fill="#4A4F4B">方案 A（劣解，前沿内部）</text>
+
+    <circle cx="167" cy="148" r="6" fill="#B4541E"/>
+    <text x="150" y="145" font-size="13" fill="#B4541E" text-anchor="end">B</text>
+    <circle cx="327" cy="90" r="6" fill="#B4541E"/>
+    <text x="336" y="108" font-size="13" fill="#B4541E">C</text>
+
+    <!-- 箭头1: 纯改进 -->
+    <line x1="179" y1="232" x2="169" y2="162" stroke="#B4541E" stroke-width="2" marker-end="url(#ea)"/>
+    <text x="186" y="204" font-size="14" fill="#B4541E" font-weight="bold">①</text>
+
+    <!-- 箭头2: 沿前沿滑动 -->
+    <path d="M180,144 C230,126 272,106 316,93" stroke="#B4541E" stroke-width="2" stroke-dasharray="5 3" fill="none" marker-end="url(#ea)"/>
+    <text x="238" y="112" font-size="14" fill="#B4541E" font-weight="bold">②</text>
+
+    <!-- 箭头3: 外移 -->
+    <line x1="327" y1="82" x2="327" y2="58" stroke="#4A7C59" stroke-width="2.2" marker-end="url(#eg)"/>
+    <text x="336" y="72" font-size="14" fill="#4A7C59" font-weight="bold">③</text>
+  </g>
+
+  <rect x="556" y="86" width="286" height="290" rx="8" fill="#FBF8F4" stroke="#DCD5C9"/>
+  <text x="574" y="110" font-size="14" font-weight="bold" fill="#B4541E">① 内部 → 前沿：纯改进</text>
+  <text x="574" y="132" font-size="12.8" fill="#4A4F4B">同样的钱，性能更高。没有代价。</text>
+  <text x="574" y="150" font-size="12.8" fill="#8A8579">现实中最多的机会都在这里——</text>
+  <text x="574" y="168" font-size="12.8" fill="#8A8579">因为绝大多数方案都是劣解。</text>
+
+  <line x1="574" y1="184" x2="824" y2="184" stroke="#E4DED3"/>
+  <text x="574" y="208" font-size="14" font-weight="bold" fill="#B4541E">② 沿着前沿走：取舍</text>
+  <text x="574" y="230" font-size="12.8" fill="#4A4F4B">要更好，就得更贵/更慢。</text>
+  <text x="574" y="248" font-size="12.8" fill="#8A8579">此时争的不是"哪个方案更优"，</text>
+  <text x="574" y="266" font-size="12.8" fill="#8A8579">而是"我们更想要哪一头"——</text>
+  <text x="574" y="284" font-size="12.8" fill="#4A7C59">这已经不是工程问题，是 A3。</text>
+
+  <line x1="574" y1="298" x2="824" y2="298" stroke="#E4DED3"/>
+  <text x="574" y="322" font-size="14" font-weight="bold" fill="#4A7C59">③ 前沿整体外移：技术进步</text>
+  <text x="574" y="344" font-size="12.8" fill="#4A4F4B">用更少的资源换同样的价值。</text>
+  <text x="574" y="362" font-size="12.8" fill="#8A8579">这是唯一能让所有人同时变好的方向。</text>
+</svg>
+<figcaption>图 3 · "又要马儿跑又要马儿不吃草"是不是无理要求？看它落在哪：前沿内部，合理；前沿上，你在提取舍要求而不自知；前沿之外，物理上办不到。</figcaption>
+</figure>
+
+<div class="note">
+<b>这张图最实用的一句话：</b>当有人否决一个"既要又要"的要求时，先别急着同意。<b>先问它落在前沿内还是前沿上。</b>如果落在内部，那"做不到"只是当前方案太烂的托词。经验上，大多数争论其实是第一种情况被误当成了第二种。
+</div>
+
+<h2>三 · 从 A1 长出来的五条工程法则</h2>
+
+<h3>法则一 · 边际收益递减：为什么"够用"不是妥协，是最优</h3>
+
+<p>A1 说资源有限。那么每一分资源花在哪，就要看它带回来多少。工程里几乎所有指标都有一个共同形状：<b>越往后，多一个百分点越贵</b>。</p>
+
+<figure>
+<svg viewBox="0 0 860 320" xmlns="http://www.w3.org/2000/svg" font-family="'Songti SC',serif">
+  <text x="430" y="24" text-anchor="middle" font-size="16" font-weight="bold" fill="#1F2421">可靠性的价格：从 90% 到 99.99%</text>
+
+  <g transform="translate(70,52)">
+    <line x1="0" y1="0" x2="0" y2="200" stroke="#1F2421" stroke-width="1.5"/>
+    <line x1="0" y1="200" x2="420" y2="200" stroke="#1F2421" stroke-width="1.5"/>
+    <text x="-56" y="-14" font-size="12.5" fill="#4A4F4B">累计投入（倍）</text>
+
+    <rect x="30"  y="184" width="56" height="16"  fill="#2E5E7E"/>
+    <rect x="122" y="164" width="56" height="36"  fill="#4A7B96"/>
+    <rect x="214" y="110" width="56" height="90"  fill="#B4541E" opacity=".8"/>
+    <rect x="306" y="10"  width="56" height="190" fill="#8A5A83" opacity=".8"/>
+
+    <g font-size="12.5" fill="#4A4F4B" text-anchor="middle">
+      <text x="58"  y="220">90%</text>
+      <text x="150" y="220">99%</text>
+      <text x="242" y="220">99.9%</text>
+      <text x="334" y="220">99.99%</text>
+    </g>
+    <g font-size="12.5" text-anchor="middle" font-weight="bold">
+      <text x="58"  y="178" fill="#2E5E7E">1×</text>
+      <text x="150" y="158" fill="#2E5E7E">3×</text>
+      <text x="242" y="104" fill="#B4541E">10×</text>
+      <text x="334" y="-2"  fill="#8A5A83">40×</text>
+    </g>
+    <text x="210" y="244" font-size="12.5" fill="#8A8579" text-anchor="middle">目标可靠度　（示意量级，非实测数据）</text>
+  </g>
+
+  <rect x="540" y="56" width="302" height="212" rx="8" fill="#FBF8F4" stroke="#DCD5C9"/>
+  <text x="558" y="80" font-size="14" font-weight="bold" fill="#1F2421">所以正确的问题不是</text>
+  <text x="558" y="102" font-size="13.5" fill="#8A8579">"怎么做到 99.99%？"</text>
+  <text x="558" y="128" font-size="14" font-weight="bold" fill="#B4541E">而是</text>
+  <text x="558" y="150" font-size="13.5" fill="#1F2421">"多出来的这 0.09%，</text>
+  <text x="558" y="170" font-size="13.5" fill="#1F2421">值不值 30 倍的钱？"</text>
+  <line x1="558" y1="186" x2="824" y2="186" stroke="#E4DED3"/>
+  <text x="558" y="208" font-size="13" fill="#4A4F4B">飞机刹车：值。</text>
+  <text x="558" y="228" font-size="13" fill="#4A4F4B">学校打印机：不值。</text>
+  <text x="558" y="252" font-size="12.5" fill="#8A8579">同一个技术问题，答案取决于场景。</text>
+
+  <rect x="24" y="278" width="818" height="34" rx="7" fill="#FFF3EB" stroke="#B4541E"/>
+  <text x="433" y="300" text-anchor="middle" font-size="13.5" fill="#B4541E">最优点的判据（由 A1 直接推出）：<tspan font-family="ui-monospace,monospace">再投一分资源带来的收益 ＝ 这一分资源用在别处的收益</tspan>。到此为止，再往前就是亏。</text>
+</svg>
+<figcaption>图 4 · 工程师说"够用就行"常被误解成不上进。其实它是在做一道边际计算题——而且往往算得比要求方更准。</figcaption>
+</figure>
+
+<h3>法则二 · 瓶颈：优化非瓶颈环节，收益恰好为零</h3>
+
+<p>这条同样从 A1 来：资源有限，所以<b>投在哪里</b>比<b>投多少</b>更重要。而在一个串联系统里，投错地方的收益不是"小"，是<b>严格等于零</b>。</p>
+
+<figure>
+<svg viewBox="0 0 860 300" xmlns="http://www.w3.org/2000/svg" font-family="'Songti SC',serif">
+  <text x="430" y="24" text-anchor="middle" font-size="16" font-weight="bold" fill="#1F2421">一条串联产线：系统产出由最弱环节决定</text>
+
+  <!-- 上排：原状 -->
+  <text x="30" y="56" font-size="13" fill="#8A8579">原状</text>
+  <g font-size="13">
+    <rect x="86"  y="42" width="118" height="46" rx="6" fill="#EDF4F8" stroke="#2E5E7E"/><text x="145" y="62" text-anchor="middle" fill="#1F2421">下料</text><text x="145" y="80" text-anchor="middle" fill="#2E5E7E">100/时</text>
+    <rect x="222" y="42" width="118" height="46" rx="6" fill="#EDF4F8" stroke="#2E5E7E"/><text x="281" y="62" text-anchor="middle" fill="#1F2421">冲压</text><text x="281" y="80" text-anchor="middle" fill="#2E5E7E">100/时</text>
+    <rect x="358" y="42" width="118" height="46" rx="6" fill="#FBF1F6" stroke="#8A5A83" stroke-width="2"/><text x="417" y="62" text-anchor="middle" fill="#8A5A83" font-weight="bold">热处理 ← 瓶颈</text><text x="417" y="80" text-anchor="middle" fill="#8A5A83" font-weight="bold">40/时</text>
+    <rect x="494" y="42" width="118" height="46" rx="6" fill="#EDF4F8" stroke="#2E5E7E"/><text x="553" y="62" text-anchor="middle" fill="#1F2421">装配</text><text x="553" y="80" text-anchor="middle" fill="#2E5E7E">100/时</text>
+    <rect x="630" y="42" width="118" height="46" rx="6" fill="#EDF4F8" stroke="#2E5E7E"/><text x="689" y="62" text-anchor="middle" fill="#1F2421">质检</text><text x="689" y="80" text-anchor="middle" fill="#2E5E7E">100/时</text>
+    <rect x="766" y="42" width="76" height="46" rx="6" fill="#F1ECE3" stroke="#DCD5C9"/><text x="804" y="62" text-anchor="middle" fill="#4A4F4B">产出</text><text x="804" y="80" text-anchor="middle" fill="#1F2421" font-weight="bold">40</text>
+  </g>
+
+  <!-- 中排：优化非瓶颈 -->
+  <text x="30" y="140" font-size="13" fill="#8A8579">方案甲</text>
+  <text x="30" y="158" font-size="12" fill="#8A8579">投钱升级</text>
+  <text x="30" y="174" font-size="12" fill="#8A8579">冲压</text>
+  <g font-size="13">
+    <rect x="86"  y="126" width="118" height="46" rx="6" fill="#F7F4EE" stroke="#DCD5C9"/><text x="145" y="154" text-anchor="middle" fill="#8A8579">100/时</text>
+    <rect x="222" y="126" width="118" height="46" rx="6" fill="#EDF6EC" stroke="#4A7C59" stroke-width="2"/><text x="281" y="146" text-anchor="middle" fill="#4A7C59" font-weight="bold">冲压 ↑</text><text x="281" y="164" text-anchor="middle" fill="#4A7C59" font-weight="bold">200/时</text>
+    <rect x="358" y="126" width="118" height="46" rx="6" fill="#FBF1F6" stroke="#8A5A83"/><text x="417" y="154" text-anchor="middle" fill="#8A5A83" font-weight="bold">40/时（没动）</text>
+    <rect x="494" y="126" width="118" height="46" rx="6" fill="#F7F4EE" stroke="#DCD5C9"/><text x="553" y="154" text-anchor="middle" fill="#8A8579">100/时</text>
+    <rect x="630" y="126" width="118" height="46" rx="6" fill="#F7F4EE" stroke="#DCD5C9"/><text x="689" y="154" text-anchor="middle" fill="#8A8579">100/时</text>
+    <rect x="766" y="126" width="76" height="46" rx="6" fill="#FBF1F6" stroke="#8A5A83"/><text x="804" y="146" text-anchor="middle" fill="#8A5A83">产出</text><text x="804" y="164" text-anchor="middle" fill="#8A5A83" font-weight="bold">40</text>
+  </g>
+
+  <!-- 下排：优化瓶颈 -->
+  <text x="30" y="224" font-size="13" fill="#8A8579">方案乙</text>
+  <text x="30" y="242" font-size="12" fill="#8A8579">同样的钱</text>
+  <text x="30" y="258" font-size="12" fill="#8A8579">投热处理</text>
+  <g font-size="13">
+    <rect x="86"  y="210" width="118" height="46" rx="6" fill="#F7F4EE" stroke="#DCD5C9"/><text x="145" y="238" text-anchor="middle" fill="#8A8579">100/时</text>
+    <rect x="222" y="210" width="118" height="46" rx="6" fill="#F7F4EE" stroke="#DCD5C9"/><text x="281" y="238" text-anchor="middle" fill="#8A8579">100/时</text>
+    <rect x="358" y="210" width="118" height="46" rx="6" fill="#EDF6EC" stroke="#4A7C59" stroke-width="2"/><text x="417" y="230" text-anchor="middle" fill="#4A7C59" font-weight="bold">热处理 ↑</text><text x="417" y="248" text-anchor="middle" fill="#4A7C59" font-weight="bold">80/时</text>
+    <rect x="494" y="210" width="118" height="46" rx="6" fill="#F7F4EE" stroke="#DCD5C9"/><text x="553" y="238" text-anchor="middle" fill="#8A8579">100/时</text>
+    <rect x="630" y="210" width="118" height="46" rx="6" fill="#F7F4EE" stroke="#DCD5C9"/><text x="689" y="238" text-anchor="middle" fill="#8A8579">100/时</text>
+    <rect x="766" y="210" width="76" height="46" rx="6" fill="#EDF6EC" stroke="#4A7C59"/><text x="804" y="230" text-anchor="middle" fill="#4A7C59">产出</text><text x="804" y="248" text-anchor="middle" fill="#4A7C59" font-weight="bold">80</text>
+  </g>
+
+  <rect x="86" y="270" width="756" height="24" rx="5" fill="#FFF3EB" stroke="#B4541E"/>
+  <text x="464" y="287" text-anchor="middle" font-size="13" fill="#B4541E">同样的钱：方案甲收益 0，方案乙收益 +100%。差别不在努力程度，在投在哪一格。</text>
+</svg>
+<figcaption>图 5 · 推论：任何"全面提升"的口号在串联系统里都是资源浪费。工程的第一动作永远是找瓶颈，不是找不足。</figcaption>
+</figure>
+
+<h3>法则三 · 复杂度也是稀缺资源</h3>
+
+<p>这条最容易被漏掉。A1 里的"资源"不只是钱和材料，还包括一样极硬的东西：<b>人一次能同时握住的东西数量</b>。这是生理上限，不因经验或努力而大幅改变。</p>
+
+<figure>
+<svg viewBox="0 0 860 330" xmlns="http://www.w3.org/2000/svg" font-family="'Songti SC',serif">
+  <text x="430" y="24" text-anchor="middle" font-size="16" font-weight="bold" fill="#1F2421">为什么工程要分层、要模块、要定接口</text>
+
+  <!-- 左：全连接 -->
+  <text x="150" y="54" text-anchor="middle" font-size="14" fill="#8A5A83" font-weight="bold">不分层：10 个部件两两相关</text>
+  <g transform="translate(150,168)">
+    <g stroke="#C9A3BE" stroke-width=".9" opacity=".85">
+      <path d="M0,-72 L69,-22 M0,-72 L42,58 M0,-72 L-42,58 M0,-72 L-69,-22
+               M69,-22 L42,58 M69,-22 L-42,58 M69,-22 L-69,-22
+               M42,58 L-42,58 M42,58 L-69,-22 M-42,58 L-69,-22
+               M0,-72 L36,-62 M36,-62 L69,-22 M36,-62 L-42,58 M36,-62 L-69,-22 M36,-62 L42,58
+               M0,-72 L64,20 M64,20 L69,-22 M64,20 L42,58 M64,20 L-42,58 M64,20 L-69,-22 M64,20 L36,-62
+               M0,-72 L0,74 M0,74 L69,-22 M0,74 L42,58 M0,74 L-42,58 M0,74 L-69,-22 M0,74 L36,-62 M0,74 L64,20
+               M0,-72 L-64,20 M-64,20 L69,-22 M-64,20 L42,58 M-64,20 L-42,58 M-64,20 L-69,-22 M-64,20 L36,-62 M-64,20 L64,20 M-64,20 L0,74
+               M-36,-62 L0,-72 M-36,-62 L69,-22 M-36,-62 L42,58 M-36,-62 L-42,58 M-36,-62 L-69,-22 M-36,-62 L36,-62 M-36,-62 L64,20 M-36,-62 L0,74 M-36,-62 L-64,20"/>
+    </g>
+    <g fill="#8A5A83">
+      <circle cx="0" cy="-72" r="6"/><circle cx="36" cy="-62" r="6"/><circle cx="69" cy="-22" r="6"/>
+      <circle cx="64" cy="20" r="6"/><circle cx="42" cy="58" r="6"/><circle cx="0" cy="74" r="6"/>
+      <circle cx="-42" cy="58" r="6"/><circle cx="-64" cy="20" r="6"/><circle cx="-69" cy="-22" r="6"/><circle cx="-36" cy="-62" r="6"/>
+    </g>
+  </g>
+  <text x="150" y="278" text-anchor="middle" font-size="13.5" fill="#8A5A83" font-weight="bold">45 条关系要同时记住</text>
+  <text x="150" y="298" text-anchor="middle" font-size="12.5" fill="#8A8579">10×9÷2 ＝ 45　（n² 增长）</text>
+
+  <text x="430" y="170" text-anchor="middle" font-size="26" fill="#A79E8E">→</text>
+  <text x="430" y="196" text-anchor="middle" font-size="12.5" fill="#8A8579">封装 + 定接口</text>
+
+  <!-- 右：分层 -->
+  <text x="640" y="54" text-anchor="middle" font-size="14" fill="#4A7C59" font-weight="bold">分成 3 个模块，只暴露接口</text>
+  <g font-size="12.5">
+    <rect x="512" y="70" width="112" height="76" rx="7" fill="#EDF6EC" stroke="#4A7C59"/>
+    <circle cx="540" cy="96" r="5" fill="#4A7C59"/><circle cx="568" cy="96" r="5" fill="#4A7C59"/><circle cx="596" cy="96" r="5" fill="#4A7C59"/>
+    <circle cx="554" cy="120" r="5" fill="#4A7C59"/><circle cx="582" cy="120" r="5" fill="#4A7C59"/>
+    <text x="568" y="140" text-anchor="middle" fill="#4A7C59">模块甲</text>
+
+    <rect x="656" y="70" width="112" height="76" rx="7" fill="#EDF4F8" stroke="#2E5E7E"/>
+    <circle cx="684" cy="96" r="5" fill="#2E5E7E"/><circle cx="712" cy="96" r="5" fill="#2E5E7E"/><circle cx="740" cy="96" r="5" fill="#2E5E7E"/>
+    <text x="712" y="140" text-anchor="middle" fill="#2E5E7E">模块乙</text>
+
+    <rect x="584" y="184" width="112" height="76" rx="7" fill="#FFF3EB" stroke="#B4541E"/>
+    <circle cx="612" cy="210" r="5" fill="#B4541E"/><circle cx="640" cy="210" r="5" fill="#B4541E"/>
+    <text x="640" y="254" text-anchor="middle" fill="#B4541E">模块丙</text>
+  </g>
+  <g stroke="#A79E8E" stroke-width="2" fill="none">
+    <line x1="624" y1="108" x2="656" y2="108"/>
+    <line x1="600" y1="150" x2="620" y2="180"/>
+    <line x1="700" y1="150" x2="672" y2="180"/>
+  </g>
+  <text x="640" y="278" text-anchor="middle" font-size="13.5" fill="#4A7C59" font-weight="bold">只剩 3 条关系要同时记住</text>
+  <text x="640" y="298" text-anchor="middle" font-size="12.5" fill="#8A8579">模块内部的复杂度还在，但被"关"住了</text>
+</svg>
+<figcaption>图 6 · 模块化不是为了"好看"或"规范"，是为了把 n² 的认知负担压回到线性。人的工作记忆是硬约束——这是 A1 里最容易被忽略的一项资源。</figcaption>
+</figure>
+
+<h3>法则四 · 冗余：用资源买风险，也要做边际计算</h3>
+
+<p>现实有不确定性，所以工程会加安全系数、备份、双电源。但冗余不是越多越好——每一份冗余都是从别处挪来的资源。判据仍然是同一条：<b>这一份冗余降低的期望损失，是否大于它的成本？</b></p>
+
+<div class="note">
+桥梁的安全系数远高于手机壳，不是因为造桥的人更认真，而是因为两者的<b>失效后果</b>差了好几个数量级。冗余度是被后果决定的，不是被态度决定的。
+</div>
+
+<h3>法则五 · 技术债：机会成本在时间轴上的样子</h3>
+
+<p>回忆第一篇的机会成本：成本不是你付的钱，是你放弃的最好选项。把它放到时间轴上，就得到工程里最贵的一个概念。</p>
+
+<figure>
+<svg viewBox="0 0 860 320" xmlns="http://www.w3.org/2000/svg" font-family="'Songti SC',serif">
+  <text x="430" y="24" text-anchor="middle" font-size="16" font-weight="bold" fill="#1F2421">走捷径 vs 打地基：累计投入随时间的两条曲线</text>
+
+  <g transform="translate(70,50)">
+    <line x1="0" y1="0" x2="0" y2="210" stroke="#1F2421" stroke-width="1.5"/>
+    <line x1="0" y1="210" x2="440" y2="210" stroke="#1F2421" stroke-width="1.5"/>
+    <text x="-58" y="-12" font-size="12.5" fill="#4A4F4B">累计总投入</text>
+    <text x="376" y="234" font-size="12.5" fill="#4A4F4B">时间 / 需求变更次数</text>
+
+    <!-- 捷径 -->
+    <path d="M0,196 C60,186 110,168 170,132 C230,92 290,44 380,6" stroke="#8A5A83" stroke-width="2.8" fill="none"/>
+    <text x="300" y="34" font-size="13" fill="#8A5A83" font-weight="bold">走捷径</text>
+    <text x="286" y="52" font-size="12" fill="#8A5A83">每次改动都更贵</text>
+
+    <!-- 地基 -->
+    <path d="M0,152 C60,146 140,138 240,128 C320,120 370,114 380,112" stroke="#4A7C59" stroke-width="2.8" fill="none"/>
+    <text x="286" y="106" font-size="13" fill="#4A7C59" font-weight="bold">先打地基</text>
+    <text x="286" y="124" font-size="12" fill="#4A7C59">起步贵，斜率平</text>
+
+    <!-- 交叉点 -->
+    <circle cx="150" cy="140" r="5.5" fill="#B4541E"/>
+    <line x1="150" y1="140" x2="150" y2="210" stroke="#B4541E" stroke-dasharray="4 3"/>
+    <text x="150" y="228" font-size="12.5" fill="#B4541E" text-anchor="middle">回本点</text>
+
+    <rect x="10" y="160" width="126" height="42" rx="5" fill="#F2EEE6" stroke="#DCD5C9"/>
+    <text x="73" y="178" text-anchor="middle" font-size="12" fill="#4A4F4B">这一段里</text>
+    <text x="73" y="194" text-anchor="middle" font-size="12" fill="#4A4F4B">走捷径确实更划算</text>
+  </g>
+
+  <rect x="546" y="60" width="296" height="230" rx="8" fill="#FBF8F4" stroke="#DCD5C9"/>
+  <text x="564" y="84" font-size="14" font-weight="bold" fill="#1F2421">技术债的准确定义</text>
+  <text x="564" y="108" font-size="13" fill="#4A4F4B">＝ 用<tspan font-weight="bold">未来的资源</tspan>换<tspan font-weight="bold">现在的资源</tspan>。</text>
+  <text x="564" y="130" font-size="13" fill="#4A4F4B">它是借贷，不是错误。</text>
+  <line x1="564" y1="146" x2="824" y2="146" stroke="#E4DED3"/>
+  <text x="564" y="170" font-size="13" fill="#1F2421">所以只有两个问题要问：</text>
+  <text x="564" y="194" font-size="13" fill="#B4541E">① 利率多高？（改动频率）</text>
+  <text x="564" y="216" font-size="13" fill="#B4541E">② 借多久？（回本点在哪）</text>
+  <line x1="564" y1="232" x2="824" y2="232" stroke="#E4DED3"/>
+  <text x="564" y="256" font-size="12.8" fill="#8A8579">做验证性的小项目：该借，甚至必须借。</text>
+  <text x="564" y="276" font-size="12.8" fill="#8A8579">做要跑十年的地基：借了迟早还，还带利息。</text>
+</svg>
+<figcaption>图 7 · "先跑起来再说"和"一次做对"没有谁对谁错，只有回本点在哪。把它当作利率问题，争论就有了共同尺子。</figcaption>
+</figure>
+
+<h2>四 · 工程的边界：四种失效</h2>
+
+<p>和第一篇一样，好框架要说清楚自己在哪失效。工程做得再"对"，遇上下面四种情况仍然会归零。注意第 ②③ 种其实是 A2 和 A3 溜进来了——它们本来就不在 A1 的管辖范围内。</p>
+
+<figure>
+<svg viewBox="0 0 860 300" xmlns="http://www.w3.org/2000/svg" font-family="'Songti SC',serif">
+  <text x="430" y="24" text-anchor="middle" font-size="16" font-weight="bold" fill="#1F2421">工程"漏气"的四个地方</text>
+
+  <g font-size="13">
+    <rect x="20" y="46" width="404" height="112" rx="8" fill="#FBF1F6" stroke="#8A5A83"/>
+    <text x="38" y="70" font-size="14" font-weight="bold" fill="#8A5A83">① 约束搞错：优化了不重要的那一格</text>
+    <text x="38" y="94" fill="#1F2421">把非瓶颈环节做到极致，系统产出一点没变</text>
+    <text x="38" y="114" fill="#4A4F4B">→ 这是 A1 的应用错误：资源投错了位置</text>
+    <text x="38" y="138" fill="#8A8579">解法：先测瓶颈再动手；量纲和口径先统一</text>
+
+    <rect x="436" y="46" width="404" height="112" rx="8" fill="#FBF1F6" stroke="#8A5A83"/>
+    <text x="454" y="70" font-size="14" font-weight="bold" fill="#8A5A83">② 目标搞错：指标一旦成为目标，就不再是好指标</text>
+    <text x="454" y="94" fill="#1F2421">考核代码行数 → 代码变长；考核结案数 → 挑简单的办</text>
+    <text x="454" y="114" fill="#2E5E7E">→ 这不是工程问题，是 <tspan font-weight="bold">A2</tspan>：人朝被奖励的方向走</text>
+    <text x="454" y="138" fill="#8A8579">解法：领先指标＋滞后指标配对，别只考一个</text>
+
+    <rect x="20" y="170" width="404" height="112" rx="8" fill="#FBF1F6" stroke="#8A5A83"/>
+    <text x="38" y="194" font-size="14" font-weight="bold" fill="#8A5A83">③ 对象搞错：造得完美，但没人需要</text>
+    <text x="38" y="218" fill="#1F2421">前沿上最漂亮的那个点，落在没有人的地方</text>
+    <text x="38" y="238" fill="#4A7C59">→ 这不是工程问题，是 <tspan font-weight="bold">A3</tspan>：价值长在人心里</text>
+    <text x="38" y="262" fill="#8A8579">解法：见第四篇《营销的本质》</text>
+
+    <rect x="436" y="170" width="404" height="112" rx="8" fill="#FBF1F6" stroke="#8A5A83"/>
+    <text x="454" y="194" font-size="14" font-weight="bold" fill="#8A5A83">④ 复杂度非线性：局部都对，整体崩了</text>
+    <text x="454" y="218" fill="#1F2421">每个部件都合格，耦合起来出现谁也没预料的失效</text>
+    <text x="454" y="238" fill="#4A4F4B">→ 仍是 A1，但稀缺的是"能被验证的组合数"</text>
+    <text x="454" y="262" fill="#8A8579">解法：减少耦合、留熔断、允许局部失效而非全局</text>
+  </g>
+</svg>
+<figcaption>图 8 · 四种里有两种其实不是工程问题。识别出这一点本身就很有价值——它决定了你该找谁、该改什么。</figcaption>
+</figure>
+
+<div class="fail">
+<b>预失败检验：</b>假设这套框架是错的，最可能的<b>单一</b>原因是什么？<br>
+最可能是 <b>"资源"被定义得太窄</b>。如果分母里只算钱和工时，不算注意力、组织信任、以及"未来选择的自由度"，那么所有"效率优化"都会系统性地偏向一个方向：<b>把成本推到看不见的地方</b>——推给未来（技术债）、推给旁边的团队（甩锅式解耦）、推给用户（把复杂度塞进说明书）。<br>
+账面上 η 变高了，真实的 η 变低了。<b>检验方法：把边界画大一圈再算一次。</b>如果结论反过来，说明原来的边界是错的。
+</div>
+
+<h2>五 · AGI 三阶段下：工程里什么变了，什么没变</h2>
+
+<p>承接第二篇的结论——三条公理一条都不废，废的只是 A1 稀缺的标的物。落到工程上，这意味着<b>方法全部保留，输入需要更换</b>。</p>
+
+<figure>
+<svg viewBox="0 0 860 330" xmlns="http://www.w3.org/2000/svg" font-family="'Songti SC',serif">
+  <text x="430" y="24" text-anchor="middle" font-size="16" font-weight="bold" fill="#1F2421">工程的瓶颈在迁移：从"造得出来"到"知道该造什么 + 能验证它对不对"</text>
+
+  <g font-size="12.8">
+    <rect x="18" y="44" width="268" height="42" rx="7" fill="#F1ECE3" stroke="#DCD5C9"/>
+    <text x="152" y="70" text-anchor="middle" font-size="14" font-weight="bold" fill="#4A4F4B">① AGI 脚下（现在）</text>
+
+    <rect x="296" y="44" width="268" height="42" rx="7" fill="#F1ECE3" stroke="#DCD5C9"/>
+    <text x="430" y="70" text-anchor="middle" font-size="14" font-weight="bold" fill="#4A4F4B">② 过渡期</text>
+
+    <rect x="574" y="44" width="268" height="42" rx="7" fill="#F1ECE3" stroke="#DCD5C9"/>
+    <text x="708" y="70" text-anchor="middle" font-size="14" font-weight="bold" fill="#4A4F4B">③ 之后</text>
+
+    <rect x="18" y="94" width="268" height="128" rx="7" fill="#FFF3EB" stroke="#B4541E"/>
+    <text x="34" y="118" font-size="13.5" font-weight="bold" fill="#B4541E">分母里最贵的一项</text>
+    <text x="34" y="142" fill="#1F2421">工程师的时间</text>
+    <text x="34" y="166" fill="#4A4F4B">→ 所以要复用、要框架、</text>
+    <text x="34" y="184" fill="#4A4F4B">　要"别重复造轮子"</text>
+    <text x="34" y="210" fill="#8A8579">实现成本 ≫ 设计成本</text>
+
+    <rect x="296" y="94" width="268" height="128" rx="7" fill="#FFF3EB" stroke="#B4541E"/>
+    <text x="312" y="118" font-size="13.5" font-weight="bold" fill="#B4541E">实现成本快速趋近 0</text>
+    <text x="312" y="142" fill="#1F2421">瓶颈移到：<tspan font-weight="bold">说清楚要什么</tspan></text>
+    <text x="312" y="164" fill="#1F2421">和 <tspan font-weight="bold">验证它真的对</tspan></text>
+    <text x="312" y="188" fill="#4A4F4B">→ "重复造轮子"不再可怕，</text>
+    <text x="312" y="206" fill="#4A4F4B">　"造错轮子"变得极其可怕</text>
+
+    <rect x="574" y="94" width="268" height="128" rx="7" fill="#FFF3EB" stroke="#B4541E"/>
+    <text x="590" y="118" font-size="13.5" font-weight="bold" fill="#B4541E">生产端近乎解除稀缺</text>
+    <text x="590" y="142" fill="#1F2421">但仍永久稀缺：</text>
+    <text x="590" y="164" fill="#4A4F4B">能源 · 原子 · 物理位置</text>
+    <text x="590" y="186" fill="#4A4F4B">以及"谁来负责"</text>
+    <text x="590" y="210" fill="#8A8579">〔假设 H-E1，待验证〕</text>
+  </g>
+
+  <rect x="18" y="234" width="824" height="34" rx="7" fill="#EDF6EC" stroke="#4A7C59"/>
+  <text x="430" y="256" text-anchor="middle" font-size="13.5" fill="#1F2421">没变的：帕累托前沿、边际递减、瓶颈法则、复杂度约束——它们只依赖"资源有限"这一条，而这一条永远成立。</text>
+
+  <rect x="18" y="278" width="824" height="42" rx="7" fill="#FBF8F4" stroke="#DCD5C9"/>
+  <text x="430" y="298" text-anchor="middle" font-size="13.5" fill="#B4541E" font-weight="bold">个人层面的直接推论：把能力从"实现"一侧，往"定义约束"和"验证结果"两侧挪。</text>
+  <text x="430" y="316" text-anchor="middle" font-size="12.5" fill="#8A8579">这两件事都要求你知道"什么算对"——而这恰恰是最难被外包的部分。</text>
+</svg>
+<figcaption>图 9 · 三阶段的划分与时点假设沿用第二篇，此处不重复论证。时点不可知，但方向的推导不依赖时点。</figcaption>
+</figure>
+
+<h2>六 · 一页速查</h2>
+
+<table>
+<thead><tr><th style="width:22%">从 A1 推出</th><th style="width:38%">内容</th><th style="width:40%">拿去用的那句话</th></tr></thead>
+<tbody>
+<tr><td><b>工程的定义式</b></td><td>最大化「可用价值 ÷ 消耗资源」，不是最大化可用价值</td><td>"不惜代价"四个字一出现，就不是工程了</td></tr>
+<tr><td><b>帕累托前沿</b></td><td>改进分三种：内部→前沿（白赚）、沿前沿滑（取舍）、前沿外移（创新）</td><td>先问："这个要求落在前沿内还是前沿上？"</td></tr>
+<tr><td><b>边际递减</b></td><td>每一档提升都比上一档贵得多</td><td>问："多这 0.09%，值这 30 倍吗？"</td></tr>
+<tr><td><b>瓶颈法则</b></td><td>串联系统产出＝最弱环节；优化非瓶颈收益为 0</td><td>先测瓶颈，再谈努力</td></tr>
+<tr><td><b>复杂度约束</b></td><td>耦合关系按 n² 增长，人的工作记忆是硬上限</td><td>分层不是洁癖，是把 n² 压回线性</td></tr>
+<tr><td><b>技术债</b></td><td>机会成本在时间轴上的形态，是借贷不是错误</td><td>问两句：利率多高？回本点在哪？</td></tr>
+<tr><td colspan="2"><b>边界：两种不属于工程的失效</b></td><td>指标被钻空子 → 是 A2；造好了没人要 → 是 A3</td></tr>
+</tbody>
+</table>
+
+<h3>怎么用它</h3>
+<p>下次看到任何一个"技术方案 / 效率提升 / 优化"的说法，做三步：</p>
+<ol>
+<li><b>写出分母。</b>被省下的是什么？被多花的是什么？两边量纲一致吗？如果只报了收益没报代价，那是宣传不是方案。</li>
+<li><b>找瓶颈。</b>这个改动落在瓶颈环节上吗？不在，收益就是 0，不管做得多漂亮。</li>
+<li><b>把边界画大一圈。</b>成本有没有被推给未来、隔壁团队、或者用户？推出去的成本仍然是成本，只是不在你的报表上。</li>
+</ol>
+
+<hr>
+
+<nav class="series">
+<p class="st">基 石 公 理 · 五 篇</p>
+<ol>
+<li><a href="/gongli/yuanli.html"><span class="no">〇</span><span class="role">方法</span><span class="tt">第一性原理</span><span class="dd">什么才算公理</span></a></li>
+<li><a href="/gongli/santiao.html"><span class="no">一</span><span class="role">公理</span><span class="tt">经济学的三条公理</span><span class="dd">A1 稀缺 · A2 目的性行动 · A3 主观价值</span></a></li>
+<li><a href="/gongli/agi.html"><span class="no">二</span><span class="role">变局</span><span class="tt">AGI 三阶段</span><span class="dd">公理不废，废的是稀缺的标的物</span></a></li>
+<li><span class="cur"><span class="no">三</span><span class="role">应用</span><span class="tt">工程的本质</span><span class="dd">A1 稀缺的应用</span></span></li>
+<li><a href="/gongli/yingxiao.html"><span class="no">四</span><span class="role">应用</span><span class="tt">营销的本质</span><span class="dd">A3 主观价值的应用</span></a></li>
+</ol>
+</nav>
+
+<div class="backq">
+  <span class="k">读 完 之 后</span>
+  <p>这一页里，哪一句是你原本以为的地基，现在发现只是个假设？</p>
+  <p class="three">
+    我砍掉的假问题：____<br>
+    我证伪的假设：　　____<br>
+    剩下的那个真问题：____
+  </p>
+  <p style="font-size:15.5px; color:#4A4F4B; margin-top:18px">
+    三行填不出来，说明这一页对你今天要做的事没用——那就别记，去 <a href="/#ask">回到八问</a>，从你手上那件事开始。
+  </p>
+</div>
+
+<p class="foot">三公理系列 · 第三篇 · 工程 ＝ A1 稀缺的应用<br>
+第一篇《经济学的三条公理》｜第二篇《AGI 三阶段》｜第四篇《营销的本质 · A3 的应用》<br>
+本文所有数字均为便于理解的示意量级，非真实统计数据。标注〔假设〕处未经验证。</p>
+
+</div>
+</body>
+</html>

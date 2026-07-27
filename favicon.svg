@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="心问">
+  <title>心问</title>
+  <circle cx="32" cy="32" r="23" fill="none" stroke="#2E2E2C" stroke-width="6" stroke-linecap="round" stroke-dasharray="123 22" transform="rotate(-58 32 32)"/>
+  <path d="M32 39 C21.5 31 19.5 22 26 22 C29.2 22 32 25.2 32 25.2 C32 25.2 34.8 22 38 22 C44.5 22 42.5 31 32 39 Z" fill="#C1272D"/>
+</svg>

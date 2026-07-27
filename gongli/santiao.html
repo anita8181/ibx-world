@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>经济学的三条公理 · 第一性原理图解</title>
+<style>
+  :root{
+    --bg:#FAF7F2; --ink:#1F2421; --ink2:#4A4F4B; --line:#DCD5C9;
+    --a1:#B4541E; --a2:#2E5E7E; --a3:#4A7C59; --warn:#8A5A83; --muted:#8A8579;
+    --card:#FFFDF9;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Songti SC","Source Han Serif SC","Noto Serif CJK SC",Georgia,serif;
+    line-height:1.85; font-size:17px;
+  }
+  .wrap{max-width:880px; margin:0 auto; padding:0 28px 100px;}
+  h1{font-size:34px; line-height:1.35; margin:0 0 8px; letter-spacing:.02em}
+  .sub{color:var(--muted); font-size:15px; margin:0 0 6px}
+  h2{font-size:24px; margin:64px 0 6px; padding-top:26px; border-top:2px solid var(--ink); letter-spacing:.02em}
+  h3{font-size:18px; margin:34px 0 8px}
+  p{margin:12px 0}
+  .lead{font-size:18px; color:var(--ink2)}
+  figure{margin:26px 0; padding:20px 18px 12px; background:var(--card); border:1px solid var(--line); border-radius:10px}
+  figcaption{font-size:13.5px; color:var(--muted); margin-top:10px; text-align:center; line-height:1.6}
+  svg{display:block; width:100%; height:auto}
+  .note{background:#F2EEE6; border-left:4px solid var(--muted); padding:12px 16px; margin:20px 0; font-size:15.5px; color:var(--ink2)}
+  .fail{background:#FBF1F6; border-left:4px solid var(--warn); padding:14px 18px; margin:24px 0; font-size:15.5px}
+  .fail b{color:var(--warn)}
+  table{width:100%; border-collapse:collapse; margin:20px 0; font-size:15px}
+  th,td{border:1px solid var(--line); padding:9px 11px; text-align:left; vertical-align:top}
+  th{background:#F1ECE3; font-weight:600}
+  code{font-family:ui-monospace,Menlo,monospace; font-size:14px; background:#EFEAE1; padding:1px 5px; border-radius:3px}
+  .tag{display:inline-block; font-size:12.5px; padding:2px 9px; border-radius:20px; color:#fff; margin-right:6px; vertical-align:2px; font-family:system-ui,sans-serif}
+  .t1{background:var(--a1)} .t2{background:var(--a2)} .t3{background:var(--a3)}
+  ul,ol{padding-left:22px} li{margin:7px 0}
+  hr{border:0; border-top:1px solid var(--line); margin:44px 0}
+  .foot{color:var(--muted); font-size:13.5px; margin-top:60px; text-align:center}
+  @media print{ body{font-size:12pt} .wrap{padding:0} h2{page-break-after:avoid} figure{page-break-inside:avoid} }
+</style>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/favicon-180.png">
+
+<style>
+  .sitebar{display:flex; align-items:center; gap:14px; padding:22px 0 0; margin:0 0 34px}
+  .sitebar svg{height:26px; width:auto; display:block}
+  .sitebar a{margin-left:auto; color:#8A8579; text-decoration:none; font-size:14.5px;
+    letter-spacing:.04em; border-bottom:1px solid #DCD5C9; padding-bottom:2px}
+  .sitebar a:hover{color:#1F2421; border-color:#1F2421}
+  .series{margin:56px 0 0; border-top:1px solid #DCD5C9; padding-top:24px}
+  .series .st{font-size:12.5px; letter-spacing:.26em; color:#8A8579;
+    font-family:system-ui,sans-serif; margin:0 0 14px}
+  .series ol{list-style:none; padding:0; margin:0; counter-reset:none}
+  .series li{margin:0 0 2px}
+  .series a, .series span.cur{display:flex; align-items:baseline; gap:12px;
+    text-decoration:none; color:#4A4F4B; padding:9px 12px; border-radius:6px}
+  .series a:hover{background:#F1ECE3; color:#1F2421}
+  .series span.cur{background:#F1ECE3; color:#1F2421}
+  .series .no{font-size:14px; color:#8A8579; width:1.4em; flex:none; text-align:center}
+  .series .role{font-size:12.5px; color:#8A8579; font-family:system-ui,sans-serif;
+    border:1px solid #DCD5C9; border-radius:3px; padding:0 6px; flex:none}
+  .series .tt{font-size:16px}
+  .series .dd{font-size:13.5px; color:#8A8579; margin-left:auto; text-align:right}
+  @media (max-width:620px){ .series .dd{display:none} }
+  .backq{border-left:2px solid #C1272D; padding:6px 0 6px 22px; margin:48px 0 0}
+  .backq .k{font-size:12.5px; letter-spacing:.24em; color:#C1272D; font-family:system-ui,sans-serif}
+  .backq p{font-size:17.5px; margin:10px 0}
+  .backq .three{color:#4A4F4B; font-size:16px; line-height:2.1; margin:16px 0 0}
+  .backq a{color:#1F2421}
+  @media print{ .sitebar,.series,.backq{display:none} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+
+<div class="sitebar">
+  <svg viewBox="0 0 232 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="心问"><title>心问</title><circle cx="32" cy="32" r="24" fill="none" stroke="#1F2421" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="132 19" transform="rotate(-58 32 32)"/><path d="M32 37 C23.5 30.5 22 23.5 27 23.5 C29.6 23.5 32 26 32 26 C32 26 34.4 23.5 37 23.5 C42 23.5 40.5 30.5 32 37 Z" fill="#C1272D"/><g transform="translate(78 44) scale(0.034 -0.034)" fill="#1F2421"><path d="M435 831 422 823C484 754 561 644 582 561C662 501 712 679 435 831ZM397 648 298 659V50C298 -16 326 -34 423 -34H568C774 -34 815 -22 815 13C815 27 808 35 783 42L780 220H767C752 138 738 70 729 50C724 40 719 35 703 34C682 31 635 30 570 30H429C373 30 363 40 363 65V622C386 625 395 635 397 648ZM766 518 755 509C843 412 881 263 898 175C965 102 1031 322 766 518ZM175 533H157C159 394 111 261 59 207C43 186 36 166 36 146C36 106 60 76 92 76C112 76 130 88 143 113C171 165 182 292 175 533Z"/></g></svg>
+  <a href="/">← 回心问</a>
+</div>
+
+<h1>经济学的三条公理</h1>
+<p class="sub">用第一性原理拆到底 · 面向高中文科生的图解说明</p>
+<p class="lead">课本上的经济学有几十条"原理"。但如果一层层往下问"这条为什么成立"，你会发现绝大多数都能被推导出来——真正推不动、只能承认的，其实只有三条。这份说明就是把这棵树从根画到叶。</p>
+
+<h2>〇 · 先说清楚：什么才算"公理"</h2>
+
+<p>第一性原理的做法是：<b>把任何结论一直拆，拆到不能再拆的地方</b>。那个不能再拆的东西，叫公理。经济学里只有三类东西够格：</p>
+
+<ul>
+<li><b>恒等式</b>——按定义就成立，不可能错。比如"总收入 = 单价 × 销量"。</li>
+<li><b>物理或经济的极限</b>——现实世界的硬边界。比如一天只有 24 小时。</li>
+<li><b>人性与需求</b>——只要研究对象是人，就绕不开。比如人会趋利避害。</li>
+</ul>
+
+<p>不够格的有哪些？<b>行业惯例、历史数据、专家结论、"大家都这么说"</b>——这些全是假设，都可以被质疑。下面这张漏斗图，就是把常见的"经济学原理"过一遍筛子。</p>
+
+<figure>
+<svg viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg" font-family="'Songti SC',serif">
+  <defs>
+    <marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 z" fill="#8A8579"/>
+    </marker>
+  </defs>
+  <text x="400" y="26" text-anchor="middle" font-size="16" fill="#1F2421" font-weight="bold">公理筛选漏斗</text>
+
+  <!-- 入口候选 -->
+  <text x="30" y="60" font-size="13" fill="#8A8579">候选："经济学原理"</text>
+  <g font-size="13.5" fill="#1F2421">
+    <rect x="24" y="72" width="196" height="30" rx="5" fill="#F2EEE6" stroke="#DCD5C9"/><text x="122" y="92" text-anchor="middle">供求决定价格</text>
+    <rect x="24" y="110" width="196" height="30" rx="5" fill="#F2EEE6" stroke="#DCD5C9"/><text x="122" y="130" text-anchor="middle">理性人假设</text>
+    <rect x="24" y="148" width="196" height="30" rx="5" fill="#F2EEE6" stroke="#DCD5C9"/><text x="122" y="168" text-anchor="middle">资源是稀缺的</text>
+    <rect x="24" y="186" width="196" height="30" rx="5" fill="#F2EEE6" stroke="#DCD5C9"/><text x="122" y="206" text-anchor="middle">边际效用递减</text>
+    <rect x="24" y="224" width="196" height="30" rx="5" fill="#F2EEE6" stroke="#DCD5C9"/><text x="122" y="244" text-anchor="middle">人按偏好行动</text>
+    <rect x="24" y="262" width="196" height="30" rx="5" fill="#F2EEE6" stroke="#DCD5C9"/><text x="122" y="282" text-anchor="middle">GDP 增长是好事</text>
+    <rect x="24" y="300" width="196" height="30" rx="5" fill="#F2EEE6" stroke="#DCD5C9"/><text x="122" y="320" text-anchor="middle">价值因人而异</text>
+  </g>
+
+  <!-- 筛子 -->
+  <path d="M250,70 L400,150 L400,258 L250,338 Z" fill="#EDE7DC" stroke="#C9C0B0"/>
+  <text x="325" y="180" text-anchor="middle" font-size="13.5" fill="#4A4F4B">追问三次</text>
+  <text x="325" y="200" text-anchor="middle" font-size="13.5" fill="#4A4F4B">"为什么？"</text>
+  <text x="325" y="224" text-anchor="middle" font-size="12" fill="#8A8579">能被推出来的</text>
+  <text x="325" y="240" text-anchor="middle" font-size="12" fill="#8A8579">就不是公理</text>
+
+  <line x1="222" y1="204" x2="246" y2="204" stroke="#8A8579" marker-end="url(#ar)"/>
+
+  <!-- 出口 -->
+  <line x1="404" y1="204" x2="450" y2="204" stroke="#8A8579" marker-end="url(#ar)"/>
+
+  <rect x="458" y="86" width="316" height="94" rx="8" fill="#FFFDF9" stroke="#B4541E" stroke-width="1.5"/>
+  <text x="472" y="108" font-size="13.5" fill="#B4541E" font-weight="bold">✔ 留下 · 三条公理</text>
+  <text x="472" y="130" font-size="13.5" fill="#1F2421">A1 资源是稀缺的　（物理极限）</text>
+  <text x="472" y="150" font-size="13.5" fill="#1F2421">A2 人按偏好行动　（人性）</text>
+  <text x="472" y="170" font-size="13.5" fill="#1F2421">A3 价值因人而异　（人性）</text>
+
+  <rect x="458" y="196" width="316" height="140" rx="8" fill="#F7F4EE" stroke="#DCD5C9"/>
+  <text x="472" y="218" font-size="13.5" fill="#8A8579" font-weight="bold">✘ 筛掉 · 它们是推论或价值判断</text>
+  <text x="472" y="240" font-size="13" fill="#4A4F4B">供求决定价格 → 由 A1+A3 推出</text>
+  <text x="472" y="260" font-size="13" fill="#4A4F4B">边际效用递减 → 由 A2 推出</text>
+  <text x="472" y="280" font-size="13" fill="#4A4F4B">理性人假设 → A2 的"强化版"，可质疑</text>
+  <text x="472" y="300" font-size="13" fill="#4A4F4B">GDP 增长是好事 → 价值判断，不是事实</text>
+  <text x="472" y="322" font-size="12" fill="#8A8579">（筛掉不等于错，只是"需要被证明"）</text>
+</svg>
+<figcaption>图 1 · 大部分"原理"经不起三次追问。经得起的只有三条。</figcaption>
+</figure>
+
+<h2>一 · 三条公理是什么</h2>
+
+<h3><span class="tag t1">A1</span>稀缺：想要的永远多于能拿到的</h3>
+<p>在任何一个具体时点，你能支配的资源（时间、钱、注意力、原材料）是<b>有限的</b>，而它们能派上的用场是<b>多于这个数量的</b>。</p>
+<p>注意这条不是在说"人很穷"。就算一个人钱花不完，他一天还是只有 24 小时。<b>时间的稀缺是物理事实，无法被技术、财富或制度取消。</b>这就是它够格当公理的原因。</p>
+
+<h3><span class="tag t2">A2</span>目的性行动：人会朝自己更想要的那个走</h3>
+<p>人在面对几个选项时，会选自己排序更靠前的那个。这里要格外注意三点，否则很容易被误读：</p>
+<ul>
+<li>它<b>没有</b>说人聪明、算得准、不会后悔。</li>
+<li>它<b>没有</b>说人只追求钱。捐款、照顾家人、坚持理想，都算"更想要"。</li>
+<li>它只说：<b>人不会故意选自己排序更靠后的那个。</b></li>
+</ul>
+<p>这是一个非常弱、因此非常难反驳的陈述——弱，恰恰是好公理的特征。</p>
+
+<h3><span class="tag t3">A3</span>主观价值：价值长在人心里，不在物件上</h3>
+<p>一瓶水在沙漠里和在你书桌上，物理上完全相同，但值多少完全不同。同一场演唱会的票，对粉丝和对路人也不是一个价。</p>
+<p>所以价值有两个性质：<b>它属于人，不属于物；它是排序，不是刻度。</b>你能说"我更想要 A 而不是 B"，但说不出"A 的快乐是 B 的 2.7 倍"。</p>
+
+<div class="note">
+<b>为什么恰好是三条，不是两条或五条？</b>因为它们互相推不出来。稀缺解释不了人为什么会交换（那要靠 A3），偏好排序也推不出资源有限（那是 A1）。三条各管一段，不重不漏。这就是 MECE：<b>互相独立，合起来完整</b>。
+</div>
+
+<h2>二 · 推导树：从三条长出整个经济学</h2>
+
+<p>下面这张是全文的主图。看的方法：<b>从左往右，每一格都只由它左边的箭头推出，不引入新假设。</b></p>
+
+<figure>
+<svg viewBox="0 0 860 620" xmlns="http://www.w3.org/2000/svg" font-family="'Songti SC',serif">
+  <defs>
+    <marker id="a" markerWidth="9" markerHeight="9" refX="7" refY="3.2" orient="auto">
+      <path d="M0,0 L6.5,3.2 L0,6.4 z" fill="#A79E8E"/>
+    </marker>
+  </defs>
+
+  <!-- 列标题 -->
+  <text x="86"  y="24" text-anchor="middle" font-size="13" fill="#8A8579" font-family="system-ui">公理层</text>
+  <text x="310" y="24" text-anchor="middle" font-size="13" fill="#8A8579" font-family="system-ui">第一层推论</text>
+  <text x="545" y="24" text-anchor="middle" font-size="13" fill="#8A8579" font-family="system-ui">第二层推论</text>
+  <text x="775" y="24" text-anchor="middle" font-size="13" fill="#8A8579" font-family="system-ui">现实应用</text>
+  <line x1="10" y1="34" x2="850" y2="34" stroke="#DCD5C9"/>
+
+  <!-- 公理 -->
+  <g font-size="14">
+    <rect x="14" y="90" width="146" height="56" rx="8" fill="#B4541E"/>
+    <text x="87" y="114" text-anchor="middle" fill="#fff" font-weight="bold">A1 稀缺</text>
+    <text x="87" y="134" text-anchor="middle" fill="#F6DCCD" font-size="12">资源有限，用途更多</text>
+
+    <rect x="14" y="270" width="146" height="56" rx="8" fill="#2E5E7E"/>
+    <text x="87" y="294" text-anchor="middle" fill="#fff" font-weight="bold">A2 目的性行动</text>
+    <text x="87" y="314" text-anchor="middle" fill="#D3E3EC" font-size="12">选自己更想要的</text>
+
+    <rect x="14" y="450" width="146" height="56" rx="8" fill="#4A7C59"/>
+    <text x="87" y="474" text-anchor="middle" fill="#fff" font-weight="bold">A3 主观价值</text>
+    <text x="87" y="494" text-anchor="middle" fill="#D8E7DC" font-size="12">价值因人而异</text>
+  </g>
+
+  <!-- 第一层 -->
+  <g font-size="13.5">
+    <rect x="220" y="60" width="180" height="44" rx="7" fill="#FFF3EB" stroke="#B4541E"/>
+    <text x="310" y="80" text-anchor="middle" fill="#1F2421" font-weight="bold">必须做取舍</text>
+    <text x="310" y="97" text-anchor="middle" fill="#4A4F4B" font-size="12">选了这个就没了那个</text>
+
+    <rect x="220" y="120" width="180" height="44" rx="7" fill="#FFF3EB" stroke="#B4541E"/>
+    <text x="310" y="140" text-anchor="middle" fill="#1F2421" font-weight="bold">机会成本</text>
+    <text x="310" y="157" text-anchor="middle" fill="#4A4F4B" font-size="12">成本＝放弃的最好选项</text>
+
+    <rect x="220" y="240" width="180" height="44" rx="7" fill="#EDF4F8" stroke="#2E5E7E"/>
+    <text x="310" y="260" text-anchor="middle" fill="#1F2421" font-weight="bold">边际思维</text>
+    <text x="310" y="277" text-anchor="middle" fill="#4A4F4B" font-size="12">在"再多一点"上做决定</text>
+
+    <rect x="220" y="300" width="180" height="44" rx="7" fill="#EDF4F8" stroke="#2E5E7E"/>
+    <text x="310" y="320" text-anchor="middle" fill="#1F2421" font-weight="bold">边际效用递减</text>
+    <text x="310" y="337" text-anchor="middle" fill="#4A4F4B" font-size="12">越多，多一个越不稀罕</text>
+
+    <rect x="220" y="360" width="180" height="44" rx="7" fill="#EDF4F8" stroke="#2E5E7E"/>
+    <text x="310" y="380" text-anchor="middle" fill="#1F2421" font-weight="bold">对激励有反应</text>
+    <text x="310" y="397" text-anchor="middle" fill="#4A4F4B" font-size="12">成本变了，行为就变</text>
+
+    <rect x="220" y="450" width="180" height="44" rx="7" fill="#EDF6EC" stroke="#4A7C59"/>
+    <text x="310" y="470" text-anchor="middle" fill="#1F2421" font-weight="bold">自愿交换双赢</text>
+    <text x="310" y="487" text-anchor="middle" fill="#4A4F4B" font-size="12">两边都觉得自己赚了</text>
+
+    <rect x="220" y="516" width="180" height="44" rx="7" fill="#EDF6EC" stroke="#4A7C59"/>
+    <text x="310" y="536" text-anchor="middle" fill="#1F2421" font-weight="bold">分工与专业化</text>
+    <text x="310" y="553" text-anchor="middle" fill="#4A4F4B" font-size="12">各干各最擅长的</text>
+  </g>
+
+  <!-- 第二层 -->
+  <g font-size="13.5">
+    <rect x="452" y="86" width="180" height="44" rx="7" fill="#FBF8F4" stroke="#C9C0B0"/>
+    <text x="542" y="106" text-anchor="middle" fill="#1F2421">没有免费的午餐</text>
+    <text x="542" y="123" text-anchor="middle" fill="#8A8579" font-size="12">"免费"只是别人在付</text>
+
+    <rect x="452" y="240" width="180" height="44" rx="7" fill="#FBF8F4" stroke="#C9C0B0"/>
+    <text x="542" y="260" text-anchor="middle" fill="#1F2421">最优点：边际收益=边际成本</text>
+    <text x="542" y="277" text-anchor="middle" fill="#8A8579" font-size="12">再多一点就亏了</text>
+
+    <rect x="452" y="300" width="180" height="44" rx="7" fill="#FBF8F4" stroke="#C9C0B0"/>
+    <text x="542" y="320" text-anchor="middle" fill="#1F2421">需求曲线向下倾斜</text>
+    <text x="542" y="337" text-anchor="middle" fill="#8A8579" font-size="12">价格越高，买得越少</text>
+
+    <rect x="452" y="450" width="180" height="44" rx="7" fill="#FBF8F4" stroke="#C9C0B0"/>
+    <text x="542" y="470" text-anchor="middle" fill="#1F2421">价格＝稀缺度的信号</text>
+    <text x="542" y="487" text-anchor="middle" fill="#8A8579" font-size="12">一个数字压缩了全部信息</text>
+
+    <rect x="452" y="516" width="180" height="44" rx="7" fill="#FBF8F4" stroke="#C9C0B0"/>
+    <text x="542" y="536" text-anchor="middle" fill="#1F2421">比较优势 → 贸易</text>
+    <text x="542" y="553" text-anchor="middle" fill="#8A8579" font-size="12">弱者也有得赚</text>
+  </g>
+
+  <!-- 应用层 -->
+  <g font-size="13">
+    <rect x="676" y="86" width="172" height="44" rx="7" fill="#F2EEE6" stroke="#DCD5C9"/>
+    <text x="762" y="112" text-anchor="middle" fill="#4A4F4B">评估任何政策的代价</text>
+
+    <rect x="676" y="240" width="172" height="44" rx="7" fill="#F2EEE6" stroke="#DCD5C9"/>
+    <text x="762" y="266" text-anchor="middle" fill="#4A4F4B">企业定价 / 个人时间分配</text>
+
+    <rect x="676" y="300" width="172" height="44" rx="7" fill="#F2EEE6" stroke="#DCD5C9"/>
+    <text x="762" y="318" text-anchor="middle" fill="#4A4F4B">供求均衡</text>
+    <text x="762" y="335" text-anchor="middle" fill="#8A8579" font-size="12">限价 → 短缺</text>
+
+    <rect x="676" y="360" width="172" height="44" rx="7" fill="#F2EEE6" stroke="#DCD5C9"/>
+    <text x="762" y="378" text-anchor="middle" fill="#4A4F4B">政策的非意图后果</text>
+    <text x="762" y="395" text-anchor="middle" fill="#8A8579" font-size="12">"眼镜蛇效应"</text>
+
+    <rect x="676" y="450" width="172" height="44" rx="7" fill="#F2EEE6" stroke="#DCD5C9"/>
+    <text x="762" y="476" text-anchor="middle" fill="#4A4F4B">市场为什么能自发协调</text>
+
+    <rect x="676" y="516" width="172" height="44" rx="7" fill="#F2EEE6" stroke="#DCD5C9"/>
+    <text x="762" y="542" text-anchor="middle" fill="#4A4F4B">国际贸易 / 团队分工</text>
+  </g>
+
+  <!-- 箭头 -->
+  <g stroke="#A79E8E" fill="none" marker-end="url(#a)">
+    <path d="M162,108 C190,100 196,86 214,82"/>
+    <path d="M162,124 C190,132 196,140 214,142"/>
+    <path d="M162,292 C190,285 196,268 214,262"/>
+    <path d="M162,306 C190,312 196,318 214,322"/>
+    <path d="M162,318 C190,340 196,372 214,382"/>
+    <path d="M162,472 C190,470 196,472 214,472"/>
+    <path d="M162,492 C190,510 196,532 214,538"/>
+
+    <path d="M402,82 C424,86 428,102 446,108"/>
+    <path d="M402,142 C424,138 428,120 446,112"/>
+    <path d="M402,262 L446,262"/>
+    <path d="M402,322 L446,322"/>
+    <path d="M402,472 L446,472"/>
+    <path d="M402,538 L446,538"/>
+
+    <path d="M634,108 L670,108"/>
+    <path d="M634,262 L670,262"/>
+    <path d="M634,322 L670,322"/>
+    <path d="M402,394 C520,394 560,384 670,382"/>
+    <path d="M634,472 L670,472"/>
+    <path d="M634,538 L670,538"/>
+  </g>
+
+  <!-- 跨线：A1+A3 → 价格信号 -->
+  <path d="M96,150 C96,200 130,410 214,462" stroke="#B4541E" stroke-dasharray="4 4" fill="none" opacity=".55"/>
+  <text x="120" y="410" font-size="11.5" fill="#B4541E" opacity=".85" font-family="system-ui">A1 也参与</text>
+</svg>
+<figcaption>图 2 · 主推导树。左边三个色块是全部输入，右边所有内容都是推出来的，没有额外假设。</figcaption>
+</figure>
+
+<h2>三 · 逐条拆开看</h2>
+
+<h3>A1 → 机会成本：成本不是钱，是"你放弃的那个"</h3>
+<p>这是全经济学最反直觉、也最有用的一条。一件事的真实成本，不是你付出去的钱，而是<b>你因此不能做的、价值最高的另一件事</b>。</p>
+
+<figure>
+<svg viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg" font-family="'Songti SC',serif">
+  <text x="400" y="24" text-anchor="middle" font-size="16" font-weight="bold" fill="#1F2421">周六下午的 4 小时：账面成本 vs 真实成本</text>
+
+  <text x="30" y="62" font-size="13.5" fill="#8A8579">可选项（按你自己的排序）</text>
+  <g font-size="13.5">
+    <rect x="24" y="76" width="230" height="34" rx="5" fill="#B4541E"/><text x="139" y="98" text-anchor="middle" fill="#fff">① 打球（你最想做，选了它）</text>
+    <rect x="24" y="118" width="230" height="34" rx="5" fill="#F0E2D6" stroke="#DCD5C9"/><text x="139" y="140" text-anchor="middle" fill="#1F2421">② 兼职，赚 120 元</text>
+    <rect x="24" y="160" width="230" height="34" rx="5" fill="#F7F4EE" stroke="#DCD5C9"/><text x="139" y="182" text-anchor="middle" fill="#4A4F4B">③ 补数学</text>
+    <rect x="24" y="202" width="230" height="34" rx="5" fill="#F7F4EE" stroke="#DCD5C9"/><text x="139" y="224" text-anchor="middle" fill="#4A4F4B">④ 睡觉</text>
+  </g>
+  <text x="30" y="262" font-size="12.5" fill="#8A8579">注意：只有排序，没有分数。这就是 A3。</text>
+
+  <line x1="288" y1="150" x2="330" y2="150" stroke="#8A8579" stroke-width="1.5"/>
+  <path d="M330,150 l-8,-4 v8 z" fill="#8A8579"/>
+
+  <rect x="348" y="70" width="200" height="100" rx="8" fill="#F2EEE6" stroke="#DCD5C9"/>
+  <text x="448" y="96" text-anchor="middle" font-size="14" fill="#8A8579">账面成本</text>
+  <text x="448" y="130" text-anchor="middle" font-size="30" fill="#8A8579">0 元</text>
+  <text x="448" y="154" text-anchor="middle" font-size="12.5" fill="#8A8579">"打球又不花钱"</text>
+
+  <rect x="580" y="70" width="200" height="100" rx="8" fill="#FFF3EB" stroke="#B4541E" stroke-width="1.5"/>
+  <text x="680" y="96" text-anchor="middle" font-size="14" fill="#B4541E">机会成本（真实）</text>
+  <text x="680" y="130" text-anchor="middle" font-size="30" fill="#B4541E">120 元</text>
+  <text x="680" y="154" text-anchor="middle" font-size="12.5" fill="#B4541E">＝放弃的第②项</text>
+
+  <rect x="348" y="196" width="432" height="62" rx="7" fill="#FBF8F4" stroke="#DCD5C9"/>
+  <text x="364" y="219" font-size="13.5" fill="#1F2421">只算第 ② 名，不算 ②③④ 之和——因为你本来也只能做一件。</text>
+  <text x="364" y="243" font-size="13.5" fill="#4A4F4B">推论：任何"免费"的东西，成本都被藏在别处了。</text>
+</svg>
+<figcaption>图 3 · A1（时间有限）+ A3（你有自己的排序）→ 机会成本。</figcaption>
+</figure>
+
+<p><b>为什么这条威力大：</b>当有人说"这项政策是免费的""这个福利不花钱"，你就有了一把尺子——钱和资源不会凭空出现，问一句"那么谁在付、放弃了什么"，讨论质量立刻上一个台阶。</p>
+
+<h3>A2 → 边际递减 → 需求曲线为什么向下</h3>
+<p>课本直接告诉你"价格上涨，需求量下降"。但这条是能推出来的，不是背下来的。</p>
+
+<figure>
+<svg viewBox="0 0 800 330" xmlns="http://www.w3.org/2000/svg" font-family="'Songti SC',serif">
+  <text x="400" y="24" text-anchor="middle" font-size="16" font-weight="bold" fill="#1F2421">从"第几杯水"到需求曲线</text>
+
+  <!-- 左：水杯 -->
+  <text x="30" y="56" font-size="13.5" fill="#8A8579">你会怎么用第 1～5 杯水？</text>
+  <g font-size="13">
+    <rect x="24" y="70" width="60" height="42" rx="4" fill="#2E5E7E"/><text x="54" y="96" text-anchor="middle" fill="#fff">第1杯</text>
+    <text x="96" y="96" fill="#1F2421">解渴——救命，最重要</text>
+    <rect x="24" y="120" width="60" height="42" rx="4" fill="#4A7B96"/><text x="54" y="146" text-anchor="middle" fill="#fff">第2杯</text>
+    <text x="96" y="146" fill="#1F2421">做饭</text>
+    <rect x="24" y="170" width="60" height="42" rx="4" fill="#7FA3B7"/><text x="54" y="196" text-anchor="middle" fill="#fff">第3杯</text>
+    <text x="96" y="196" fill="#4A4F4B">洗脸</text>
+    <rect x="24" y="220" width="60" height="42" rx="4" fill="#B4C8D4"/><text x="54" y="246" text-anchor="middle" fill="#2E5E7E">第4杯</text>
+    <text x="96" y="246" fill="#4A4F4B">浇花</text>
+    <rect x="24" y="270" width="60" height="42" rx="4" fill="#DDE6EC"/><text x="54" y="296" text-anchor="middle" fill="#2E5E7E">第5杯</text>
+    <text x="96" y="296" fill="#8A8579">洗车玩（可有可无）</text>
+  </g>
+
+  <text x="330" y="176" font-size="13" fill="#8A8579">这不是"水变差了"，</text>
+  <text x="330" y="196" font-size="13" fill="#8A8579">是你<tspan font-weight="bold">先满足最要紧的</tspan>——</text>
+  <text x="330" y="216" font-size="13" fill="#8A8579">这正是 A2 的直接后果。</text>
+
+  <!-- 右：需求曲线 -->
+  <g transform="translate(500,50)">
+    <line x1="0" y1="0" x2="0" y2="230" stroke="#1F2421" stroke-width="1.5"/>
+    <line x1="0" y1="230" x2="270" y2="230" stroke="#1F2421" stroke-width="1.5"/>
+    <text x="-8" y="-8" font-size="12.5" fill="#4A4F4B">你愿付的价</text>
+    <text x="230" y="252" font-size="12.5" fill="#4A4F4B">数量</text>
+
+    <rect x="14"  y="20"  width="44" height="210" fill="#2E5E7E" opacity=".85"/>
+    <rect x="66"  y="70"  width="44" height="160" fill="#4A7B96" opacity=".85"/>
+    <rect x="118" y="118" width="44" height="112" fill="#7FA3B7" opacity=".85"/>
+    <rect x="170" y="162" width="44" height="68"  fill="#B4C8D4" opacity=".85"/>
+    <rect x="222" y="200" width="44" height="30"  fill="#DDE6EC" opacity=".95"/>
+    <g font-size="11.5" fill="#4A4F4B" text-anchor="middle">
+      <text x="36" y="246">1</text><text x="88" y="246">2</text><text x="140" y="246">3</text><text x="192" y="246">4</text><text x="244" y="246">5</text>
+    </g>
+    <path d="M36,20 L88,70 L140,118 L192,162 L244,200" stroke="#B4541E" stroke-width="2.5" fill="none"/>
+    <text x="256" y="196" font-size="12.5" fill="#B4541E">需求曲线</text>
+  </g>
+</svg>
+<figcaption>图 4 · 把每一杯水的"值不值"排成柱子，连起来就是那条向下的需求曲线。曲线不是规定，是画出来的结果。</figcaption>
+</figure>
+
+<h3>A3 → 为什么自愿交换是双赢，不是零和</h3>
+<p>很多人默认"你赚的就是我亏的"。但如果价值是主观的（A3），这个默认就错了。</p>
+
+<figure>
+<svg viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg" font-family="'Songti SC',serif">
+  <text x="400" y="24" text-anchor="middle" font-size="16" font-weight="bold" fill="#1F2421">同一笔交易，两边都觉得自己赚了</text>
+
+  <!-- 小明 -->
+  <rect x="24" y="50" width="230" height="200" rx="8" fill="#EDF6EC" stroke="#4A7C59"/>
+  <text x="139" y="76" text-anchor="middle" font-size="14.5" font-weight="bold" fill="#4A7C59">小明（有一本旧漫画）</text>
+  <text x="42" y="106" font-size="13.5" fill="#1F2421">他心里的排序：</text>
+  <text x="42" y="132" font-size="13.5" fill="#1F2421">　30 元现金　＞　这本漫画</text>
+  <text x="42" y="166" font-size="13" fill="#4A4F4B">已经看完了，放着占地方</text>
+  <line x1="42" y1="184" x2="236" y2="184" stroke="#C7D9C9"/>
+  <text x="42" y="210" font-size="13.5" fill="#4A7C59">卖 30 元 → <tspan font-weight="bold">他觉得自己赚了</tspan></text>
+  <text x="42" y="234" font-size="12.5" fill="#8A8579">（换到了他更想要的那个）</text>
+
+  <!-- 中间 -->
+  <text x="400" y="120" text-anchor="middle" font-size="15" fill="#1F2421">成交价</text>
+  <text x="400" y="156" text-anchor="middle" font-size="30" fill="#B4541E" font-weight="bold">30 元</text>
+  <text x="400" y="186" text-anchor="middle" font-size="12.5" fill="#8A8579">漫画 →</text>
+  <text x="400" y="206" text-anchor="middle" font-size="12.5" fill="#8A8579">← 现金</text>
+
+  <!-- 小红 -->
+  <rect x="546" y="50" width="230" height="200" rx="8" fill="#EDF4F8" stroke="#2E5E7E"/>
+  <text x="661" y="76" text-anchor="middle" font-size="14.5" font-weight="bold" fill="#2E5E7E">小红（想看这本漫画）</text>
+  <text x="564" y="106" font-size="13.5" fill="#1F2421">她心里的排序：</text>
+  <text x="564" y="132" font-size="13.5" fill="#1F2421">　这本漫画　＞　30 元现金</text>
+  <text x="564" y="166" font-size="13" fill="#4A4F4B">找了很久，书店已绝版</text>
+  <line x1="564" y1="184" x2="758" y2="184" stroke="#C3D6E0"/>
+  <text x="564" y="210" font-size="13.5" fill="#2E5E7E">花 30 元 → <tspan font-weight="bold">她也觉得自己赚了</tspan></text>
+  <text x="564" y="234" font-size="12.5" fill="#8A8579">（换到了她更想要的那个）</text>
+
+  <rect x="24" y="262" width="752" height="30" rx="6" fill="#FFF3EB" stroke="#B4541E"/>
+  <text x="400" y="282" text-anchor="middle" font-size="13.5" fill="#B4541E">交易前后，世界上的漫画和钱一分没多——但两个人都变好了。<tspan font-weight="bold">价值被创造了出来。</tspan></text>
+</svg>
+<figcaption>图 5 · 财富不只靠"生产"增加，也靠"把东西挪到更看重它的人手里"增加。这是 A3 最重要的推论。</figcaption>
+</figure>
+
+<h3>A3 + A1 → 比较优势：为什么样样不如人的一方也能赚</h3>
+<p>亚当·斯密之后最反直觉的结论。关键在于：<b>该不该由你来做某件事，看的不是你做得多好，而是你做这件事要放弃什么（机会成本）。</b></p>
+
+<figure>
+<svg viewBox="0 0 800 320" xmlns="http://www.w3.org/2000/svg" font-family="'Songti SC',serif">
+  <text x="400" y="24" text-anchor="middle" font-size="16" font-weight="bold" fill="#1F2421">大厨 vs 学徒：大厨切菜也比学徒快，还要不要分工？</text>
+
+  <!-- 表 -->
+  <g font-size="13.5">
+    <rect x="60" y="48" width="200" height="34" fill="#F1ECE3" stroke="#DCD5C9"/><text x="160" y="70" text-anchor="middle" fill="#4A4F4B">一小时能做</text>
+    <rect x="260" y="48" width="150" height="34" fill="#F1ECE3" stroke="#DCD5C9"/><text x="335" y="70" text-anchor="middle" fill="#4A4F4B">炒菜</text>
+    <rect x="410" y="48" width="150" height="34" fill="#F1ECE3" stroke="#DCD5C9"/><text x="485" y="70" text-anchor="middle" fill="#4A4F4B">切配</text>
+
+    <rect x="60" y="82" width="200" height="34" fill="#FFFDF9" stroke="#DCD5C9"/><text x="160" y="104" text-anchor="middle" fill="#1F2421">大厨</text>
+    <rect x="260" y="82" width="150" height="34" fill="#FFFDF9" stroke="#DCD5C9"/><text x="335" y="104" text-anchor="middle" fill="#B4541E" font-weight="bold">20 份</text>
+    <rect x="410" y="82" width="150" height="34" fill="#FFFDF9" stroke="#DCD5C9"/><text x="485" y="104" text-anchor="middle" fill="#B4541E" font-weight="bold">40 份</text>
+
+    <rect x="60" y="116" width="200" height="34" fill="#FFFDF9" stroke="#DCD5C9"/><text x="160" y="138" text-anchor="middle" fill="#1F2421">学徒</text>
+    <rect x="260" y="116" width="150" height="34" fill="#FFFDF9" stroke="#DCD5C9"/><text x="335" y="138" text-anchor="middle" fill="#4A4F4B">2 份</text>
+    <rect x="410" y="116" width="150" height="34" fill="#FFFDF9" stroke="#DCD5C9"/><text x="485" y="138" text-anchor="middle" fill="#4A4F4B">20 份</text>
+  </g>
+  <text x="576" y="104" font-size="12.5" fill="#8A8579">大厨两样都更强</text>
+  <text x="576" y="124" font-size="12.5" fill="#8A8579">（绝对优势）</text>
+
+  <!-- 机会成本 -->
+  <text x="60" y="184" font-size="14" font-weight="bold" fill="#1F2421">但换算成机会成本，结论反过来：</text>
+  <g font-size="13.5">
+    <rect x="60" y="196" width="330" height="44" rx="7" fill="#FFF3EB" stroke="#B4541E"/>
+    <text x="76" y="216" fill="#1F2421">大厨切 40 份配菜 = 放弃 20 份炒菜</text>
+    <text x="76" y="234" fill="#B4541E">→ 每切 1 份，代价是 0.5 份炒菜</text>
+
+    <rect x="410" y="196" width="330" height="44" rx="7" fill="#EDF4F8" stroke="#2E5E7E"/>
+    <text x="426" y="216" fill="#1F2421">学徒切 20 份配菜 = 放弃 2 份炒菜</text>
+    <text x="426" y="234" fill="#2E5E7E">→ 每切 1 份，代价只有 0.1 份炒菜</text>
+  </g>
+
+  <rect x="60" y="256" width="680" height="48" rx="7" fill="#EDF6EC" stroke="#4A7C59"/>
+  <text x="400" y="277" text-anchor="middle" font-size="13.5" fill="#1F2421">学徒切菜的<tspan font-weight="bold">代价更低</tspan>——所以学徒切配、大厨专心炒菜，全店产出更高。</text>
+  <text x="400" y="296" text-anchor="middle" font-size="13" fill="#4A7C59">同样的道理解释了国际贸易：发达国家不该自己种所有粮食。</text>
+</svg>
+<figcaption>图 6 · 分工的依据是机会成本之比，不是绝对水平。所以"落后"的一方永远有可交易的位置。</figcaption>
+</figure>
+
+<h3>A1 + A3 → 价格是什么：一个数字，压缩了一整个世界</h3>
+<p>价格不是商家拍脑袋定的数字，也不是"物品的内在价值"。它是<b>稀缺程度（A1）在无数人的主观排序（A3）撞在一起之后的落点</b>。而它一旦形成，反过来又向所有人传递信息。</p>
+
+<figure>
+<svg viewBox="0 0 800 340" xmlns="http://www.w3.org/2000/svg" font-family="'Songti SC',serif">
+  <text x="400" y="24" text-anchor="middle" font-size="16" font-weight="bold" fill="#1F2421">价格的两个身份：结果，也是信号</text>
+
+  <!-- 左：均衡图 -->
+  <g transform="translate(60,54)">
+    <line x1="0" y1="0" x2="0" y2="220" stroke="#1F2421" stroke-width="1.5"/>
+    <line x1="0" y1="220" x2="280" y2="220" stroke="#1F2421" stroke-width="1.5"/>
+    <text x="-6" y="-10" font-size="12.5" fill="#4A4F4B">价格</text>
+    <text x="246" y="242" font-size="12.5" fill="#4A4F4B">数量</text>
+
+    <path d="M14,24 L266,204" stroke="#2E5E7E" stroke-width="2.5" fill="none"/>
+    <text x="228" y="200" font-size="12.5" fill="#2E5E7E">需求 D</text>
+    <path d="M14,204 L266,24" stroke="#4A7C59" stroke-width="2.5" fill="none"/>
+    <text x="228" y="40" font-size="12.5" fill="#4A7C59">供给 S</text>
+
+    <circle cx="140" cy="114" r="5.5" fill="#B4541E"/>
+    <line x1="0" y1="114" x2="140" y2="114" stroke="#B4541E" stroke-dasharray="4 3"/>
+    <line x1="140" y1="114" x2="140" y2="220" stroke="#B4541E" stroke-dasharray="4 3"/>
+    <text x="-8" y="110" font-size="12.5" fill="#B4541E" text-anchor="end">P*</text>
+
+    <!-- 限价 -->
+    <line x1="0" y1="168" x2="280" y2="168" stroke="#8A5A83" stroke-width="2"/>
+    <text x="284" y="172" font-size="12" fill="#8A5A83">限价</text>
+    <line x1="66" y1="168" x2="216" y2="168" stroke="#8A5A83" stroke-width="7" opacity=".22"/>
+    <text x="140" y="190" font-size="12" fill="#8A5A83" text-anchor="middle">缺口</text>
+  </g>
+
+  <!-- 右：信号 -->
+  <rect x="418" y="54" width="352" height="126" rx="8" fill="#FBF8F4" stroke="#DCD5C9"/>
+  <text x="436" y="78" font-size="14" font-weight="bold" fill="#1F2421">身份一：结果</text>
+  <text x="436" y="102" font-size="13" fill="#4A4F4B">千万人各自的排序（A3）挤在一起，</text>
+  <text x="436" y="122" font-size="13" fill="#4A4F4B">碰上有限的供给（A1），落在 P*。</text>
+  <text x="436" y="150" font-size="13" fill="#8A8579">没人规定它，也没人算得出它——</text>
+  <text x="436" y="168" font-size="13" fill="#8A8579">它是互动的产物。</text>
+
+  <rect x="418" y="192" width="352" height="132" rx="8" fill="#FFF3EB" stroke="#B4541E"/>
+  <text x="436" y="216" font-size="14" font-weight="bold" fill="#B4541E">身份二：信号</text>
+  <text x="436" y="240" font-size="13" fill="#1F2421">口罩涨价 → 不用查任何数据，全世界</text>
+  <text x="436" y="260" font-size="13" fill="#1F2421">的工厂立刻知道"这东西现在缺"。</text>
+  <text x="436" y="288" font-size="13" fill="#4A4F4B">所以强行限价的后果不是"变便宜"，</text>
+  <text x="436" y="308" font-size="13" fill="#4A4F4B">而是<tspan font-weight="bold" fill="#8A5A83">信号被掐断 → 短缺 / 排队 / 黑市</tspan>。</text>
+</svg>
+<figcaption>图 7 · 价格既是结果也是指令。这是理解"市场为什么在没有指挥的情况下也能运转"的关键。</figcaption>
+</figure>
+
+<h3>A2 → 激励：政策会得到它奖励的东西，不是它想要的东西</h3>
+
+<figure>
+<svg viewBox="0 0 800 250" xmlns="http://www.w3.org/2000/svg" font-family="'Songti SC',serif">
+  <text x="400" y="24" text-anchor="middle" font-size="16" font-weight="bold" fill="#1F2421">"眼镜蛇效应"：好心政策如何跑偏</text>
+
+  <g font-size="13.5">
+    <rect x="20" y="56" width="164" height="70" rx="7" fill="#EDF6EC" stroke="#4A7C59"/>
+    <text x="102" y="82" text-anchor="middle" fill="#1F2421">目标</text>
+    <text x="102" y="104" text-anchor="middle" fill="#4A4F4B" font-size="13">减少城里的毒蛇</text>
+
+    <rect x="216" y="56" width="164" height="70" rx="7" fill="#EDF4F8" stroke="#2E5E7E"/>
+    <text x="298" y="82" text-anchor="middle" fill="#1F2421">政策</text>
+    <text x="298" y="104" text-anchor="middle" fill="#4A4F4B" font-size="13">交一条死蛇，赏钱</text>
+
+    <rect x="412" y="56" width="164" height="70" rx="7" fill="#FFF3EB" stroke="#B4541E"/>
+    <text x="494" y="78" text-anchor="middle" fill="#1F2421">人的反应（A2）</text>
+    <text x="494" y="100" text-anchor="middle" fill="#4A4F4B" font-size="13">"那我自己养蛇</text>
+    <text x="494" y="118" text-anchor="middle" fill="#4A4F4B" font-size="13">不就有稳定收入了"</text>
+
+    <rect x="608" y="56" width="170" height="70" rx="7" fill="#FBF1F6" stroke="#8A5A83"/>
+    <text x="693" y="82" text-anchor="middle" fill="#8A5A83" font-weight="bold">结果</text>
+    <text x="693" y="104" text-anchor="middle" fill="#4A4F4B" font-size="13">蛇比原来更多了</text>
+  </g>
+
+  <g stroke="#A79E8E" fill="none">
+    <line x1="188" y1="91" x2="210" y2="91"/><path d="M212,91 l-7,-3.5 v7 z" fill="#A79E8E"/>
+    <line x1="384" y1="91" x2="406" y2="91"/><path d="M408,91 l-7,-3.5 v7 z" fill="#A79E8E"/>
+    <line x1="580" y1="91" x2="602" y2="91"/><path d="M604,91 l-7,-3.5 v7 z" fill="#A79E8E"/>
+  </g>
+
+  <rect x="20" y="152" width="758" height="76" rx="7" fill="#F2EEE6" stroke="#DCD5C9"/>
+  <text x="40" y="176" font-size="13.5" fill="#1F2421" font-weight="bold">通用检查清单：看到任何政策，先问三句——</text>
+  <text x="40" y="199" font-size="13.5" fill="#4A4F4B">① 它实际奖励的是什么行为？（往往不等于它的目标）</text>
+  <text x="40" y="220" font-size="13.5" fill="#4A4F4B">② 谁的成本变了？　③ 这些人会怎么重新安排自己？</text>
+</svg>
+<figcaption>图 8 · A2 说人会朝更想要的方向走。改变了奖惩，就是改变了"更想要"的方向——人一定会顺着新方向走，哪怕那不是你的本意。</figcaption>
+</figure>
+
+<h2>四 · 公理的边界：它们什么时候不够用</h2>
+
+<p>好的理论要说清楚自己在哪失效。三条公理本身没错，但它们要推出"市场自发达到好结果"这类强结论时，需要额外的前提。这些前提一旦不成立，结论就塌。</p>
+
+<figure>
+<svg viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg" font-family="'Songti SC',serif">
+  <text x="400" y="24" text-anchor="middle" font-size="16" font-weight="bold" fill="#1F2421">四种"漏气"的地方</text>
+
+  <g font-size="13">
+    <rect x="20" y="48" width="374" height="108" rx="8" fill="#FBF1F6" stroke="#8A5A83"/>
+    <text x="38" y="72" font-size="14" font-weight="bold" fill="#8A5A83">① 外部性：成本落在了第三方身上</text>
+    <text x="38" y="96" fill="#1F2421">工厂排污：买卖双方都满意，下游村民没参与</text>
+    <text x="38" y="116" fill="#4A4F4B">→ 交换仍是"自愿双赢"，但社会总账是亏的</text>
+    <text x="38" y="140" fill="#8A8579">对应工具：环境税、排污权交易、责任法</text>
+
+    <rect x="406" y="48" width="374" height="108" rx="8" fill="#FBF1F6" stroke="#8A5A83"/>
+    <text x="424" y="72" font-size="14" font-weight="bold" fill="#8A5A83">② 信息不对称：一方知道得多得多</text>
+    <text x="424" y="96" fill="#1F2421">二手车、保险、医疗：你判断不了好坏</text>
+    <text x="424" y="116" fill="#4A4F4B">→ 好货被逼出市场（"劣币驱逐良币"）</text>
+    <text x="424" y="140" fill="#8A8579">对应工具：强制披露、第三方认证、声誉机制</text>
+
+    <rect x="20" y="168" width="374" height="112" rx="8" fill="#FBF1F6" stroke="#8A5A83"/>
+    <text x="38" y="192" font-size="14" font-weight="bold" fill="#8A5A83">③ 公共品：没法排除不付钱的人</text>
+    <text x="38" y="216" fill="#1F2421">国防、灯塔、基础科研</text>
+    <text x="38" y="236" fill="#4A4F4B">→ 人人等别人出钱，最后没人出，东西造不出来</text>
+    <text x="38" y="260" fill="#8A8579">对应工具：税收 + 政府供给</text>
+
+    <rect x="406" y="168" width="374" height="112" rx="8" fill="#FBF1F6" stroke="#8A5A83"/>
+    <text x="424" y="192" font-size="14" font-weight="bold" fill="#8A5A83">④ 有限理性：A2 的"强化版"不成立</text>
+    <text x="424" y="216" fill="#1F2421">人受选项呈现方式影响，会拖延、会后悔</text>
+    <text x="424" y="236" fill="#4A4F4B">→ "选自己想要的" ≠ "选对自己好的"</text>
+    <text x="424" y="260" fill="#8A8579">对应工具：默认选项设计、冷静期、行为经济学</text>
+  </g>
+</svg>
+<figcaption>图 9 · 注意第 ④ 条针对的是 A2 的强化版（"人算得准、偏好稳定"），而不是弱版本（"人不会故意选自己更不想要的"）。弱版本仍然站得住。</figcaption>
+</figure>
+
+<div class="fail">
+<b>预失败检验：</b>假设这整套框架是错的，最可能的<b>单一</b>原因是什么？<br>
+最可能是 <b>A2 被过度解读</b>。经济学在实际使用中经常偷偷把"人按偏好行动"升级成"人偏好稳定、计算准确、目标一致"，然后在这个强得多的版本上建模型。行为经济学证明了这一升级站不住：<b>同一个人，换个问法就换个选择。</b><br>
+但要看清楚：塌的是<b>升级版</b>，不是原版。这也说明为什么公理要写得尽量弱——弱的公理不容易被推翻，代价是能推出的结论也更少，这就是取舍。
+</div>
+
+<h2>五 · 一页速查</h2>
+
+<table>
+<thead><tr><th style="width:20%">公理</th><th style="width:16%">类型</th><th style="width:34%">直接推出</th><th style="width:30%">最有用的一句话</th></tr></thead>
+<tbody>
+<tr><td><b>A1 稀缺</b><br>资源有限，用途更多</td><td>物理极限</td><td>取舍 → 机会成本 → 没有免费午餐</td><td>问"那么谁在付，放弃了什么"</td></tr>
+<tr><td><b>A2 目的性行动</b><br>人选自己更想要的</td><td>人性</td><td>边际思维 → 效用递减 → 需求向下；激励反应</td><td>问"这件事实际在奖励什么行为"</td></tr>
+<tr><td><b>A3 主观价值</b><br>价值因人而异，只有排序</td><td>人性</td><td>自愿交换双赢 → 分工 → 比较优势 → 贸易</td><td>问"东西有没有挪到更看重它的人手里"</td></tr>
+<tr><td colspan="2"><b>A1 + A3 合起来</b></td><td>价格＝稀缺度信号 → 供求均衡 → 限价致短缺</td><td>问"这个价格在告诉我们什么"</td></tr>
+</tbody>
+</table>
+
+<h3>怎么用它</h3>
+<p>下次遇到任何经济类的说法——新闻里的、课本上的、朋友说的——试着做三步：</p>
+<ol>
+<li><b>它是事实还是判断？</b>"房价涨了 8%"是事实；"房价太高了"是判断。判断需要另外论证。</li>
+<li><b>它能被三条公理推出来吗？</b>能，就接受推导链；不能，就说明它引入了新假设——那个假设是什么，谁验证过？</li>
+<li><b>被忽略的成本在哪？</b>几乎所有站不住的经济论断，问题都出在"只算了看得见的收益，没算看不见的机会成本"。</li>
+</ol>
+
+<hr>
+
+<nav class="series">
+<p class="st">基 石 公 理 · 五 篇</p>
+<ol>
+<li><a href="/gongli/yuanli.html"><span class="no">〇</span><span class="role">方法</span><span class="tt">第一性原理</span><span class="dd">什么才算公理</span></a></li>
+<li><span class="cur"><span class="no">一</span><span class="role">公理</span><span class="tt">经济学的三条公理</span><span class="dd">A1 稀缺 · A2 目的性行动 · A3 主观价值</span></span></li>
+<li><a href="/gongli/agi.html"><span class="no">二</span><span class="role">变局</span><span class="tt">AGI 三阶段</span><span class="dd">公理不废，废的是稀缺的标的物</span></a></li>
+<li><a href="/gongli/gongcheng.html"><span class="no">三</span><span class="role">应用</span><span class="tt">工程的本质</span><span class="dd">A1 稀缺的应用</span></a></li>
+<li><a href="/gongli/yingxiao.html"><span class="no">四</span><span class="role">应用</span><span class="tt">营销的本质</span><span class="dd">A3 主观价值的应用</span></a></li>
+</ol>
+</nav>
+
+<div class="backq">
+  <span class="k">读 完 之 后</span>
+  <p>这一页里，哪一句是你原本以为的地基，现在发现只是个假设？</p>
+  <p class="three">
+    我砍掉的假问题：____<br>
+    我证伪的假设：　　____<br>
+    剩下的那个真问题：____
+  </p>
+  <p style="font-size:15.5px; color:#4A4F4B; margin-top:18px">
+    三行填不出来，说明这一页对你今天要做的事没用——那就别记，去 <a href="/#ask">回到八问</a>，从你手上那件事开始。
+  </p>
+</div>
+
+<p class="foot">用第一性原理拆解 · 公理层 3 条，推论层 12 条，边界条件 4 条<br>本文所有例子中的数字均为便于理解的虚构示例，非真实统计数据。</p>
+
+</div>
+</body>
+</html>

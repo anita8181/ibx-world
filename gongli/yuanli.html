@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第一性原理 · 拆到不能再拆，再从地基重建</title>
+<meta name="description" content="第一性原理不是「从头想」，而是往下拆：剥到再删一条、整个系统就站不住的地方。源起与发展、认识论内核、六步方法论、适用与不适用的问题类型，以及 AI 时代人为什么还要自己会这一套。">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/favicon-180.png">
+<style>
+  :root{
+    /* 底色/墨/线/次级文字 —— 与心问品牌规范同源 */
+    --bg:#F4F3F0; --ink:#2E2E2C; --ink2:#55554F; --line:#DEDBD4; --muted:#8A8880;
+    --card:#FBFAF8; --tint:#EBE8E2; --oncolor:#FBFAF8;
+    /* 图示分层三色：与朱同族的赭 + 两个低饱和墨阶，刻意避开商业线的橙 */
+    --a1:#9E4B3C; --a2:#4A6470; --a3:#566F5C; --warn:#7C6274; --warnbg:#F1EDEF;
+    /* 朱：全页只在最后那一块用一次 */
+    --zhu:#C1272D;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#1C1C1A; --ink:#E8E6E1; --ink2:#B6B3AB; --line:#3A3A37; --muted:#9A9895;
+      --card:#232320; --tint:#2A2A27; --oncolor:#1C1C1A;
+      --a1:#C87A68; --a2:#8AA3AF; --a3:#8FA894; --warn:#A98FA0; --warnbg:#2C2529;
+      --zhu:#D6413F;
+    }
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:'Source Han Serif SC','Noto Serif SC','Songti SC','SimSun',serif;
+    line-height:1.85; font-size:17px;
+  }
+  .wrap{max-width:880px; margin:0 auto; padding:0 28px 100px;}
+  .sitebar{display:flex; align-items:center; gap:14px; padding:22px 0 0; margin:0 0 34px}
+  .sitebar svg{height:26px; width:auto; display:block}
+  .sitebar a{margin-left:auto; color:var(--muted); text-decoration:none; font-size:14.5px;
+    letter-spacing:.04em; border-bottom:1px solid var(--line); padding-bottom:2px}
+  .sitebar a:hover{color:var(--ink); border-color:var(--ink)}
+  h1{font-size:34px; line-height:1.35; margin:0 0 8px; letter-spacing:.02em}
+  .sub{color:var(--muted); font-size:15px; margin:0 0 6px}
+  h2{font-size:24px; margin:64px 0 6px; padding-top:26px; border-top:2px solid var(--ink); letter-spacing:.02em}
+  h3{font-size:18px; margin:34px 0 8px}
+  h4{font-size:16px; margin:26px 0 6px; color:var(--ink2); font-weight:600}
+  p{margin:12px 0}
+  .lead{font-size:18px; color:var(--ink2)}
+  figure{margin:26px 0; padding:20px 18px 12px; background:var(--card); border:1px solid var(--line); border-radius:10px}
+  figcaption{font-size:13.5px; color:var(--muted); margin-top:10px; text-align:center; line-height:1.6}
+  svg{display:block; width:100%; height:auto}
+  .note{background:var(--tint); border-left:4px solid var(--muted); padding:12px 16px; margin:20px 0; font-size:15.5px; color:var(--ink2)}
+  .fail{background:var(--warnbg); border-left:4px solid var(--warn); padding:14px 18px; margin:24px 0; font-size:15.5px}
+  .fail b{color:var(--warn)}
+  table{width:100%; border-collapse:collapse; margin:20px 0; font-size:15px}
+  th,td{border:1px solid var(--line); padding:9px 11px; text-align:left; vertical-align:top}
+  th{background:var(--tint); font-weight:600}
+  code{font-family:ui-monospace,Menlo,monospace; font-size:14px; background:var(--tint); padding:1px 5px; border-radius:3px}
+  .tag{display:inline-block; font-size:12.5px; padding:2px 9px; border-radius:20px; color:var(--oncolor); margin-right:6px; vertical-align:2px; font-family:system-ui,sans-serif}
+  .t1{background:var(--a1)} .t2{background:var(--a2)} .t3{background:var(--a3)}
+  ul,ol{padding-left:22px} li{margin:7px 0}
+  hr{border:0; border-top:1px solid var(--line); margin:44px 0}
+  .foot{color:var(--muted); font-size:13.5px; margin-top:60px; text-align:center}
+  /* 目录 */
+  .toc{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:20px 24px; margin:30px 0 0}
+  .toc .st{font-size:12.5px; letter-spacing:.26em; color:var(--muted); font-family:system-ui,sans-serif; margin:0 0 10px}
+  .toc ol{list-style:none; padding:0; margin:0; columns:2; column-gap:32px}
+  .toc li{margin:4px 0; break-inside:avoid}
+  .toc a{color:var(--ink2); text-decoration:none; font-size:15.5px}
+  .toc a:hover{color:var(--ink); text-decoration:underline}
+  .toc .n{color:var(--muted); font-size:14px; margin-right:8px}
+  @media (max-width:620px){ .toc ol{columns:1} }
+  /* 系列导航 */
+  .series{margin:56px 0 0; border-top:1px solid var(--line); padding-top:24px}
+  .series .st{font-size:12.5px; letter-spacing:.26em; color:var(--muted); font-family:system-ui,sans-serif; margin:0 0 14px}
+  .series ol{list-style:none; padding:0; margin:0}
+  .series li{margin:0 0 2px}
+  .series a, .series span.cur{display:flex; align-items:baseline; gap:12px; text-decoration:none;
+    color:var(--ink2); padding:9px 12px; border-radius:6px}
+  .series a:hover{background:var(--tint); color:var(--ink)}
+  .series span.cur{background:var(--tint); color:var(--ink)}
+  .series .no{font-size:14px; color:var(--muted); width:1.4em; flex:none; text-align:center}
+  .series .role{font-size:12.5px; color:var(--muted); font-family:system-ui,sans-serif;
+    border:1px solid var(--line); border-radius:3px; padding:0 6px; flex:none}
+  .series .tt{font-size:16px}
+  .series .dd{font-size:13.5px; color:var(--muted); margin-left:auto; text-align:right}
+  @media (max-width:620px){ .series .dd{display:none} }
+  /* 反问块：全页唯一用朱的地方 */
+  .backq{border-left:2px solid var(--zhu); padding:6px 0 6px 22px; margin:48px 0 0}
+  .backq .k{font-size:12.5px; letter-spacing:.24em; color:var(--zhu); font-family:system-ui,sans-serif}
+  .backq p{font-size:17.5px; margin:10px 0}
+  .backq .three{color:var(--ink2); font-size:16px; line-height:2.1; margin:16px 0 0}
+  .backq .meta-q{font-size:17.5px; margin:20px 0 0}
+  .backq .why{color:var(--muted); font-size:14.5px; line-height:1.8; margin:10px 0 0; max-width:32em}
+  .backq a{color:var(--ink)}
+  @media print{ body{font-size:12pt} .wrap{padding:0} h2{page-break-after:avoid}
+    figure{page-break-inside:avoid} .sitebar,.series,.backq,.toc{display:none} }
+  @media (max-width:560px){ h1{font-size:27px} h2{font-size:21px} body{font-size:16.5px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="sitebar">
+  <svg viewBox="0 0 232 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="心问">
+    <title>心问</title>
+    <circle cx="32" cy="32" r="24" fill="none" stroke="var(--ink)" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="132 19" transform="rotate(-58 32 32)"/>
+    <path d="M32 37 C23.5 30.5 22 23.5 27 23.5 C29.6 23.5 32 26 32 26 C32 26 34.4 23.5 37 23.5 C42 23.5 40.5 30.5 32 37 Z" fill="var(--zhu)"/>
+    <g transform="translate(78 44) scale(0.034 -0.034)" fill="var(--ink)"><path d="M435 831 422 823C484 754 561 644 582 561C662 501 712 679 435 831ZM397 648 298 659V50C298 -16 326 -34 423 -34H568C774 -34 815 -22 815 13C815 27 808 35 783 42L780 220H767C752 138 738 70 729 50C724 40 719 35 703 34C682 31 635 30 570 30H429C373 30 363 40 363 65V622C386 625 395 635 397 648ZM766 518 755 509C843 412 881 263 898 175C965 102 1031 322 766 518ZM175 533H157C159 394 111 261 59 207C43 186 36 166 36 146C36 106 60 76 92 76C112 76 130 88 143 113C171 165 182 292 175 533Z"/></g>
+  </svg>
+  <a href="/">← 回心问</a>
+</div>
+
+
+<h1>第一性原理</h1>
+<p class="sub">基石公理 · 第〇篇 · 方法本身 ｜ 拆到不能再拆，再从地基重建</p>
+
+<p class="lead">第一性原理不是「从头想」，而是<b>往下拆</b>：把一个结论一层层剥开，剥到再删一条、整个系统就站不住的地方。那个地方不叫灵感，叫地基。</p>
+
+<p>它的价值也不在于让你显得更聪明，而在于让你知道：自己站在什么上面，哪块石头是真的，哪块只是别人递给你的。</p>
+
+<div class="note">
+这一页给的是判据，不是替你下结论。<b>结论替你决定，判据让你自己能判。</b><br><br>
+但判据也不是中立到没有方向：给你一把尺子，它已经决定了你能看见什么。所以最后要反过来问一句——<b>这把尺子，哪里量不了你那件事。</b>
+</div>
+
+<div class="toc">
+  <p class="st">这 一 页 讲 五 件 事</p>
+  <ol>
+    <li><span class="n">一</span><a href="#s1">源起与发展 · 亚里士多德、波普尔、现代工程</a></li>
+    <li><span class="n">二</span><a href="#s2">认识论内核 · 它能保证什么，不能保证什么</a></li>
+    <li><span class="n">三</span><a href="#s3">方法论 · 六步，把想得深变成做得对</a></li>
+    <li><span class="n">四</span><a href="#s4">适用类型 · 什么问题该用，什么问题别用</a></li>
+    <li><span class="n">五</span><a href="#s5">AI 时代 · 人为什么还要自己会这一套</a></li>
+  </ol>
+</div>
+
+<h2 id="s1">一 · 第一性原理概念源起和发展</h2>
+
+<h3>1. 亚里士多德：知识要有「第一原则」</h3>
+
+<p>「第一性原理」可追溯到亚里士多德讲的「第一原则／本原」。严格说，它不是一句现代成功学口号，而是指一个证明体系里最靠前的出发点：<b>它支撑其他命题成立，自身却不再由同一体系内更基本的命题证明。</b>《形而上学》讨论的是最确定的原则；《后分析篇》讨论的是科学知识如何从不可再证的直接前提出发做演绎。把它直接等同于后世数学公理、物理 <i>ab initio</i>，是后来的类比，不是亚里士多德原话。</p>
+
+<p>放到今天，可用三条判据，缺一不可：</p>
+
+<table>
+<tr><th style="width:22%">判据</th><th style="width:40%">问法</th><th>不过关意味着什么</th></tr>
+<tr><td><b>不可再分</b></td><td>在当前体系里，它还能不能由更基本的命题推出？</td><td>能推出，那更基本的才是地基</td></tr>
+<tr><td><b>不可抽掉</b></td><td>在你讨论的范围内，抽掉或违反它，整个论证塌不塌？</td><td>只是「不太方便」，不是公理</td></tr>
+<tr><td><b>非纯归纳</b></td><td>它是不是只靠历史样本总结出来的规律？</td><td>是，就只能做参照，不能做地基</td></tr>
+</table>
+
+<p><b>第三条最常被忽略，也最要命。</b>假设有人说「行业毛利率通常是 40%」，这句话即使样本很扎实，也只是对过去的统计描述；它能做参照，不能做约束未来的公理。环境、机制或约束一变，它会先礼貌地失效，再让你的结论跟着塌。</p>
+
+<p>欧几里得几何常被视为公理化样板：用少数定义、公设和共同观念，推出大量命题。但这个例子真正该记住的不是「几条就够了」，而是后半段：<b>连欧几里得也有自己没看见的前提</b>，次序、连续性一类假设长期没被明写，直到后世更严格的公理化工作才被补上。</p>
+
+<figure>
+<svg viewBox="0 0 840 392" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="欧几里得写出来的公设、推出的命题，以及他没写出来的那一层前提">
+  <title>写出来的地基、推出的命题，和没写出来的那一层</title>
+  <g font-family="'Source Han Serif SC','Noto Serif SC','Songti SC',serif">
+    <defs><marker id="arA" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0 0 L9 4.5 L0 9 z" fill="var(--muted)"/></marker></defs>
+
+    <text x="24" y="28" fill="var(--a1)" font-size="16">写出来的地基 · 删一条就塌</text>
+    <rect x="24" y="40" width="330" height="212" rx="8" fill="var(--card)" stroke="var(--a1)" stroke-width="1.6"/>
+    <text x="44" y="70" fill="var(--ink)" font-size="14.5">① 任两点之间可以画一条直线</text>
+    <text x="44" y="100" fill="var(--ink)" font-size="14.5">② 线段可以无限延长成直线</text>
+    <text x="44" y="130" fill="var(--ink)" font-size="14.5">③ 以任一点为心、任意长为半径可画圆</text>
+    <text x="44" y="160" fill="var(--ink)" font-size="14.5">④ 所有直角都彼此相等</text>
+    <text x="44" y="190" fill="var(--ink)" font-size="14.5">⑤ 过直线外一点，只能画一条平行线</text>
+    <line x1="44" y1="206" x2="334" y2="206" stroke="var(--line)"/>
+    <text x="44" y="230" fill="var(--muted)" font-size="13.5">另有 23 条定义、5 条公用观念。⑤ 被换掉，</text>
+    <text x="44" y="248" fill="var(--muted)" font-size="13.5">就长出非欧几何——换公理 = 换世界。</text>
+
+    <line x1="362" y1="146" x2="440" y2="146" stroke="var(--muted)" marker-end="url(#arA)"/>
+    <text x="368" y="136" fill="var(--muted)" font-size="13">演绎</text>
+
+    <rect x="452" y="40" width="364" height="212" rx="8" fill="var(--tint)" stroke="var(--line)"/>
+    <text x="634" y="118" text-anchor="middle" fill="var(--ink)" font-size="46">465</text>
+    <text x="634" y="150" text-anchor="middle" fill="var(--ink2)" font-size="16">条命题（含定理与作图题）</text>
+    <text x="634" y="186" text-anchor="middle" fill="var(--muted)" font-size="13.5">每一条都能一路回溯到开篇那几条</text>
+    <text x="634" y="208" text-anchor="middle" fill="var(--muted)" font-size="13.5">回溯不到的，不进这本书</text>
+    <text x="634" y="234" text-anchor="middle" fill="var(--warn)" font-size="13.5">删掉任一条命题，系统不塌</text>
+
+    <text x="24" y="292" fill="var(--warn)" font-size="16">没写出来、却一直在用的那一层</text>
+    <rect x="24" y="304" width="792" height="72" rx="8" fill="var(--warnbg)" stroke="var(--warn)" stroke-width="1.6" stroke-dasharray="6 4"/>
+    <text x="46" y="332" fill="var(--ink)" font-size="14.5">点在直线上的先后次序　·　连续性　·　一条线进了三角形必从另一边出去（帕施公理）</text>
+    <text x="46" y="358" fill="var(--warn)" font-size="13.5">欧几里得从未列出，两千多年无人察觉。1899 年希尔伯特补到二十条上下，体系才闭合。</text>
+  </g>
+</svg>
+<figcaption>图 1 · 公理和命题的区别不是「更重要」，是<b>删掉之后系统塌不塌</b>。但真正该记住的是下面那一条：<b>连欧几里得都有一整层前提是自己看不见的</b>——不是不严格，是太自然了，自然到不像前提。</figcaption>
+</figure>
+
+<div class="fail">
+所以，<b>「我拆到底了」永远是当下判断，不是永久证书。</b><br>
+你能做的是把当下拆到的那一层写下来，等着被后来的人翻，或者被后来的你翻。
+</div>
+
+<h3>2. 波普尔：能错，才配叫科学</h3>
+
+<p>到了二十世纪，波普尔把问题往前推了一步：科学和伪科学的分界在哪里？他的著名回答是<b>可证伪性</b>。注意分寸：可证伪性不是「真理保证书」，也不是「已被证明正确」；它说的是，<b>一个说法愿意把自己暴露在会被推翻的风险里。</b></p>
+
+<figure>
+<svg viewBox="0 0 840 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="可证伪性判据">
+  <title>可证伪性判据</title>
+  <g font-family="'Source Han Serif SC','Noto Serif SC','Songti SC',serif">
+    <rect x="18" y="18" width="392" height="222" rx="10" fill="var(--card)" stroke="var(--a3)" stroke-width="1.6"/>
+    <text x="40" y="50" fill="var(--a3)" font-size="17">✔ 可证伪 · 是知识</text>
+    <text x="40" y="84" fill="var(--ink)" font-size="15.5">「所有天鹅都是白的」</text>
+    <text x="40" y="112" fill="var(--ink2)" font-size="14.5">→ 只要出现一只黑天鹅，它就倒。</text>
+    <text x="40" y="140" fill="var(--ink2)" font-size="14.5">它把脖子伸出来了，所以有信息量。</text>
+    <line x1="40" y1="158" x2="388" y2="158" stroke="var(--line)"/>
+    <text x="40" y="184" fill="var(--a3)" font-size="14.5">判据：你能说出「出现什么，</text>
+    <text x="40" y="208" fill="var(--a3)" font-size="14.5">就算我错了」——说得出，才算数。</text>
+
+    <rect x="430" y="18" width="392" height="222" rx="10" fill="var(--warnbg)" stroke="var(--warn)" stroke-width="1.6"/>
+    <text x="452" y="50" fill="var(--warn)" font-size="17">✘ 不可证伪 · 不是知识</text>
+    <text x="452" y="84" fill="var(--ink)" font-size="15.5">「冥冥中自有安排」</text>
+    <text x="452" y="112" fill="var(--ink2)" font-size="14.5">→ 成了是安排，败了也是安排。</text>
+    <text x="452" y="140" fill="var(--ink2)" font-size="14.5">什么都推翻不了它，所以它什么也没说。</text>
+    <line x1="452" y1="158" x2="800" y2="158" stroke="var(--line)"/>
+    <text x="452" y="184" fill="var(--warn)" font-size="14.5">注意：不可证伪 ≠ 错。</text>
+    <text x="452" y="208" fill="var(--warn)" font-size="14.5">它是信念，可以持有，但不能当地基。</text>
+  </g>
+</svg>
+<figcaption>图 2 · 一句话有没有信息量，看它<b>排除了什么</b>。什么都不排除的句子，听着最像真理，也最没用。</figcaption>
+</figure>
+
+<p>「所有天鹅都是白的」敢承担风险，因为只要出现一只黑天鹅，它就倒。「冥冥中自有安排」不承担风险，因为成了能解释，败了也能解释；任何结果都能事后圆回来。</p>
+
+<p>区别不在谁更玄，而在：<b>前一句话明确禁止了一种情况；后一句话什么都不禁止。</b>一句话越是什么结果都能解释，越接近什么也没说。</p>
+
+<h4>Fact 和 Opinion</h4>
+
+<p>这里要先分清 Fact 和 Opinion。</p>
+
+<p><b>Opinion 是观点或偏好，只能回答「你同不同意」</b>，本身没有严格意义上的对错。「这个设计高级」「现在入场太晚」「用户更看重体验」，都属于这一类。它们可以重要，但不能直接当地基。</p>
+
+<p><b>Fact 是事实主张，原则上能回答「对还是错」</b>，因为它允许世界给出相反证据。「上季度复购率是 31%」「A 版页面的注册完成率比 B 版低 4 个百分点」「这批材料在 80℃ 会软化」，这些都能被查、被测、被推翻。</p>
+
+<p>关键动作是：<b>把 Opinion 翻译成可检验的 Fact，再让它上场。</b>「用户更看重体验」只是观点；改成「在目标客群样本中，缩短一步操作后，完成率提升超过 3%，且不是由降价、流量来源或新客占比变化解释」，它才开始接近可证伪。</p>
+
+<p>所以可证伪性真正问的不是「这句话深不深」，而是：<b>它敢不敢规定一个不能发生的结果；发生了，它就认错。</b></p>
+
+<p class="note">后世对这条标准有修正和批评，别把它当终审法官；但作为一个工作动作，它足够锋利。</p>
+
+<h3>3. 现代科学与工程：从「终极真理」退到「可检验地基」</h3>
+
+<p>现代科学和工程里的 first principles，通常不是说找到了宇宙终极答案，而是说：<b>少依赖经验拟合和惯例外推，多从更基本的约束重建模型。</b></p>
+
+<p>物理和化学里有守恒律、对称性、热力学极限、量子力学的 <i>ab initio</i> 计算；信息工程里有香农极限；结构设计里有强度、屈曲、稳定性边界；商业分析里则常用三类工作地基：</p>
+
+<figure>
+<svg viewBox="0 0 840 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="三类公理">
+  <title>三类公理</title>
+  <g font-family="'Source Han Serif SC','Noto Serif SC','Songti SC',serif">
+    <rect x="14" y="20" width="256" height="252" rx="10" fill="var(--card)" stroke="var(--a1)" stroke-width="1.6"/>
+    <rect x="14" y="20" width="256" height="46" rx="10" fill="var(--a1)"/>
+    <rect x="14" y="52" width="256" height="14" fill="var(--a1)"/>
+    <text x="142" y="51" text-anchor="middle" fill="var(--oncolor)" font-size="19">恒 等 式</text>
+    <text x="142" y="94" text-anchor="middle" fill="var(--ink)" font-size="15.5">按定义就成立，不可能错</text>
+    <text x="142" y="132" text-anchor="middle" fill="var(--a1)" font-size="15" font-family="ui-monospace,Menlo,monospace">收入 ≡ 客户数</text>
+    <text x="142" y="154" text-anchor="middle" fill="var(--a1)" font-size="15" font-family="ui-monospace,Menlo,monospace">× 客单价 × 频次</text>
+    <line x1="46" y1="176" x2="238" y2="176" stroke="var(--line)"/>
+    <text x="142" y="203" text-anchor="middle" fill="var(--ink2)" font-size="14">它为真不是因为有数据，</text>
+    <text x="142" y="224" text-anchor="middle" fill="var(--ink2)" font-size="14">是因为等号两边说的本来</text>
+    <text x="142" y="245" text-anchor="middle" fill="var(--ink2)" font-size="14">就是同一件事。</text>
+
+    <rect x="292" y="20" width="256" height="252" rx="10" fill="var(--card)" stroke="var(--a2)" stroke-width="1.6"/>
+    <rect x="292" y="20" width="256" height="46" rx="10" fill="var(--a2)"/>
+    <rect x="292" y="52" width="256" height="14" fill="var(--a2)"/>
+    <text x="420" y="51" text-anchor="middle" fill="var(--oncolor)" font-size="19">物理与经济极限</text>
+    <text x="420" y="94" text-anchor="middle" fill="var(--ink)" font-size="15.5">现实世界的硬边界</text>
+    <text x="420" y="132" text-anchor="middle" fill="var(--a2)" font-size="15" font-family="ui-monospace,Menlo,monospace">一天只有 24 小时</text>
+    <text x="420" y="154" text-anchor="middle" fill="var(--a2)" font-size="15" font-family="ui-monospace,Menlo,monospace">材料成本有底线</text>
+    <line x1="324" y1="176" x2="516" y2="176" stroke="var(--line)"/>
+    <text x="420" y="203" text-anchor="middle" fill="var(--ink2)" font-size="14">它不因为你有钱、有技术、</text>
+    <text x="420" y="224" text-anchor="middle" fill="var(--ink2)" font-size="14">有关系而改变。改变了，</text>
+    <text x="420" y="245" text-anchor="middle" fill="var(--ink2)" font-size="14">说明它本来就不是极限。</text>
+
+    <rect x="570" y="20" width="256" height="252" rx="10" fill="var(--card)" stroke="var(--a3)" stroke-width="1.6"/>
+    <rect x="570" y="20" width="256" height="46" rx="10" fill="var(--a3)"/>
+    <rect x="570" y="52" width="256" height="14" fill="var(--a3)"/>
+    <text x="698" y="51" text-anchor="middle" fill="var(--oncolor)" font-size="19">人 性 与 需 求</text>
+    <text x="698" y="94" text-anchor="middle" fill="var(--ink)" font-size="15.5">只要对象是人，就绕不开</text>
+    <text x="698" y="132" text-anchor="middle" fill="var(--a3)" font-size="15" font-family="ui-monospace,Menlo,monospace">人朝更想要的走</text>
+    <text x="698" y="154" text-anchor="middle" fill="var(--a3)" font-size="15" font-family="ui-monospace,Menlo,monospace">价值因人而异</text>
+    <line x1="602" y1="176" x2="794" y2="176" stroke="var(--line)"/>
+    <text x="698" y="203" text-anchor="middle" fill="var(--ink2)" font-size="14">注意它没说人聪明、算得准、</text>
+    <text x="698" y="224" text-anchor="middle" fill="var(--ink2)" font-size="14">不后悔。只说他会朝自己</text>
+    <text x="698" y="245" text-anchor="middle" fill="var(--ink2)" font-size="14">当下排序更前的那个走。</text>
+  </g>
+</svg>
+<figcaption>图 3 · 三类公理。判断一个东西是不是公理，先看它能不能塞进这三个格子中的一个。塞不进，它就是假设——不是说它错，是说它需要被证明。</figcaption>
+</figure>
+
+<ul>
+<li><b>恒等式</b>：按定义成立，例如收入可拆为客户数、客单价、频次的乘积；</li>
+<li><b>物理与经济极限</b>：时间、材料、能量、预算、注意力的硬边界；</li>
+<li><b>人性与需求</b>：只要对象是人，就绕不开动机、信任、成本与取舍。</li>
+</ul>
+
+<div class="fail">
+<b>现代用法比亚里士多德更谦虚</b>：它不保证地基永远不动，只要求地基<b>显式、低层、可检验、可回溯</b>。<br>
+地基可以换，但必须明着换；<b>不能昨天拿它当公理，今天输了又改口说它只是比喻。</b>
+</div>
+
+<h2 id="s2">二 · 认识论内核：它能保证什么，不能保证什么</h2>
+
+<p>第一性原理最严谨的地方，不是「更接近真理」，而是把四件事同时摆上桌面：<b>前提是什么，怎么推出来，边界在哪里，什么证据能让它倒。</b></p>
+
+<h3>它能保证四样东西</h3>
+
+<table>
+<tr><th style="width:20%">保证</th><th>说明</th></tr>
+<tr><td><b>透明</b></td><td>每个结论都能往回追：追到公理、约束、边界条件，而不是追到「我觉得」「大家都这样」「行业惯例」。</td></tr>
+<tr><td><b>可批判</b></td><td>反对者知道该打哪里：是公理选错了，推导错了，边界越界了，还是验证样本偏了。<b>一个不能被精准反对的结论，通常也不能被精准信任。</b></td></tr>
+<tr><td><b>边界清晰</b></td><td>模型失效时，能定位是哪一层越界，而不是整个系统神秘崩盘。好的第一性原理分析会自带一句话：<b>在什么范围内别信我。</b></td></tr>
+<tr><td><b>硬约束</b></td><td>有些东西不靠趋势判断，而靠极限约束：热机效率有上限，通信速率受信道容量限制，一天只有二十四小时，材料成本有底线。<b>趋势会骗你，硬边界通常不会。</b></td></tr>
+</table>
+
+<h3>它也有四样不能保证</h3>
+
+<table>
+<tr><th style="width:20%">不保证</th><th>说明</th></tr>
+<tr><td><b>零假设</b></td><td>所谓第一性原理，不是把假设消灭，而是把假设从背景里拽出来，压到必要最低层，并编上号。</td></tr>
+<tr><td><b>完备</b></td><td>复杂系统常常没有一个干净公理集等你收盘；生物、市场、组织、情绪，都有涌现和反馈。<b>拆得更深，不一定更懂。</b></td></tr>
+<tr><td><b>自动正确</b></td><td>错误分解加上严密推导，会得到一座漂亮而错误的楼。逻辑只能保证「从前提到结论不漏」，不能保证前提选对了。</td></tr>
+<tr><td style="background:var(--warnbg)"><b>成本最优</b></td><td style="background:var(--warnbg)">真正 <i>ab initio</i> 常常很贵。工程上最好的做法往往是分层：<b>硬约束用第一性原理，软参数用经验标定，关键处用实验封口。</b></td></tr>
+</table>
+
+<div class="fail">
+所以，第一性原理不是「挖到地球中心」。更准确地说，是挖到足够硬的一层，然后清清楚楚写上：<br>
+<b>我目前站在这里；这里也可能错；若错，最可能这样错。</b>
+</div>
+
+<h2 id="s3">三 · 方法论：六步，把「想得深」变成「做得对」</h2>
+
+<h3>第一步：界定问题——先问要优化什么增量</h3>
+
+<p>不要从「我想做什么」开始，从「什么数字会变」开始。写出四样东西：<b>成功判据、量纲、误差容忍、约束条件</b>。</p>
+
+<div class="note">
+如果是商业问题，还要再补一刀：<b>真问题必须有明确 Sponsor，并且能站在 Sponsor 视角说出价值增量。</b><br>
+用户会用、团队很忙、老板提过，都不等于有人愿意为结果付钱。<b>找不到 Sponsor，后面所有拆解都可能长在错的根上。</b>
+</div>
+
+<h3>第二步：划定问题域，列出基石公理；其余全是可质疑假设</h3>
+
+<p>先圈定适用范围：尺度、时间、对象、场景、边界条件。再列出少数基石：恒等式、硬极限、绕不开的人性约束。</p>
+
+<p>除此之外，一律降级为假设。包括行业惯例、历史数据、专家判断、过去成功经验，以及最贵的一条——<b>别人交给你的那个问题本身。</b></p>
+
+<figure>
+<svg viewBox="0 0 840 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="追问三次">
+  <title>追问三次</title>
+  <g font-family="'Source Han Serif SC','Noto Serif SC','Songti SC',serif">
+    <defs><marker id="arB" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0 0 L9 4.5 L0 9 z" fill="var(--muted)"/></marker></defs>
+
+    <text x="24" y="30" fill="var(--ink2)" font-size="15">一句你打算当前提的话</text>
+    <rect x="24" y="42" width="290" height="42" rx="6" fill="var(--tint)" stroke="var(--line)"/>
+    <text x="169" y="69" text-anchor="middle" fill="var(--ink)" font-size="16">「这个市场增长很快」</text>
+
+    <line x1="169" y1="88" x2="169" y2="118" stroke="var(--muted)" marker-end="url(#arB)"/>
+    <text x="182" y="110" fill="var(--muted)" font-size="14">为什么？</text>
+    <rect x="24" y="122" width="290" height="38" rx="6" fill="var(--card)" stroke="var(--line)"/>
+    <text x="169" y="146" text-anchor="middle" fill="var(--ink2)" font-size="15">因为去年数据涨了 40%</text>
+
+    <line x1="169" y1="164" x2="169" y2="194" stroke="var(--muted)" marker-end="url(#arB)"/>
+    <text x="182" y="186" fill="var(--muted)" font-size="14">为什么？</text>
+    <rect x="24" y="198" width="290" height="38" rx="6" fill="var(--card)" stroke="var(--line)"/>
+    <text x="169" y="222" text-anchor="middle" fill="var(--ink2)" font-size="15">因为一批新客户进来了</text>
+
+    <line x1="169" y1="240" x2="169" y2="270" stroke="var(--muted)" marker-end="url(#arB)"/>
+    <text x="182" y="262" fill="var(--muted)" font-size="14">为什么？</text>
+    <rect x="24" y="274" width="290" height="42" rx="6" fill="var(--warnbg)" stroke="var(--warn)"/>
+    <text x="169" y="300" text-anchor="middle" fill="var(--warn)" font-size="15">……这里答不上来了</text>
+
+    <line x1="330" y1="176" x2="392" y2="176" stroke="var(--muted)" stroke-dasharray="4 4"/>
+
+    <rect x="404" y="42" width="412" height="128" rx="10" fill="var(--card)" stroke="var(--warn)" stroke-width="1.6"/>
+    <text x="424" y="72" fill="var(--warn)" font-size="17">三次之内答不上来</text>
+    <text x="424" y="102" fill="var(--ink)" font-size="15.5">→ 它不是公理，是你的假设。</text>
+    <text x="424" y="130" fill="var(--ink2)" font-size="14.5">别扔掉它。给它一个编号记下来，</text>
+    <text x="424" y="152" fill="var(--ink2)" font-size="14.5">排队等着被验证或被推翻。</text>
+
+    <rect x="404" y="188" width="412" height="128" rx="10" fill="var(--card)" stroke="var(--a1)" stroke-width="1.6"/>
+    <text x="424" y="218" fill="var(--a1)" font-size="17">三次之后落进那三个格子</text>
+    <text x="424" y="248" fill="var(--ink)" font-size="15.5">→ 到底了，可以站上去。</text>
+    <text x="424" y="276" fill="var(--ink2)" font-size="14.5">恒等式 ／ 物理与经济极限 ／</text>
+    <text x="424" y="298" fill="var(--ink2)" font-size="14.5">人性与需求。</text>
+  </g>
+</svg>
+<figcaption>图 4 · 答不上来的那一层，就是你一直在依赖、却从没意识到的东西。<b>把它记下来这个动作，比拆本身更重要</b>——不记，它会以「常识」的身份混回来，下一轮继续当地基。</figcaption>
+</figure>
+
+<table>
+<tr><th style="width:26%">经常被当成前提用</th><th>为什么它只是假设</th></tr>
+<tr><td><b>行业惯例</b></td><td>「大家都这么做」只说明有人先这么做了。惯例的形成往往来自某个<b>已经消失的约束</b>，约束没了，惯例还在。</td></tr>
+<tr><td><b>历史数据</b></td><td>数据描述过去发生了什么，不描述将来必然发生什么。拿它当公理，等于假设「产生数据的机制不变」——而这个假设本身没被验证。</td></tr>
+<tr><td><b>过去的成功经验</b></td><td>「我做了十年，我知道。」经验的样本量通常是 1，而且只包含活下来的那些情况。</td></tr>
+<tr><td><b>专家判断</b></td><td>专家、老板、客户说的。他们的判断也是从他们的假设推出来的，而你看不见那些假设。</td></tr>
+<tr><td style="background:var(--warnbg)"><b>你被给定的那个问题本身</b></td><td style="background:var(--warnbg)"><b>这一条最贵。</b>别人交给你一个问题，问题里已经藏好了范围、目标和因果。你越努力解它，越没机会问它对不对。</td></tr>
+</table>
+
+<p class="note">原则很简单：<b>公理之外皆假设。</b>假设不是错，是还没拿到当地基的资格证。</p>
+
+<h3>第三步：结构化分解，找到关键变量</h3>
+
+<p>用恒等式和因果链把问题拆开，尽量不重不漏。<b>拆法不止一种时，至少摆两种再选</b>；只有一种拆法摆在那儿，你往往不是在选，而是在接受。</p>
+
+<figure>
+<svg viewBox="0 0 840 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="价值函数逐层展开">
+  <title>价值函数逐层展开</title>
+  <g font-family="'Source Han Serif SC','Noto Serif SC','Songti SC',serif">
+    <rect x="290" y="16" width="260" height="44" rx="8" fill="var(--ink)"/>
+    <text x="420" y="44" text-anchor="middle" fill="var(--bg)" font-size="17">门店利润（元）</text>
+
+    <line x1="420" y1="60" x2="420" y2="82" stroke="var(--muted)"/>
+    <line x1="230" y1="82" x2="610" y2="82" stroke="var(--muted)"/>
+    <line x1="230" y1="82" x2="230" y2="100" stroke="var(--muted)"/>
+    <line x1="610" y1="82" x2="610" y2="100" stroke="var(--muted)"/>
+
+    <rect x="100" y="100" width="260" height="42" rx="6" fill="var(--card)" stroke="var(--a1)" stroke-width="1.4"/>
+    <text x="230" y="127" text-anchor="middle" fill="var(--a1)" font-size="15.5">门店数 × 单店收入</text>
+    <text x="420" y="127" text-anchor="middle" fill="var(--ink)" font-size="20">−</text>
+    <rect x="480" y="100" width="260" height="42" rx="6" fill="var(--card)" stroke="var(--a2)" stroke-width="1.4"/>
+    <text x="610" y="127" text-anchor="middle" fill="var(--a2)" font-size="15.5">门店数 × 单店成本</text>
+
+    <line x1="230" y1="142" x2="230" y2="166" stroke="var(--a1)"/>
+    <rect x="60" y="166" width="340" height="44" rx="6" fill="var(--card)" stroke="var(--a1)" stroke-width="1.4"/>
+    <text x="230" y="194" text-anchor="middle" fill="var(--a1)" font-size="15">客流 × 转化率 × 客单价</text>
+
+    <line x1="610" y1="142" x2="610" y2="166" stroke="var(--a2)"/>
+    <rect x="440" y="166" width="340" height="44" rx="6" fill="var(--card)" stroke="var(--a2)" stroke-width="1.4"/>
+    <text x="610" y="194" text-anchor="middle" fill="var(--a2)" font-size="15">人力 ＋ 租金 ＋ 物料</text>
+
+    <line x1="230" y1="210" x2="230" y2="234" stroke="var(--a1)" stroke-dasharray="4 4"/>
+    <rect x="60" y="234" width="340" height="66" rx="6" fill="var(--tint)" stroke="var(--line)"/>
+    <text x="230" y="258" text-anchor="middle" fill="var(--ink2)" font-size="14">转化率还能继续拆：</text>
+    <text x="230" y="282" text-anchor="middle" fill="var(--ink2)" font-size="14">知道的人 × 理解的占比 × 信任的占比</text>
+
+    <line x1="610" y1="210" x2="610" y2="234" stroke="var(--a2)" stroke-dasharray="4 4"/>
+    <rect x="440" y="234" width="340" height="66" rx="6" fill="var(--tint)" stroke="var(--line)"/>
+    <text x="610" y="258" text-anchor="middle" fill="var(--ink2)" font-size="14">加法项不是终点：对每一项</text>
+    <text x="610" y="282" text-anchor="middle" fill="var(--ink2)" font-size="14">再问一次「它自己能拆成什么乘法」</text>
+
+    <text x="420" y="326" text-anchor="middle" fill="var(--muted)" font-size="13.5">拆到每个变量都能被直接干预为止——拆不动了，才算到底</text>
+  </g>
+</svg>
+<figcaption>图 5 · 价值函数不是「重要因素清单」，是一个<b>等号</b>。等号意味着：每一层加起来必须还等于上一层，多一分少一分都不行。</figcaption>
+</figure>
+
+<p>关键变量不是「听起来重要」的变量，而是同时满足三点的格子：</p>
+
+<ul>
+<li><b>传导强</b>——它变了，目标真会变；</li>
+<li><b>幅度大</b>——理论上可改的空间不小；</li>
+<li><b>可干预</b>——你确实伸得进手。</li>
+</ul>
+
+<p>三项缺一项，排序都要降。</p>
+
+<h3>第四步：生成可证伪假设</h3>
+
+<p>每个关键判断都写成能错的形式，并补上证伪条件：</p>
+
+<div class="note">
+<b>如果出现 ________，这条假设就降级或作废。</b>
+</div>
+
+<p>不要写「提升品牌影响力」这种什么结果都能吞掉的话；要写「在目标客群中，看过方案的人比没看过的人，试用转化高出可测量的一段，且不是由价格补贴解释」。</p>
+
+<p><b>说不出来什么会让它错，它现在就还不是知识，只是立场。</b></p>
+
+<h3>第五步：闭环校验——先便宜，后昂贵</h3>
+
+<p>验证排队，按<b>回报除以成本</b>排。先用最便宜的手段杀最多假设：</p>
+
+<table>
+<tr><th style="width:22%">级别</th><th style="width:34%">做什么</th><th>特点</th></tr>
+<tr><td><span class="tag t3">L1</span> 定性</td><td>去问真实的人、看真实行为、查已有数据</td><td>最便宜最快，<b>相当一部分假设死在这一步就够了</b>〔具体占比未测，标为待确认〕</td></tr>
+<tr><td><span class="tag t2">L2</span> 统计</td><td>翻已有的数据，看相关关系成不成立</td><td>中等成本。注意：相关不等于因果</td></tr>
+<tr><td><span class="tag t1">L3</span> 实验</td><td>造一个对照，真的跑一次</td><td>最贵最慢，但<b>证据最强</b>，是唯一能给因果的</td></tr>
+</table>
+
+<div class="fail">
+<b>很多假设撑不过三个访谈，却被拿去做了两个月实验。这是顺序错误。</b>
+</div>
+
+<p>校验时别只看平均数：<b>看残差是否系统性偏离，看极限情形是否退回已知定律，看结论对哪条前提最敏感。</b>凡经验估计，都登记进假设簿；复盘时第一个回头查它。</p>
+
+<h3>第六步：根据已验证假设，设计或优化解决方案</h3>
+
+<p>方案不是灵感合集，而是<b>验证后的装配</b>。每个设计动作都要能对应：它依赖哪条已验证假设，预期推动哪个变量，改变多少，用什么指标看，错了回退到哪一步。</p>
+
+<div class="fail">
+还没验证的部分不要硬编结论，只给公式骨架、占位符和下一步先验证哪个数。<br>
+<b>宁可留空，不许编数。</b>编出来的数会被下游当成事实继续用，污染整棵树。
+</div>
+
+<h2 id="s4">四 · 第一性原理适用的问题类型</h2>
+
+<h3>它最适合五类问题</h3>
+
+<table>
+<tr><th style="width:26%">类型</th><th>说明</th></tr>
+<tr><td><b>有硬约束的问题</b></td><td>涉及能量、材料、时间、预算、带宽、产能、合规边界时，先算极限，再谈优化。<b>别在墙外设计梯子。</b></td></tr>
+<tr><td><b>要打破惯例的问题</b></td><td>当「大家都这么做」来自一个已经消失的约束，第一性原理能把旧约束挖出来，问它今天还在不在。</td></tr>
+<tr><td><b>因果复杂、变量搅在一起</b></td><td>收入、成本、转化、留存、交付周期这类目标，适合拆成恒等式和传导链，找到真正能被推动的格子。</td></tr>
+<tr><td><b>高风险、需要审计的决策</b></td><td>越大额的资源投入，越需要前提可回溯：钱为什么花在这里，哪条假设最软，什么信号出现就停。</td></tr>
+<tr><td><b>从 0 到 1 的重构问题</b></td><td>当旧答案不是局部不好，而是结构错了，回到地基重搭，比在旧楼里刷漆更有效。</td></tr>
+</table>
+
+<h3>它不适合或要慎用的，也有五类</h3>
+
+<table>
+<tr><th style="width:26%">类型</th><th>为什么</th></tr>
+<tr><td><b>价值偏好与意义问题</b></td><td>它能澄清取舍，<b>不能替你决定在乎什么</b>。</td></tr>
+<tr><td><b>强涌现、短期不可分解的系统</b></td><td>拆得太细反而丢掉整体行为。</td></tr>
+<tr><td><b>数据稀缺又无法闭环的场景</b></td><td><b>清晰不能冒充证据。</b></td></tr>
+<tr><td><b>时间极紧且经验足够可靠</b></td><td>先活下来再严格。</td></tr>
+<tr><td><b>纯组织政治问题</b></td><td>那里真正缺的往往不是分析，而是授权与承担。</td></tr>
+</table>
+
+<div class="fail">
+一句判据：<b>如果一个问题没有可检验后果，第一性原理只能让你更清楚，不能让你更正确。</b>
+</div>
+
+<h2 id="s5">五 · AI 时代，人类学习和运用第一性原理的价值</h2>
+
+<p>AI 很会做这套方法里「费力」的部分：穷举拆解、补齐空格、保持量纲一致、连续追问、生成备选框架。它越强，人越容易把一件危险的事误当成进步——<b>拿到一个漂亮结构，就以为自己做过判断。</b></p>
+
+<figure>
+<svg viewBox="0 0 840 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="人机分工">
+  <title>人机分工</title>
+  <g font-family="'Source Han Serif SC','Noto Serif SC','Songti SC',serif">
+    <rect x="24" y="24" width="380" height="252" rx="10" fill="var(--card)" stroke="var(--a2)" stroke-width="1.6"/>
+    <text x="48" y="60" fill="var(--a2)" font-size="18">AI · 提供结构和备选</text>
+    <line x1="48" y1="74" x2="380" y2="74" stroke="var(--line)"/>
+    <text x="48" y="106" fill="var(--ink)" font-size="15">穷举：把树拆完，不漏格子</text>
+    <text x="48" y="136" fill="var(--ink)" font-size="15">备选：同一层给几种拆法</text>
+    <text x="48" y="166" fill="var(--ink)" font-size="15">一致：量纲、口径、编号不乱</text>
+    <text x="48" y="196" fill="var(--ink)" font-size="15">耐烦：追问三次，一次不少</text>
+    <line x1="48" y1="216" x2="380" y2="216" stroke="var(--line)"/>
+    <text x="48" y="244" fill="var(--muted)" font-size="14">它擅长的，恰好是人容易偷懒的部分</text>
+
+    <rect x="436" y="24" width="380" height="252" rx="10" fill="var(--card)" stroke="var(--a1)" stroke-width="1.6"/>
+    <text x="460" y="60" fill="var(--a1)" font-size="18">人 · 做真伪判断和决策</text>
+    <line x1="460" y1="74" x2="792" y2="74" stroke="var(--line)"/>
+    <text x="460" y="106" fill="var(--ink)" font-size="15">这是 Fact 还是 Opinion</text>
+    <text x="460" y="136" fill="var(--ink)" font-size="15">这个出资人认不认</text>
+    <text x="460" y="166" fill="var(--ink)" font-size="15">这件事我在不在乎</text>
+    <text x="460" y="196" fill="var(--ink)" font-size="15">错了之后，谁承担</text>
+    <line x1="460" y1="216" x2="792" y2="216" stroke="var(--line)"/>
+    <text x="460" y="244" fill="var(--muted)" font-size="14">这四件事没法外包——外包了，就不是你的了</text>
+  </g>
+</svg>
+<figcaption>图 6 · 分工的依据不是谁更聪明，是<b>谁承担后果</b>。承担后果的那一方，必须保留判断权。</figcaption>
+</figure>
+
+<p>所以 AI 时代，第一性原理对人的价值反而上升。它不再只是「解决问题的方法」，更是人使用 AI 的<b>验收协议</b>。你可以让 AI 给结构，但必须逼它同时交出：</p>
+
+<ul>
+<li>基石公理是什么</li>
+<li>哪些只是假设</li>
+<li>适用边界在哪里</li>
+<li>什么证据会推翻它</li>
+<li>结论对哪条前提最敏感</li>
+</ul>
+
+<p><b>交不出这些，漂亮只等于顺滑，不等于可靠。</b></p>
+
+<p>分工的依据不是谁更聪明，而是<b>谁承担后果</b>。AI 可以提供结构；人必须保留四件事：分清事实与判断，确认 Sponsor 认不认，决定自己在不在乎，承担错了之后的代价。</p>
+
+<div class="fail">
+<b>这四件事没法外包。外包了，答案就不是你的，只是经过你。</b><br><br>
+真正要练的，不是「更会提问」，而是<b>更会推翻</b>：这个框架、这个模型、这一页，你推翻过它几次。<br>
+这个数没有后台记录，没人替你数，也正因为没人看得到，<b>它才只对你有效。</b>
+</div>
+
+<nav class="series">
+<p class="st">基 石 公 理 · 五 篇</p>
+<ol>
+<li><span class="cur"><span class="no">〇</span><span class="role">方法</span><span class="tt">第一性原理</span><span class="dd">什么才算公理</span></span></li>
+<li><a href="/gongli/santiao.html"><span class="no">一</span><span class="role">公理</span><span class="tt">经济学的三条公理</span><span class="dd">A1 稀缺 · A2 目的性行动 · A3 主观价值</span></a></li>
+<li><a href="/gongli/agi.html"><span class="no">二</span><span class="role">变局</span><span class="tt">AGI 三阶段</span><span class="dd">公理不废，废的是稀缺的标的物</span></a></li>
+<li><a href="/gongli/gongcheng.html"><span class="no">三</span><span class="role">应用</span><span class="tt">工程的本质</span><span class="dd">A1 稀缺的应用</span></a></li>
+<li><a href="/gongli/yingxiao.html"><span class="no">四</span><span class="role">应用</span><span class="tt">营销的本质</span><span class="dd">A3 主观价值的应用</span></a></li>
+</ol>
+</nav>
+
+<div class="backq">
+  <span class="k">读 完 之 后</span>
+  <p>这一篇里，哪一句是你原本以为的地基，现在发现只是假设？</p>
+  <p class="meta-q">更重要的一问是：<br>
+  <b>这套方法，在哪类事上帮不了你？</b></p>
+  <p class="why">答得出，说明你知道它是一把尺子，不是圣旨；<br>
+  答不出，就容易把它当成万能钥匙——什么锁都捅，捅不开还怪锁。</p>
+  <p class="three">
+    我砍掉的假问题：____<br>
+    我证伪的假设：　　____<br>
+    剩下的那个真问题：____
+  </p>
+  <p style="font-size:15.5px; color:var(--ink2); margin-top:18px">
+    三行填不出来，说明这一页对你今天要做的事没用——那就别记，去 <a href="/#ask">回到八问</a>，从你手上那件事开始。
+  </p>
+</div>
+
+<p class="foot">心问 · ibx.world ｜ 基石公理 · 第〇篇<br>公理之外皆假设，包括这一页。</p>
+
+</div>
+</body>
+</html>
