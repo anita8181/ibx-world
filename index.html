@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>心问 — 什么都可以问 AI，只有一件事得问自己。</title>
-<meta name="description" content="心问。什么都可以问 AI，只有一件事得问自己。八个问题帮你找到真问题，七个问题帮你造出能验证它的最小物件。只提问，不给答案。">
+<meta name="description" content="心问。什么都可以问 AI，只有一件事得问自己，你最在乎什么？AI帮你穷尽推理，你决定心往哪放。只提问，不给答案。">
 <meta property="og:title" content="心问">
-<meta property="og:description" content="什么都可以问 AI，只有一件事得问自己。">
+<meta property="og:description" content="什么都可以问 AI，只有一件事得问自己，你最在乎什么？">
 <meta property="og:type" content="website">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" sizes="32x32">
@@ -15,13 +15,15 @@
 :root{
   --ink:#2E2E2C; --zhu:#C1272D; --sub:#8A8880;
   --paper:#F4F3F0; --line:#DEDBD4; --field:#FBFAF8;
+  --accent:#E85D5D; --success:#4CAF50;
 }
 @media (prefers-color-scheme: dark){
   :root{ --ink:#E8E6E1; --zhu:#D6413F; --sub:#9A9895;
-         --paper:#1C1C1A; --line:#3A3A37; --field:#232320; }
+         --paper:#1C1C1A; --line:#3A3A37; --field:#232320;
+         --accent:#FF7A7A; --success:#66BB6A; }
 }
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
+html{-webkit-text-size-adjust:100%; scroll-behavior:smooth}
 body{
   margin:0; background:var(--paper); color:var(--ink);
   font-family:'Source Han Serif SC','Noto Serif SC','Songti SC','SimSun',serif;
@@ -34,8 +36,18 @@ section:first-of-type{border-top:none}
 h1,h2,h3{font-weight:500; letter-spacing:.02em; margin:0}
 a{color:inherit}
 
+/* 进度条 */
+.progress-bar{
+  position:fixed; top:0; left:0; right:0; height:3px;
+  background:var(--line); z-index:100; transition:all .3s;
+}
+.progress-fill{
+  height:100%; background:var(--accent); width:0;
+  transition:width .3s ease;
+}
+
 /* —— 页眉 / 导航 —— */
-.nav{position:sticky; top:0; z-index:50; background:var(--paper); border-bottom:1px solid var(--line)}
+.nav{position:sticky; top:3px; z-index:50; background:var(--paper); border-bottom:1px solid var(--line)}
 .nav .wrap{display:flex; align-items:center; gap:14px; min-height:58px; flex-wrap:wrap}
 .nav .brand{flex:0 0 auto; display:flex; align-items:center}
 .nav .brand svg{height:26px; width:auto; display:block}
@@ -67,11 +79,28 @@ a{color:inherit}
 }
 
 /* —— 首屏 —— */
-.hero{padding:40px 0 48px; text-align:left}
-.hero .mark{width:58px; height:58px; margin:0 0 24px}
-.hero h1{font-size:30px; letter-spacing:.16em; margin-bottom:18px}
-.claim{font-size:19px; line-height:1.7; margin:0 0 20px; max-width:20em}
-.bound{color:var(--sub); font-size:14.5px; line-height:1.8; max-width:26em; margin:0}
+.hero{
+  padding:60px 0 56px; text-align:left;
+  background:linear-gradient(180deg, var(--field) 0%, var(--paper) 100%);
+}
+.hero .mark{width:64px; height:64px; margin:0 0 24px}
+.hero h1{
+  font-size:38px; letter-spacing:.18em; margin-bottom:18px;
+  animation:fadeInUp .7s ease both;
+}
+.claim{
+  font-size:20px; line-height:1.75; margin:0 0 20px; max-width:22em;
+  font-weight:500;
+  animation:fadeInUp .7s ease .1s both;
+}
+.bound{
+  color:var(--sub); font-size:15px; line-height:1.9; max-width:28em; margin:0;
+  animation:fadeInUp .7s ease .2s both;
+}
+@keyframes fadeInUp{
+  from{opacity:0; transform:translateY(16px)}
+  to{opacity:1; transform:translateY(0)}
+}
 
 /* —— 通用文本 —— */
 .eyebrow{font-size:12px; letter-spacing:.28em; color:var(--sub); margin:0 0 14px}
@@ -105,8 +134,9 @@ textarea{
   background:var(--field); color:var(--ink);
   border:1px solid var(--line); border-radius:2px;
   padding:9px 12px; font:inherit; font-size:15px; line-height:1.7;
+  transition:border-color .2s, box-shadow .2s;
 }
-textarea:focus{outline:none; border-color:var(--sub)}
+textarea:focus{outline:none; border-color:var(--zhu); box-shadow:0 0 0 2px rgba(193,39,45,.08)}
 
 /* —— 元问：全站唯一用朱的地方（logo 之外） —— */
 .meta{border-left:2px solid var(--zhu); padding:4px 0 4px 20px; margin:28px 0 22px}
@@ -123,21 +153,26 @@ textarea:focus{outline:none; border-color:var(--sub)}
 button, .btn{
   font:inherit; font-size:14.5px; background:transparent; color:var(--ink);
   border:1px solid var(--ink); border-radius:2px; padding:9px 18px;
-  cursor:pointer; text-decoration:none; display:inline-block; letter-spacing:.04em;
-  transition:background .15s, color .15s;
+  cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:6px;
+  letter-spacing:.04em; transition:background .15s, color .15s;
 }
 button:hover, .btn:hover{background:var(--ink); color:var(--paper)}
 button.ghost{border-color:var(--line); color:var(--sub)}
 button.ghost:hover{background:transparent; color:var(--ink); border-color:var(--ink)}
+button.success{border-color:var(--success); color:var(--success)}
 
 /* —— 出口 —— */
 .exit{margin:0 0 28px}
 .exit h3{font-size:16.5px; margin-bottom:7px}
 .exit p{color:var(--sub); font-size:14.5px; margin:0}
-.placeholder{
-  border:1px dashed var(--line); border-radius:2px; padding:12px 16px;
-  color:var(--sub); font-size:14px; margin:14px 0 0;
+
+/* —— 案例入口 —— */
+.case-link{
+  display:inline-block; margin:16px 0 0;
+  font-size:14px; color:var(--zhu); text-decoration:none;
+  border-bottom:1px solid var(--line); padding-bottom:2px;
 }
+.case-link:hover{border-color:var(--zhu)}
 
 /* —— 循环图 —— */
 .loop{
@@ -162,7 +197,8 @@ footer svg{height:20px; width:auto; display:block; margin-bottom:14px; opacity:.
 
 @media (max-width:520px){
   body{font-size:15px}
-  .hero h1{font-size:26px}
+  .hero{padding:48px 0 44px}
+  .hero h1{font-size:30px}
   .claim{font-size:17.5px}
   section{padding:36px 0}
   .q label,.gate li{font-size:16px}
@@ -170,6 +206,10 @@ footer svg{height:20px; width:auto; display:block; margin-bottom:14px; opacity:.
 </style>
 </head>
 <body>
+
+<div class="progress-bar">
+  <div class="progress-fill" id="progressFill"></div>
+</div>
 
 <nav class="nav">
   <div class="wrap">
@@ -199,7 +239,7 @@ footer svg{height:20px; width:auto; display:block; margin-bottom:14px; opacity:.
           <li><a href="/gongli/yingxiao.html"><span class="no">四</span>营销的本质<span class="dd">A3 主观价值的应用</span></a></li>
         </ul>
       </li>
-      <li class="soon"><span>案例和感悟<i>待上传</i></span></li>
+      <li><a href="/cases/" class="top" style="text-decoration:none">案例</a></li>
       <li class="soon"><span>生态伙伴<i>待添加</i></span></li>
     </ul>
   </div>
@@ -214,8 +254,9 @@ footer svg{height:20px; width:auto; display:block; margin-bottom:14px; opacity:.
     <path class="heart" d="M32 37 C23.5 30.5 22 23.5 27 23.5 C29.6 23.5 32 26 32 26 C32 26 34.4 23.5 37 23.5 C42 23.5 40.5 30.5 32 37 Z" fill="#C1272D"/>
   </svg>
   <h1>心问</h1>
-  <p class="claim">什么都可以问 AI，只有一件事得问自己。</p>
-  <p class="bound">它不会让你更轻松。它可能让你觉得，这一段是你自己的。</p>
+  <p class="claim">什么都可以问 AI，只有一件事得问自己：你最在乎什么？</p>
+  <p class="bound">AI 负责穷尽推理——拆深度、铺广度、验自洽、算商业。<br>
+  你负责定锚——什么值得做，什么不能交换，心往哪放。</p>
 </div>
 
 <!-- ② 入口自检 -->
@@ -293,9 +334,9 @@ footer svg{height:20px; width:auto; display:block; margin-bottom:14px; opacity:.
   <p class="eyebrow">另 外 半 圈</p>
   <h2>想清楚之后，还差一个能被推翻的东西</h2>
   <div class="loop">
-    <b>八问</b>　模糊　→　一个真问题 ＋ 一个待验的解法假设<br>
-    <b>七问</b>　真问题　→　一个能验证那个假设的最小物件<br>
-    <span style="opacity:.8">物件产生反馈　→　回到八问，新一轮</span>
+    <b>八问</b> 模糊 → 一个真问题 ＋ 一个待验的解法假设<br>
+    <b>七问</b> 真问题 → 一个能验证那个假设的最小物件<br>
+    <span style="opacity:.8">物件产生反馈 → 回到八问，新一轮</span>
   </div>
   <p class="note">只想清楚，不做东西，判断永远停在纸上。做出来才会有人反对你。</p>
 </section>
@@ -417,22 +458,32 @@ footer svg{height:20px; width:auto; display:block; margin-bottom:14px; opacity:.
 (function(){
   var KEY='xinwen.v1';
   var boxes=[].slice.call(document.querySelectorAll('textarea'));
+  var allTextareas=boxes.length;
 
-  // 自增高
   function grow(t){ t.style.height='auto'; t.style.height=(t.scrollHeight+2)+'px'; }
 
-  // 本地草稿（只在本机，不外发）
   var saved={};
   try{ saved=JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){}
   function save(){
     var o={}; boxes.forEach(function(t){ if(t.value) o[t.id]=t.value; });
     try{ localStorage.setItem(KEY, JSON.stringify(o)); }catch(e){}
+    updateProgress();
   }
+
+  function updateProgress(){
+    var filled=0;
+    boxes.forEach(function(t){ if(t.value.trim()) filled++; });
+    var percent=Math.round((filled/allTextareas)*100);
+    document.getElementById('progressFill').style.width=percent+'%';
+  }
+
   boxes.forEach(function(t){
     if(saved[t.id]) t.value=saved[t.id];
     grow(t);
     t.addEventListener('input', function(){ grow(t); save(); });
   });
+
+  updateProgress();
 
   var HEAD = {
     f8:'下面是我正在想的一件事，和我对八个问题的回答。\n\n请只对我提问，不要给我答案、建议、框架或模板。\n每次只问一个问题，等我回答完再问下一个。\n如果我的回答含糊，追问细节；如果我在复述别人的框架，问我那是谁给我的；如果我把判断交给你，把它推回来。\n\n最后请留这三行让我自己填：\n我砍掉的假问题：____\n我证伪的假设：____\n剩下的那个真问题：____\n\n———\n',
@@ -452,9 +503,10 @@ footer svg{height:20px; width:auto; display:block; margin-bottom:14px; opacity:.
 
   function copy(text, btn){
     var done=function(){
-      var old=btn.textContent;
-      btn.textContent='已复制，去粘给 AI';
-      setTimeout(function(){ btn.textContent=old; }, 2200);
+      var old=btn.innerHTML;
+      btn.innerHTML='✓ 已复制，去粘给 AI';
+      btn.classList.add('success');
+      setTimeout(function(){ btn.innerHTML=old; btn.classList.remove('success'); }, 2200);
     };
     if(navigator.clipboard && window.isSecureContext){
       navigator.clipboard.writeText(text).then(done, function(){ fallback(text, done); });
@@ -481,7 +533,6 @@ footer svg{height:20px; width:auto; display:block; margin-bottom:14px; opacity:.
   });
 })();
 
-// —— 导航下拉（点击/触屏展开，桌面端 hover 也可）——
 (function(){
   var menu=document.querySelector('.menu'); if(!menu) return;
   function closeAll(){ [].forEach.call(menu.querySelectorAll('li.open'), function(x){
@@ -498,7 +549,6 @@ footer svg{height:20px; width:auto; display:block; margin-bottom:14px; opacity:.
   document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeAll(); });
 })();
 
-// —— 反馈：用访客本地邮件客户端投递，站点不经手 ——
 (function(){
   var btn=document.getElementById('fb-send'); if(!btn) return;
   var MAIL='zhenda.liang@gmail.com';
@@ -507,8 +557,9 @@ footer svg{height:20px; width:auto; display:block; margin-bottom:14px; opacity:.
     if(!v){ if(t) t.focus(); return; }
     var url='mailto:'+MAIL+'?subject='+encodeURIComponent('心问 · 反馈')+'&body='+encodeURIComponent(v);
     window.location.href=url;
-    var old=btn.textContent; btn.textContent='已打开邮件…';
-    setTimeout(function(){ btn.textContent=old; }, 2200);
+    var old=btn.innerHTML; btn.innerHTML='✓ 已打开邮件…';
+    btn.classList.add('success');
+    setTimeout(function(){ btn.innerHTML=old; btn.classList.remove('success'); }, 2200);
   });
 })();
 </script>

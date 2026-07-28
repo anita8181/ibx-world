@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>案例 · 从「超级个体系列课」到「四节认知课 + 三层阶梯」 · 心问</title>
+<meta name="description" content="一次完整对话复盘：15个岔路口、11条假设被证伪、三次真正的转折全部由人类发起。AI提供了结构化，但没有一次是方向性的。">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/favicon-180.png">
+<style>
+:root{
+  --ink:#2E2E2C; --zhu:#C1272D; --sub:#8A8880;
+  --paper:#F4F3F0; --line:#DEDBD4; --field:#FBFAF8;
+  --tint:#EBE8E2; --warn:#7C6274; --warnbg:#F1EDEF;
+  --green:#566F5C; --greenbg:#EDF2EE;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --ink:#E8E6E1; --zhu:#D6413F; --sub:#9A9895;
+         --paper:#1C1C1A; --line:#3A3A37; --field:#232320;
+         --tint:#2A2A27; --warn:#A98FA0; --warnbg:#2C2529;
+         --green:#8FA894; --greenbg:#232B24; }
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:'Source Han Serif SC','Noto Serif SC','Songti SC','SimSun',serif;
+  line-height:1.85; font-size:16px;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:720px; margin:0 auto; padding:0 24px 80px}
+a{color:inherit}
+
+/* 顶栏 */
+.topbar{display:flex; align-items:center; gap:14px; padding:22px 0 0; margin-bottom:34px}
+.topbar svg{height:26px; width:auto; display:block}
+.back{margin-left:auto; color:var(--sub); font-size:14.5px;
+  border-bottom:1px solid var(--line); padding-bottom:2px; text-decoration:none}
+.back:hover{color:var(--ink); border-color:var(--ink)}
+
+/* 页头 */
+.tag{display:inline-block; font-size:12px; letter-spacing:.1em; color:var(--zhu);
+  border:1px solid var(--zhu); border-radius:2px; padding:1px 8px; margin:0 0 12px}
+h1{font-size:26px; font-weight:500; letter-spacing:.03em; line-height:1.4; margin:0 0 8px}
+.meta{color:var(--sub); font-size:14px; margin:0 0 6px}
+.lead{font-size:16px; color:var(--sub); line-height:1.8; margin:0 0 32px; max-width:34em}
+
+h2{font-size:21px; margin:52px 0 8px; padding-top:22px; border-top:2px solid var(--ink); letter-spacing:.03em}
+h3{font-size:17px; margin:32px 0 8px; color:var(--ink)}
+p{margin:12px 0}
+
+/* 流程图 */
+.flow{
+  background:var(--field); border:1px solid var(--line); border-radius:3px;
+  padding:18px 20px; margin:20px 0 28px; font-size:14.5px; line-height:2;
+}
+.flow b{color:var(--ink); font-weight:600}
+.flow .turn{color:var(--zhu); font-weight:500}
+
+/* 岔路口卡片 */
+.fork{
+  border:1px solid var(--line); border-radius:3px; padding:18px 20px;
+  margin:20px 0; background:var(--field);
+}
+.fork .num{font-size:12px; color:var(--sub); letter-spacing:.14em; margin-bottom:4px}
+.fork h4{font-size:16px; font-weight:600; margin:0 0 8px}
+.fork .who{font-size:13px; color:var(--sub); margin:0 0 8px}
+.fork p{font-size:14.5px; margin:8px 0}
+
+/* 规则 */
+.rule{
+  background:var(--greenbg); border-left:3px solid var(--green);
+  padding:12px 16px; margin:16px 0; font-size:14.5px; line-height:1.75;
+}
+.rule b{color:var(--green); font-weight:600}
+
+/* 错误/推翻 */
+.fail{
+  background:var(--warnbg); border-left:3px solid var(--warn);
+  padding:12px 16px; margin:16px 0; font-size:14.5px;
+}
+.fail b{color:var(--warn)}
+
+/* 表格 */
+table{width:100%; border-collapse:collapse; margin:20px 0; font-size:14px}
+th,td{border:1px solid var(--line); padding:8px 10px; text-align:left; vertical-align:top}
+th{background:var(--tint); font-weight:600}
+
+/* 反馈 */
+.feedback-box{
+  border:1px dashed var(--line); border-radius:3px; padding:20px; margin:36px 0;
+  text-align:center;
+}
+.feedback-box p{color:var(--sub); font-size:14px; margin:0 0 12px}
+.feedback-box button{
+  font:inherit; font-size:13.5px; background:transparent; color:var(--sub);
+  border:1px solid var(--line); border-radius:2px; padding:6px 14px;
+  cursor:pointer; margin:0 4px; transition:all .15s;
+}
+.feedback-box button:hover{border-color:var(--ink); color:var(--ink)}
+.feedback-box button.picked{border-color:var(--zhu); color:var(--zhu)}
+
+/* 引用 */
+blockquote{
+  border-left:2px solid var(--sub); padding:4px 0 4px 16px;
+  margin:16px 0; color:var(--sub); font-size:14.5px; font-style:italic;
+}
+
+/* 页内导航 */
+.toc{background:var(--field); border:1px solid var(--line); border-radius:3px; padding:16px 20px; margin:0 0 32px}
+.toc .st{font-size:12px; letter-spacing:.26em; color:var(--sub); margin:0 0 8px}
+.toc ol{list-style:none; padding:0; margin:0; columns:2; column-gap:24px}
+.toc li{margin:3px 0; break-inside:avoid}
+.toc a{color:var(--sub); text-decoration:none; font-size:14px}
+.toc a:hover{color:var(--ink)}
+.toc .n{color:var(--sub); font-size:13px; margin-right:6px}
+@media (max-width:520px){ .toc ol{columns:1} }
+
+hr{border:0; border-top:1px solid var(--line); margin:40px 0}
+.foot{color:var(--sub); font-size:13px; margin-top:48px; text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="topbar">
+  <a href="/" aria-label="心问 首页">
+    <svg viewBox="0 0 232 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="心问">
+      <circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="132 19" transform="rotate(-58 32 32)"/>
+      <path d="M32 37 C23.5 30.5 22 23.5 27 23.5 C29.6 23.5 32 26 32 26 C32 26 34.4 23.5 37 23.5 C42 23.5 40.5 30.5 32 37 Z" fill="#C1272D"/>
+      <g transform="translate(78 44) scale(0.034 -0.034)" fill="currentColor"><path d="M435 831 422 823C484 754 561 644 582 561C662 501 712 679 435 831ZM397 648 298 659V50C298 -16 326 -34 423 -34H568C774 -34 815 -22 815 13C815 27 808 35 783 42L780 220H767C752 138 738 70 729 50C724 40 719 35 703 34C682 31 635 30 570 30H429C373 30 363 40 363 65V622C386 625 395 635 397 648ZM766 518 755 509C843 412 881 263 898 175C965 102 1031 322 766 518ZM175 533H157C159 394 111 261 59 207C43 186 36 166 36 146C36 106 60 76 92 76C112 76 130 88 143 113C171 165 182 292 175 533Z"/></g>
+    </svg>
+  </a>
+  <a href="/cases/" class="back">← 返回案例库</a>
+</div>
+
+<span class="tag">思维流复盘</span>
+<h1>从「超级个体系列课」到「四节认知课 + 三层阶梯」</h1>
+<p class="meta">2026-07-27 · 晓英 × 小五（AI） · 15 个岔路口 · 11 条假设被证伪</p>
+<p class="lead">把路径本身当作对象来检验——每个岔路口的选项集是否 MECE、谁推翻了谁、哪些还悬着。<br>
+三次真正的转折全部由人类发起。AI 提供了结构化，但没有一次是方向性的。</p>
+
+<div class="toc">
+  <p class="st">目 录</p>
+  <ol>
+    <li><span class="n">一</span><a href="#flow">全程脉络</a></li>
+    <li><span class="n">二</span><a href="#forks">五个关键岔路口</a></li>
+    <li><span class="n">三</span><a href="#overturned">被推翻的判断</a></li>
+    <li><span class="n">四</span><a href="#rules">提炼出的十条规则</a></li>
+    <li><span class="n">五</span><a href="#open">还悬着的问题</a></li>
+    <li><span class="n">六</span><a href="#meta">元错误观察</a></li>
+  </ol>
+</div>
+
+<!-- 一、全程脉络 -->
+<h2 id="flow">一、全程脉络</h2>
+
+<div class="flow">
+  <b>T0</b> 给定框架：超级个体系列课 · 6讲学科主题<br>
+  ① 质疑框架（载体？人群？目的？）<br>
+  ② 结构：按学科分 → 按动作分（成交四条件）<br>
+  <span class="turn">══ 晓英第一次转向：我更关心"大部分人还沉睡"</span><br>
+  ③ 拆出资人：发心（无出资人）vs 自媒体流量（有出资人）<br>
+  <span class="turn">══ 晓英第二次转向：中学生没看见，成人看见了但无法理解</span><br>
+  ④ 填空 vs 重构 → 失效体验必须前置 · <b>小五认错一次</b><br>
+  ⑤ Fact/Opinion 分离 → 找到干净对照<br>
+  ⑥ 三竞争解释 · <b>⚠️ 至今悬空</b><br>
+  ⑦ 沉睡者不会报名 → 载体三分层<br>
+  ⑧ 价值函数换轨：终端 → 节点<br>
+  ⑨ 小五给4节课骨架 → <b>晓英推翻：证明题=说服=逆反</b> · <b>小五第二次错</b><br>
+  <b>T1</b> 收敛：四节课 = 用第一性原理示范，让"想学"自己长出来<br>
+  ⑩ 元假设：AGI 时代还有没有差别<br>
+  ⑪ 从「课程」重构为「研究项目」<br>
+  ⑫ 文献核查（首次动用外部证据）<br>
+  ⑬ 立论 + 反面<br>
+  ⑭ 目标人群 · <b>小五第四次错</b><br>
+  <b>T2</b> 项目定型：主体性研究项目 · AI冲浪部落
+</div>
+
+<blockquote>三次真正的转折，全部由晓英发起。小五的贡献集中在结构化和证伪，没有一次是方向性的。<br>
+如果晓英不主动转向，小五会把错误的方向做得很完整。</blockquote>
+
+<!-- 二、五个关键岔路口 -->
+<h2 id="forks">二、五个关键岔路口</h2>
+
+<div class="fork">
+  <p class="num">岔路 ④</p>
+  <h4>填空 vs 重构 ★ 小五认错</h4>
+  <p class="who">晓英贡献：中学生是没看见，引导即可；成人是看见了但无法理解。「Scaling Law 只是黑话」= 把新东西塞进旧格子。</p>
+  <p>这推翻了小五的推论「孩子能懂，说明成人的懂不懂不是瓶颈」——填空和重构不是难度差别，是两种不同的动作。</p>
+  <p>据此推出：重构必须多一步在最前面——<b>失效体验</b>。没有它，新内容会被塞进旧格子，表现为「听过了」。</p>
+  <div class="rule"><b>R4</b> 被推翻的推论要留档，不悄悄改——它常是后面某个错误的祖先。</div>
+</div>
+
+<div class="fork">
+  <p class="num">岔路 ⑨</p>
+  <h4>四节课骨架 ★ 小五第二次错，且是自我矛盾</h4>
+  <p class="who">小五的骨架：浪来了 → 你的位置不再安全 → 退潮后海岸线在哪 → 怎么用 AI 放大。</p>
+  <p>晓英推翻：<b>「如果是证明题，其实是说服，说服会触发逆反——我提了一年多第一性原理，更多人可能会抵触。」</b></p>
+  <p>这与岔路④完全自洽：重构不能靠说服，只能靠体验。小五在④说了这句话，在⑨又违反了它。而且这违反了小五自己引用过的一票否决项：「读者视角，非生产者视角」。</p>
+  <div class="fail"><b>根因</b>：没有把「意向状态」显性化。对已经想学的人，证明是有效的；对还没想学的人，证明就是推销。</div>
+</div>
+
+<div class="fork">
+  <p class="num">岔路 ⑪</p>
+  <h4>从「课程」重构为「研究项目」</h4>
+  <p class="who">晓英原话：「我说这个项目而不是这个课程，7 个人相当于是在招募团队，共同研究这个话题。」</p>
+  <p>这一步顺手解开了之前所有卡住的东西——说服/逆反、公益可持续性、7人的孤独感、转述弹药、判据模糊——<b>一次全解</b>。</p>
+  <p>小五的贡献：给「主体性」找恒等式——<code>主体性 ≡ 能提出自己的问题 × 相信选择会有影响 × 愿意承担后果</code></p>
+</div>
+
+<div class="fork">
+  <p class="num">岔路 ⑫</p>
+  <h4>文献核查（全程首次动用外部证据）</h4>
+  <p>小五凭记忆提出：Maier & Seligman 2016 推翻了 1967。核查结果：<b>方向对，但不完整。</b></p>
+  <p>不是「新理论推翻旧理论」，是<b>三层共存</b>：1967机制被推翻、1978归因风格从未被推翻、2016神经机制是当前主流。</p>
+  <div class="rule"><b>R0</b> 凭记忆的文献判断，进入立论之前必须外部核查。当外部证据支持你的方向时，更要标注它的选择偏差。</div>
+</div>
+
+<div class="fork">
+  <p class="num">岔路 ⑭</p>
+  <h4>目标人群 ★ 小五第四次错，同一个病根</h4>
+  <p>小五判断：目标人群锁定「已经在痛的人（茫然、焦虑）」。</p>
+  <p>晓英推翻：茫然焦虑的人需要的是<b>快速获得控制感</b>，要工具不要方法论。真正的目标人群是<b>已经在思考意义感的人</b>——他们已经接受了「意义伴随压力」这个交换。</p>
+  <div class="fail"><b>病根</b>：把复合变量当单一变量。「痛」必须先拆——焦虑之痛贴现率高（要即时缓解），意义之痛贴现率低（才可能承担）。</div>
+</div>
+
+<!-- 三、被推翻的判断 -->
+<h2 id="overturned">三、被推翻的判断汇总</h2>
+
+<table>
+<thead><tr><th>#</th><th>谁的判断</th><th>被什么推翻</th><th>状态</th></tr></thead>
+<tbody>
+<tr><td>E1</td><td>小五：孩子能懂→成人的懂不懂不是瓶颈</td><td>填空 vs 重构是两种动作</td><td>✖ 已废</td></tr>
+<tr><td>E3</td><td>小五：四节课骨架用证明结构</td><td>说服触发逆反</td><td>✖ 自我矛盾</td></tr>
+<tr><td>E7</td><td>小五：能力差别必然归零→窗口不值得</td><td>阶梯性，先放大再消失</td><td>✖ 已废</td></tr>
+<tr><td>E8</td><td>小五：2016推翻了1967</td><td>外部文献：三层共存</td><td>⚠️ 已修正</td></tr>
+<tr><td>E9</td><td>小五：目标人群=已经在痛的人</td><td>焦虑要快速控制感，意义才可能承担</td><td>✖ 已废</td></tr>
+<tr><td>U1</td><td>晓英：层级降低=认同度差</td><td>原话是「听过」不是「没懂」</td><td>🔴 悬空</td></tr>
+</tbody>
+</table>
+
+<p><b>小五的错误密度明显高于晓英</b>，且集中在分类（先列现象后归类）和没有显性化意向状态。</p>
+
+<!-- 四、十条规则 -->
+<h2 id="rules">四、提炼出的十条规则</h2>
+
+<div class="rule"><b>R0</b> 凭记忆的文献判断，进入立论之前必须外部核查。</div>
+<div class="rule"><b>R1</b> 分类之前先找恒等式。先列现象再归类，一定会漏。</div>
+<div class="rule"><b>R2</b> 设计内容前先定对象的<b>意向状态</b>（不知道有问题 / 知道问题不知解法 / 知道解法要路径）。三种状态的结构互不通用。</div>
+<div class="rule"><b>R3</b> 给选项集时先声明分类维度，检查是否同维度。人不选，常是选项没切中。</div>
+<div class="rule"><b>R4</b> 被推翻的推论要留档，不悄悄改——它常是后面某个错误的祖先。</div>
+<div class="rule"><b>R5</b> 悬空的岔路要显性登记，否则会默认选边且无人记得。</div>
+<div class="rule"><b>R6</b> 好的分类维度通常是一个单调变量。说不出那个变量，就是在列现象。</div>
+<div class="rule"><b>R7</b> 设「在乎清单」——在乎但说不清价值的事项，单列保护，不砍、不要求量纲。</div>
+<div class="rule"><b>R8</b> 给选项集时显式声明分类维度，并主动问「这个维度对吗、缺哪一格」。</div>
+<div class="rule"><b>R9</b> 立论必须同时产出反面：本方案在什么条件下会造成它想解决的问题。</div>
+<div class="rule"><b>R10</b> 一个假设若对两个备选同时成立或同时失效，它是共同前提，不能拿来做选择依据。</div>
+
+<!-- 五、还悬着的问题 -->
+<h2 id="open">五、还悬着的问题</h2>
+
+<table>
+<thead><tr><th>#</th><th>悬空项</th><th>影响什么</th><th>最便宜的解法</th></tr></thead>
+<tbody>
+<tr><td>S1</td><td>H-a / H-b / H-c / H-d 未分辨</td><td>四节课该示范还是该铺基础</td><td>那道应用题，问7个人，5分钟</td></tr>
+<tr><td>S2</td><td>7个人的真实诉求未问</td><td>四节课选哪四个领域</td><td>6问微信问卷，已起草</td></tr>
+<tr><td>S3</td><td>「显著帮助」判据未定</td><td>三个月后无法判断成没成</td><td>让7个人自己回答</td></tr>
+<tr><td>S4</td><td>研究共同体的三条边界未定</td><td>「研究」没有失败判据就永远做下去</td><td>第一场开场说清，10分钟</td></tr>
+</tbody>
+</table>
+
+<p>S1+S2+S3 可以合成一次动作。但晓英已判断：问卷的填写率与信息深度都不够，需要一次开放式沟通。</p>
+
+<!-- 六、元错误观察 -->
+<h2 id="meta">六、元错误观察（小五）</h2>
+
+<table>
+<thead><tr><th>元错误</th><th>描述</th><th>发作</th></tr></thead>
+<tbody>
+<tr><td><b>M-a</b></td><td>把动态问题当静态处理，取终局值，忽略过程形态</td><td>E1 填空/重构 · E7 能力差别</td></tr>
+<tr><td><b>M-b</b></td><td>把复合变量当单一变量，没拆维度就分组</td><td>E3 意向状态 · E9 痛的类型</td></tr>
+<tr><td><b>M-c</b></td><td>把 purpose 问题降维成 mechanism 问题</td><td>⑮ 组织类比</td></tr>
+</tbody>
+</table>
+
+<p>M-b 已有对治工具（<code>audience-dimension</code>）。M-a、M-c 还没有对治工具。</p>
+
+<hr>
+
+<!-- 页面反馈 -->
+<div class="feedback-box">
+  <p>这个案例对你有帮助吗？</p>
+  <button onclick="fb(this,'有帮助')">有帮助</button>
+  <button onclick="fb(this,'有启发')">有启发</button>
+  <button onclick="fb(this,'一般')">一般</button>
+  <p style="margin-top:12px; font-size:13px">
+    <a href="mailto:zhenda.liang@gmail.com?subject=心问案例反馈&body=我对「从超级个体系列课到四节认知课」这个案例的反馈：">或写一段具体反馈 →</a>
+  </p>
+</div>
+
+<p class="foot">心问 · ibx.world · 案例留档<br>
+砍掉的比留下的多，这是正常的，也是这次对话真正的产出。</p>
+
+</div>
+
+<script>
+function fb(btn, vote){
+  var KEY='xinwen.case.fb.v1';
+  var data={};
+  try{ data=JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){}
+  var id='thinking-flow-01';
+  if(!data[id]) data[id]={};
+  data[id][vote]=(data[id][vote]||0)+1;
+  try{ localStorage.setItem(KEY, JSON.stringify(data)); }catch(e){}
+  btn.parentNode.querySelectorAll('button').forEach(function(b){ b.classList.remove('picked'); });
+  btn.classList.add('picked');
+}
+</script>
+</body>
+</html>
