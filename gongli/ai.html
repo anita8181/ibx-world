@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>看懂 AI：三段路、一条边界、一个位置 · 写给普通人的最短说明</title>
+<style>
+  :root{
+    --bg:#FAF7F2; --ink:#1F2421; --ink2:#4A4F4B; --line:#DCD5C9;
+    --a1:#B4541E; --a2:#2E5E7E; --a3:#4A7C59; --warn:#8A5A83; --muted:#8A8579;
+    --card:#FFFDF9;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Songti SC","Source Han Serif SC","Noto Serif CJK SC",Georgia,serif;
+    line-height:1.85; font-size:17px;
+  }
+  .wrap{max-width:880px; margin:0 auto; padding:0 28px 100px;}
+  h1{font-size:34px; line-height:1.35; margin:0 0 8px; letter-spacing:.02em}
+  .sub{color:var(--muted); font-size:15px; margin:0 0 6px}
+  h2{font-size:24px; margin:64px 0 6px; padding-top:26px; border-top:2px solid var(--ink); letter-spacing:.02em}
+  h3{font-size:18px; margin:34px 0 8px}
+  p{margin:12px 0}
+  .lead{font-size:18px; color:var(--ink2)}
+  figure{margin:26px 0; padding:20px 18px 12px; background:var(--card); border:1px solid var(--line); border-radius:10px}
+  figcaption{font-size:13.5px; color:var(--muted); margin-top:10px; text-align:center; line-height:1.6}
+  svg{display:block; width:100%; height:auto}
+  .note{background:#F2EEE6; border-left:4px solid var(--muted); padding:12px 16px; margin:20px 0; font-size:15.5px; color:var(--ink2)}
+  .fail{background:#FBF1F6; border-left:4px solid var(--warn); padding:14px 18px; margin:24px 0; font-size:15.5px}
+  .fail b{color:var(--warn)}
+  table{width:100%; border-collapse:collapse; margin:20px 0; font-size:15px}
+  th,td{border:1px solid var(--line); padding:9px 11px; text-align:left; vertical-align:top}
+  th{background:#F1ECE3; font-weight:600}
+  .tag{display:inline-block; font-size:12.5px; padding:2px 9px; border-radius:20px; color:#fff; margin-right:6px; vertical-align:2px; font-family:system-ui,sans-serif}
+  .t1{background:var(--a1)} .t2{background:var(--a2)} .t3{background:var(--a3)}
+  ul,ol{padding-left:22px} li{margin:7px 0}
+  hr{border:0; border-top:1px solid var(--line); margin:44px 0}
+  .foot{color:var(--muted); font-size:13.5px; margin-top:60px; text-align:center}
+  @media print{ body{font-size:12pt} .wrap{padding:0} h2{page-break-after:avoid} figure{page-break-inside:avoid} }
+</style>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/favicon-180.png">
+
+<style>
+  .sitebar{display:flex; align-items:center; gap:14px; padding:22px 0 0; margin:0 0 34px}
+  .sitebar svg{height:26px; width:auto; display:block}
+  .sitebar a{margin-left:auto; color:#8A8579; text-decoration:none; font-size:14.5px;
+    letter-spacing:.04em; border-bottom:1px solid #DCD5C9; padding-bottom:2px}
+  .sitebar a:hover{color:#1F2421; border-color:#1F2421}
+  .series{margin:56px 0 0; border-top:1px solid #DCD5C9; padding-top:24px}
+  .series .st{font-size:12.5px; letter-spacing:.26em; color:#8A8579;
+    font-family:system-ui,sans-serif; margin:0 0 14px}
+  .series ol{list-style:none; padding:0; margin:0}
+  .series li{margin:0 0 2px}
+  .series a, .series span.cur{display:flex; align-items:baseline; gap:12px;
+    text-decoration:none; color:#4A4F4B; padding:9px 12px; border-radius:6px}
+  .series a:hover{background:#F1ECE3; color:#1F2421}
+  .series span.cur{background:#F1ECE3; color:#1F2421}
+  .series .no{font-size:14px; color:#8A8579; width:1.4em; flex:none; text-align:center}
+  .series .role{font-size:12.5px; color:#8A8579; font-family:system-ui,sans-serif;
+    border:1px solid #DCD5C9; border-radius:3px; padding:0 6px; flex:none}
+  .series .tt{font-size:16px}
+  .series .dd{font-size:13.5px; color:#8A8579; margin-left:auto; text-align:right}
+  @media (max-width:620px){ .series .dd{display:none} }
+  .backq{border-left:2px solid #C1272D; padding:6px 0 6px 22px; margin:48px 0 0}
+  .backq .k{font-size:12.5px; letter-spacing:.24em; color:#C1272D; font-family:system-ui,sans-serif}
+  .backq p{font-size:17.5px; margin:10px 0}
+  .backq .three{color:#4A4F4B; font-size:16px; line-height:2.1; margin:16px 0 0}
+  .backq a{color:#1F2421}
+  @media print{ .sitebar,.series,.backq{display:none} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+
+<div class="sitebar">
+  <svg viewBox="0 0 232 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="心问"><title>心问</title><circle cx="32" cy="32" r="24" fill="none" stroke="#1F2421" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="132 19" transform="rotate(-58 32 32)"/><path d="M32 37 C23.5 30.5 22 23.5 27 23.5 C29.6 23.5 32 26 32 26 C32 26 34.4 23.5 37 23.5 C42 23.5 40.5 30.5 32 37 Z" fill="#C1272D"/><g transform="translate(78 44) scale(0.034 -0.034)" fill="#1F2421"><path d="M435 831 422 823C484 754 561 644 582 561C662 501 712 679 435 831ZM397 648 298 659V50C298 -16 326 -34 423 -34H568C774 -34 815 -22 815 13C815 27 808 35 783 42L780 220H767C752 138 738 70 729 50C724 40 719 35 703 34C682 31 635 30 570 30H429C373 30 363 40 363 65V622C386 625 395 635 397 648ZM766 518 755 509C843 412 881 263 898 175C965 102 1031 322 766 518ZM175 533H157C159 394 111 261 59 207C43 186 36 166 36 146C36 106 60 76 92 76C112 76 130 88 143 113C171 165 182 292 175 533Z"/></g></svg>
+  <a href="/">← 回心问</a>
+</div>
+
+<h1>看懂 AI：三段路、一条边界、一个位置</h1>
+<p class="sub">写给普通人的最短说明 · 据 0728 课程《AI 与企业》整理</p>
+<p class="lead">对 AI 的态度常见两个极端：一个说"它会幻觉，没法用"，一个说"它这么强，全交给它"。这两个看法看似相反，其实犯了同一个错——把 AI 当成一个固定不变的东西。校正它不需要学技术，只需要看清三件事：<b>它怎么走到今天、它正往哪走、它到不了哪里</b>。看完，两个极端会自己消失。</p>
+
+<h2>〇 · 先校正：两个极端，错在同一处</h2>
+
+<p>先把两种说法各自的道理承认下来，再看它们错在哪。</p>
+
+<ul>
+<li><b>"幻觉派"</b>：AI 张口就答时会一本正经地编，这没错。但它拿"快思考"的翻车，否定了整个东西。</li>
+<li><b>"代劳派"</b>：AI 在编程、写作、分析上确实强，这也没错。但它把"边界内"的成功，外推到了边界外。</li>
+</ul>
+
+<p>同一个错误是：<b>把 AI 某个时刻、某种形态的表现，当成了 AI 本身。</b>而 AI 是过去十年里变化最快的东西——用静止的眼光看它，怎么看怎么错。</p>
+
+<figure>
+<svg viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg" font-family="'Songti SC',serif">
+  <defs>
+    <marker id="ar0" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 z" fill="#8A8579"/>
+    </marker>
+  </defs>
+  <text x="400" y="26" text-anchor="middle" font-size="16" fill="#1F2421" font-weight="bold">两个极端，同一个错误</text>
+
+  <rect x="24" y="56" width="220" height="110" rx="8" fill="#FBF1F6" stroke="#8A5A83"/>
+  <text x="134" y="84" text-anchor="middle" font-size="15" font-weight="bold" fill="#8A5A83">极端一 · 幻觉派</text>
+  <text x="134" y="112" text-anchor="middle" font-size="13" fill="#1F2421">"它会编，不能用"</text>
+  <text x="134" y="136" text-anchor="middle" font-size="12.5" fill="#4A4F4B">拿快思考的翻车</text>
+  <text x="134" y="154" text-anchor="middle" font-size="12.5" fill="#4A4F4B">否定整个 AI</text>
+
+  <rect x="556" y="56" width="220" height="110" rx="8" fill="#FFF3EB" stroke="#B4541E"/>
+  <text x="666" y="84" text-anchor="middle" font-size="15" font-weight="bold" fill="#B4541E">极端二 · 代劳派</text>
+  <text x="666" y="112" text-anchor="middle" font-size="13" fill="#1F2421">"它很强，全交它"</text>
+  <text x="666" y="136" text-anchor="middle" font-size="12.5" fill="#4A4F4B">拿边界内的成功</text>
+  <text x="666" y="154" text-anchor="middle" font-size="12.5" fill="#4A4F4B">外推到边界外</text>
+
+  <line x1="246" y1="111" x2="318" y2="111" stroke="#8A8579" marker-end="url(#ar0)"/>
+  <line x1="554" y1="111" x2="482" y2="111" stroke="#8A8579" marker-end="url(#ar0)"/>
+
+  <rect x="326" y="66" width="150" height="90" rx="8" fill="#1F2421"/>
+  <text x="401" y="98" text-anchor="middle" font-size="13.5" fill="#fff" font-weight="bold">同一个错误</text>
+  <text x="401" y="122" text-anchor="middle" font-size="12.5" fill="#D8D3C8">把 AI 当成</text>
+  <text x="401" y="140" text-anchor="middle" font-size="12.5" fill="#D8D3C8">静止的东西</text>
+
+  <line x1="400" y1="158" x2="400" y2="196" stroke="#8A8579" marker-end="url(#ar0)"/>
+
+  <rect x="76" y="204" width="648" height="72" rx="8" fill="#F2EEE6" stroke="#DCD5C9"/>
+  <text x="400" y="230" text-anchor="middle" font-size="14" fill="#1F2421" font-weight="bold">校正只需三问：它怎么走到今天？它正往哪走？它到不了哪里？</text>
+  <text x="400" y="256" text-anchor="middle" font-size="13" fill="#4A4F4B">答案就藏在它的发展史里——而发展史只有三段路。</text>
+</svg>
+<figcaption>图 1 · 德鲁克说："动荡时代最大的危险不是动荡本身，而是延续昨天的逻辑。"两个极端，都是昨天的逻辑。</figcaption>
+</figure>
+
+<h2>一 · 过去：七十年，只走了三段路</h2>
+
+<p>AI 的历史听起来很长，其实主线只有三段：<b>专用智能 → 从专用到通用 → 智能体</b>。每一段只解决一个上一段解决不了的问题。</p>
+
+<h3><span class="tag t1">第 1 段</span>专用智能：从预编程到涌现（1950—2016）</h3>
+
+<figure>
+<svg viewBox="0 0 800 330" xmlns="http://www.w3.org/2000/svg" font-family="'Songti SC',serif">
+  <text x="400" y="26" text-anchor="middle" font-size="16" font-weight="bold" fill="#1F2421">第 1 段路：四个路标</text>
+
+  <line x1="40" y1="70" x2="760" y2="70" stroke="#DCD5C9" stroke-width="2"/>
+
+  <g font-size="12.5">
+    <circle cx="110" cy="70" r="6" fill="#B4541E"/>
+    <text x="110" y="52" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#B4541E">1950s</text>
+    <rect x="34" y="88" width="152" height="120" rx="7" fill="#FFFDF9" stroke="#DCD5C9"/>
+    <text x="110" y="112" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#1F2421">达特茅斯会议</text>
+    <text x="110" y="136" text-anchor="middle" fill="#4A4F4B">图灵测试、AI 命名</text>
+    <text x="110" y="156" text-anchor="middle" fill="#8A8579">学科诞生</text>
+    <text x="110" y="184" text-anchor="middle" fill="#8A8579">——</text>
+
+    <circle cx="300" cy="70" r="6" fill="#B4541E"/>
+    <text x="300" y="52" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#B4541E">1997</text>
+    <rect x="224" y="88" width="152" height="120" rx="7" fill="#FFFDF9" stroke="#DCD5C9"/>
+    <text x="300" y="112" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#1F2421">深蓝胜棋王</text>
+    <text x="300" y="136" text-anchor="middle" fill="#4A4F4B">人写规则 + 暴力搜索</text>
+    <text x="300" y="156" text-anchor="middle" fill="#8A8579">有限解空间的优化</text>
+    <text x="300" y="184" text-anchor="middle" fill="#8A8579">排程 · 路径规划</text>
+
+    <circle cx="490" cy="70" r="6" fill="#B4541E"/>
+    <text x="490" y="52" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#B4541E">2012</text>
+    <rect x="414" y="88" width="152" height="120" rx="7" fill="#FFF3EB" stroke="#B4541E"/>
+    <text x="490" y="112" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#1F2421">AlexNet 夺冠</text>
+    <text x="490" y="136" text-anchor="middle" fill="#4A4F4B">深度学习：自己学特征</text>
+    <text x="490" y="156" text-anchor="middle" fill="#8A8579">不靠人写规则，感知飞跃</text>
+    <text x="490" y="184" text-anchor="middle" fill="#8A8579">人脸识别 · 推荐算法</text>
+
+    <circle cx="680" cy="70" r="6" fill="#B4541E"/>
+    <text x="680" y="52" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#B4541E">2016</text>
+    <rect x="604" y="88" width="152" height="120" rx="7" fill="#FFF3EB" stroke="#B4541E"/>
+    <text x="680" y="112" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#1F2421">AlphaGo"第37手"</text>
+    <text x="680" y="136" text-anchor="middle" fill="#4A4F4B">+ 强化学习自我博弈</text>
+    <text x="680" y="156" text-anchor="middle" fill="#8A8579">无限解空间的优化</text>
+    <text x="680" y="184" text-anchor="middle" fill="#8A8579">数据中心能耗↓40%</text>
+  </g>
+
+  <rect x="34" y="232" width="722" height="76" rx="7" fill="#F2EEE6" stroke="#DCD5C9"/>
+  <text x="52" y="258" font-size="13.5" fill="#1F2421" font-weight="bold">这一段的全部特征：一个 AI 只会一件事。</text>
+  <text x="52" y="282" font-size="13.5" fill="#4A4F4B">会下棋的不会看图，会看图的不会说话。每个都是专用的工具——强，但只强在格子里。</text>
+</svg>
+<figcaption>图 2 · 专用智能六十年：每个里程碑都是"一件事做到极致"，但事情本身要人来挑。</figcaption>
+</figure>
+
+<p>比四个路标更重要的是底下的暗线——<b>人退出的方式</b>。看懂这条暗线，后面两段路全都能预判：</p>
+
+<figure>
+<svg viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg" font-family="'Songti SC',serif">
+  <defs>
+    <marker id="ar1" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 z" fill="#8A8579"/>
+    </marker>
+  </defs>
+  <text x="400" y="26" text-anchor="middle" font-size="16" font-weight="bold" fill="#1F2421">人的介入，逐格减少；能力，逐格涌现</text>
+
+  <g font-size="13">
+    <rect x="24" y="56" width="230" height="150" rx="8" fill="#F7F4EE" stroke="#DCD5C9"/>
+    <text x="139" y="82" text-anchor="middle" font-size="14" font-weight="bold" fill="#1F2421">① 预编程</text>
+    <text x="139" y="106" text-anchor="middle" fill="#B4541E" font-weight="bold">人教规则</text>
+    <text x="44" y="134" fill="#4A4F4B">if 耳朵尖 and 有胡须 then 猫</text>
+    <text x="44" y="158" fill="#8A8579">规则永远写不完——</text>
+    <text x="44" y="178" fill="#8A8579">折耳猫怎么办？</text>
+
+    <rect x="286" y="56" width="230" height="150" rx="8" fill="#FFF3EB" stroke="#B4541E"/>
+    <text x="401" y="82" text-anchor="middle" font-size="14" font-weight="bold" fill="#1F2421">② 机器学习 ML</text>
+    <text x="401" y="106" text-anchor="middle" fill="#B4541E" font-weight="bold">人给答案</text>
+    <text x="306" y="134" fill="#4A4F4B">10 万张标注图喂进去</text>
+    <text x="306" y="158" fill="#8A8579">机器自己找特征——</text>
+    <text x="306" y="178" fill="#8A8579">找到的特征，人说不清</text>
+
+    <rect x="548" y="56" width="230" height="150" rx="8" fill="#FFF3EB" stroke="#B4541E" stroke-width="1.5"/>
+    <text x="663" y="82" text-anchor="middle" font-size="14" font-weight="bold" fill="#1F2421">③ 强化学习 RL</text>
+    <text x="663" y="106" text-anchor="middle" fill="#B4541E" font-weight="bold">只给目标</text>
+    <text x="568" y="134" fill="#4A4F4B">连答案都不给，只给胜负</text>
+    <text x="568" y="158" fill="#8A8579">自我博弈几百万局——</text>
+    <text x="568" y="178" fill="#8A8579">下出人类没见过的棋</text>
+  </g>
+
+  <line x1="256" y1="131" x2="280" y2="131" stroke="#8A8579" marker-end="url(#ar1)"/>
+  <line x1="518" y1="131" x2="542" y2="131" stroke="#8A8579" marker-end="url(#ar1)"/>
+
+  <rect x="24" y="228" width="754" height="52" rx="7" fill="#1F2421"/>
+  <text x="400" y="251" text-anchor="middle" font-size="14" fill="#fff" font-weight="bold">人教规则 → 人给答案 → 只给目标</text>
+  <text x="400" y="271" text-anchor="middle" font-size="12.5" fill="#D8D3C8">这条暗线没有停——它只是走完了专用智能这一段。</text>
+</svg>
+<figcaption>图 3 · 第 1 段路的发动机：人退得越远，机器自己长出来的能力越多。记住这条线，它是理解后两段的钥匙。</figcaption>
+</figure>
+
+<h3><span class="tag t2">第 2 段</span>从专用到通用：从会说到会想（2017—2025）</h3>
+
+<figure>
+<svg viewBox="0 0 800 330" xmlns="http://www.w3.org/2000/svg" font-family="'Songti SC',serif">
+  <text x="400" y="26" text-anchor="middle" font-size="16" font-weight="bold" fill="#1F2421">第 2 段路：一个 AI，什么都能聊，然后什么都会想一点</text>
+
+  <line x1="40" y1="70" x2="760" y2="70" stroke="#DCD5C9" stroke-width="2"/>
+
+  <g font-size="12.5">
+    <circle cx="110" cy="70" r="6" fill="#2E5E7E"/>
+    <text x="110" y="52" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#2E5E7E">2017–22</text>
+    <rect x="34" y="88" width="152" height="130" rx="7" fill="#EDF4F8" stroke="#2E5E7E"/>
+    <text x="110" y="112" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#1F2421">ChatGPT</text>
+    <text x="110" y="136" text-anchor="middle" fill="#4A4F4B">大语言模型 LLM</text>
+    <text x="110" y="156" text-anchor="middle" fill="#4A4F4B">Transformer + RLHF</text>
+    <text x="110" y="180" text-anchor="middle" fill="#8A8579">文字接龙，什么都能聊</text>
+    <text x="110" y="200" text-anchor="middle" fill="#8A8579">——但不保证对</text>
+
+    <circle cx="300" cy="70" r="6" fill="#2E5E7E"/>
+    <text x="300" y="52" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#2E5E7E">2023</text>
+    <rect x="224" y="88" width="152" height="130" rx="7" fill="#FFFDF9" stroke="#DCD5C9"/>
+    <text x="300" y="112" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#1F2421">GPT-4o 多模态</text>
+    <text x="300" y="136" text-anchor="middle" fill="#4A4F4B">从文字到图片、视频</text>
+    <text x="300" y="156" text-anchor="middle" fill="#8A8579">文生图 · 文生视频</text>
+    <text x="300" y="180" text-anchor="middle" fill="#8A8579">剪视频 · 写 PPT</text>
+
+    <circle cx="490" cy="70" r="6" fill="#2E5E7E"/>
+    <text x="490" y="52" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#2E5E7E">2024</text>
+    <rect x="414" y="88" width="152" height="130" rx="7" fill="#EDF4F8" stroke="#2E5E7E"/>
+    <text x="490" y="112" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#1F2421">o1 推理模型</text>
+    <text x="490" y="136" text-anchor="middle" fill="#4A4F4B">思维链 CoT：慢思考</text>
+    <text x="490" y="156" text-anchor="middle" fill="#8A8579">先拆步骤再回答</text>
+    <text x="490" y="180" text-anchor="middle" fill="#8A8579">开始会做数学题</text>
+    <text x="490" y="200" text-anchor="middle" fill="#8A8579">辅助调研 · 写代码</text>
+
+    <circle cx="680" cy="70" r="6" fill="#2E5E7E"/>
+    <text x="680" y="52" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#2E5E7E">2025</text>
+    <rect x="604" y="88" width="152" height="130" rx="7" fill="#EDF4F8" stroke="#2E5E7E" stroke-width="1.5"/>
+    <text x="680" y="112" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#1F2421">o3 · ARC-AGI 突破</text>
+    <text x="680" y="136" text-anchor="middle" fill="#B4541E" font-weight="bold">87.5 分（人类 66）</text>
+    <text x="680" y="156" text-anchor="middle" fill="#8A8579">Scaling Law II：堆时间</text>
+    <text x="680" y="180" text-anchor="middle" fill="#8A8579">推理能力可按需购买</text>
+    <text x="680" y="200" text-anchor="middle" fill="#8A8579">深度研究 · AI 编程</text>
+  </g>
+
+  <rect x="34" y="240" width="722" height="68" rx="7" fill="#F2EEE6" stroke="#DCD5C9"/>
+  <text x="52" y="264" font-size="13.5" fill="#1F2421" font-weight="bold">这一段的跃迁：从"不靠谱"到"靠谱"。</text>
+  <text x="52" y="288" font-size="13.5" fill="#4A4F4B">靠的不是消灭幻觉，而是给 AI 装上第二套思考系统——见下图。</text>
+</svg>
+<figcaption>图 4 · 第 2 段路：聊天的模型先学会"想"，再按"想的时间"卖钱——推理第一次成了可以按需购买的商品。</figcaption>
+</figure>
+
+<figure>
+<svg viewBox="0 0 800 280" xmlns="http://www.w3.org/2000/svg" font-family="'Songti SC',serif">
+  <text x="400" y="26" text-anchor="middle" font-size="16" font-weight="bold" fill="#1F2421">快思考 vs 慢思考：为什么同一个 AI，有时翻车有时靠谱</text>
+
+  <rect x="24" y="50" width="350" height="170" rx="8" fill="#FFFDF9" stroke="#DCD5C9"/>
+  <text x="199" y="78" text-anchor="middle" font-size="14.5" font-weight="bold" fill="#B4541E">系统 1 · 快思考</text>
+  <text x="199" y="100" text-anchor="middle" font-size="12.5" fill="#8A8579">（初版 ChatGPT 这类）</text>
+  <text x="48" y="130" font-size="13.5" fill="#1F2421">张口就答，一步出结果。</text>
+  <text x="48" y="156" font-size="13.5" fill="#4A4F4B">快、便宜，但复杂问题翻车——</text>
+  <text x="48" y="178" font-size="13.5" fill="#4A4F4B">幻觉、算错账，都出在这里。</text>
+  <text x="48" y="204" font-size="12.5" fill="#8A8579">像人凭直觉抢答。</text>
+
+  <text x="400" y="140" text-anchor="middle" font-size="17" font-weight="bold" fill="#8A8579">VS</text>
+
+  <rect x="426" y="50" width="350" height="170" rx="8" fill="#EDF4F8" stroke="#2E5E7E" stroke-width="1.5"/>
+  <text x="601" y="78" text-anchor="middle" font-size="14.5" font-weight="bold" fill="#2E5E7E">系统 2 · 慢思考</text>
+  <text x="601" y="100" text-anchor="middle" font-size="12.5" fill="#8A8579">（o1 / o3 这类推理模型）</text>
+  <text x="450" y="130" font-size="13.5" fill="#1F2421">先拆步骤、自我检查、再回答。</text>
+  <text x="450" y="156" font-size="13.5" fill="#4A4F4B">慢、费 token，但靠谱——</text>
+  <text x="450" y="178" font-size="13.5" fill="#4A4F4B">数学、代码、复杂归因都行。</text>
+  <text x="450" y="204" font-size="12.5" fill="#8A8579">像人打草稿再交卷。</text>
+
+  <rect x="24" y="238" width="752" height="32" rx="6" fill="#F2EEE6" stroke="#DCD5C9"/>
+  <text x="400" y="259" text-anchor="middle" font-size="13" fill="#1F2421">所以"AI 又答错了"要先问一句：<tspan font-weight="bold">它当时用的是哪套系统？</tspan>快思考的错，不等于慢思考也会犯。</text>
+</svg>
+<figcaption>图 5 · 两套系统解释了"幻觉派"的一半道理：快思考确实会编；也解释了它错在哪：慢思考是另一回事。</figcaption>
+</figure>
+
+<h3><span class="tag t3">第 3 段</span>智能体：从"会想"到"会做"（正在进行）</h3>
+
+<figure>
+<svg viewBox="0 0 800 260" xmlns="http://www.w3.org/2000/svg" font-family="'Songti SC',serif">
+  <defs>
+    <marker id="ar2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 z" fill="#4A7C59"/>
+    </marker>
+  </defs>
+  <text x="400" y="26" text-anchor="middle" font-size="16" font-weight="bold" fill="#1F2421">第 3 段路：能力的四个台阶</text>
+
+  <g font-size="13">
+    <rect x="24" y="60" width="170" height="110" rx="8" fill="#F7F4EE" stroke="#DCD5C9"/>
+    <text x="109" y="88" text-anchor="middle" font-size="14" font-weight="bold" fill="#1F2421">感知 AI</text>
+    <text x="109" y="114" text-anchor="middle" fill="#4A4F4B">看懂、听懂世界</text>
+    <text x="109" y="138" text-anchor="middle" fill="#8A8579" font-size="12">（第 1 段已完成）</text>
+
+    <rect x="222" y="60" width="170" height="110" rx="8" fill="#EDF4F8" stroke="#2E5E7E"/>
+    <text x="307" y="88" text-anchor="middle" font-size="14" font-weight="bold" fill="#1F2421">推理 AI</text>
+    <text x="307" y="114" text-anchor="middle" fill="#4A4F4B">想清楚、算明白</text>
+    <text x="307" y="138" text-anchor="middle" fill="#8A8579" font-size="12">（第 2 段已完成）</text>
+
+    <rect x="420" y="60" width="170" height="110" rx="8" fill="#EDF6EC" stroke="#4A7C59" stroke-width="1.5"/>
+    <text x="505" y="88" text-anchor="middle" font-size="14" font-weight="bold" fill="#4A7C59">智能体 AI</text>
+    <text x="505" y="114" text-anchor="middle" fill="#1F2421">拆任务、调工具、去动手</text>
+    <text x="505" y="138" text-anchor="middle" fill="#4A7C59" font-size="12" font-weight="bold">← 我们在这里</text>
+
+    <rect x="618" y="60" width="158" height="110" rx="8" fill="#F7F4EE" stroke="#DCD5C9"/>
+    <text x="697" y="88" text-anchor="middle" font-size="14" font-weight="bold" fill="#1F2421">物理 AI</text>
+    <text x="697" y="114" text-anchor="middle" fill="#4A4F4B">进入真实世界</text>
+    <text x="697" y="138" text-anchor="middle" fill="#8A8579" font-size="12">仿真器里练，再上岗</text>
+  </g>
+
+  <g stroke="#4A7C59" fill="none">
+    <line x1="196" y1="115" x2="216" y2="115" marker-end="url(#ar2)"/>
+    <line x1="394" y1="115" x2="414" y2="115" marker-end="url(#ar2)"/>
+    <line x1="592" y1="115" x2="616" y2="115" marker-end="url(#ar2)"/>
+  </g>
+
+  <rect x="24" y="192" width="752" height="52" rx="7" fill="#F2EEE6" stroke="#DCD5C9"/>
+  <text x="44" y="214" font-size="13.5" fill="#1F2421">智能体 = 模型负责想 + <tspan font-weight="bold">规划器</tspan>负责拆任务 + 工具负责动手。</text>
+  <text x="44" y="234" font-size="13.5" fill="#4A4F4B">AI 编程、深度研究，已经是智能体的雏形；下一步是接管完整的工作流。</text>
+</svg>
+<figcaption>图 6 · 第 3 段路的方向：从"会说、会想"变成"会做"，再变成"在物理世界里做"。</figcaption>
+</figure>
+
+<div class="note">
+<b>给管理者的一句提醒（课程原话的三个抓手）：</b>看 AI 不用追新闻，盯三件事就够——<b>能力边界</b>（它现在能做什么）、<b>成本结构</b>（推理能力的价格在持续下降）、<b>变化速率</b>（AI 单技能超过人类所需的时间越来越短）。其中最容易被低估的是第三个：用"它今天行不行"做三年规划，等于延续昨天的逻辑。
+</div>
+
+<h2>二 · 边界：它到不了哪里</h2>
+
+<p>讲完三段路，"代劳派"通常会说：照这个速度，还有什么它做不到？课程给的答案是一张试卷——<b>ARC-AGI-2</b>，专门测<b>流体智力</b>：从几个例子看出新规律、马上用到新题目上的能力。这是"真正的聪明"最核心的部分。</p>
+
+<figure>
+<svg viewBox="0 0 800 340" xmlns="http://www.w3.org/2000/svg" font-family="'Songti SC',serif">
+  <text x="400" y="26" text-anchor="middle" font-size="16" font-weight="bold" fill="#1F2421">ARC-AGI-2 成绩单：测"没见过的新规律"</text>
+
+  <g font-size="13">
+    <text x="30" y="66" fill="#1F2421" font-weight="bold">人类平均分</text>
+    <rect x="200" y="50" width="462" height="26" rx="4" fill="#4A7C59"/>
+    <text x="672" y="68" fill="#4A7C59" font-weight="bold">66 分</text>
+
+    <text x="30" y="116" fill="#1F2421">GLM-5.2</text>
+    <rect x="200" y="100" width="160" height="26" rx="4" fill="#2E5E7E"/>
+    <text x="370" y="118" fill="#2E5E7E" font-weight="bold">22.8</text>
+
+    <text x="30" y="166" fill="#1F2421">Sonnet 4.5</text>
+    <rect x="200" y="150" width="95" height="26" rx="4" fill="#2E5E7E"/>
+    <text x="305" y="168" fill="#2E5E7E" font-weight="bold">13.6</text>
+
+    <text x="30" y="216" fill="#1F2421">Kimi 2.5</text>
+    <rect x="200" y="200" width="83" height="26" rx="4" fill="#2E5E7E"/>
+    <text x="293" y="218" fill="#2E5E7E" font-weight="bold">11.8</text>
+
+    <text x="30" y="266" fill="#1F2421">DeepSeek V3.2</text>
+    <rect x="200" y="250" width="28" height="26" rx="4" fill="#2E5E7E"/>
+    <text x="238" y="268" fill="#2E5E7E" font-weight="bold">≈4</text>
+  </g>
+
+  <line x1="662" y1="42" x2="662" y2="282" stroke="#4A7C59" stroke-dasharray="4 3" opacity=".5"/>
+
+  <text x="30" y="310" font-size="12.5" fill="#8A8579">注意：这里的每一道题，训练数据里都不可能有——刷题刷不出流体智力。</text>
+</svg>
+<figcaption>图 7 · 试卷上全是没见过的图形规律题。最强模型拿二十几分，普通人拿 66 分。背下来的聪明，和现场长出来的聪明，还是两回事。</figcaption>
+</figure>
+
+<p>AI 具体卡在三种题上，这三种题恰好说明了边界的形状：</p>
+
+<ul>
+<li><b>符号解释</b>——要把符号读出"意思"，不只是看出形状。AI 会检查对称、镜像，却读不懂符号背后的语义。</li>
+<li><b>组合推理</b>——几条规则同时起作用、互相影响。规则一多，AI 就顾此失彼。</li>
+<li><b>上下文规则应用</b>——同一个规则，换个场合要用法不同。AI 容易只看表面模式，忽略"什么时候该用哪条"的选择原则。</li>
+</ul>
+
+<h3>为什么幻觉无法被彻底消灭</h3>
+
+<p>回到开头"幻觉派"的问题。课程在这里把话讲透了：LLM 的本质是<b>文字接龙</b>——它生成的是"像真的"的内容，不是"保证真"的内容。快思考里没有自我检查这一环，所以幻觉不是 bug，是结构。</p>
+
+<p>但要精确：<b>幻觉无法被消灭，不等于它无法被管住。</b>管它的办法已经有了三样：慢思考（系统 2 自我检查）、工具验证（让代码跑一遍、让数据查一遍）、以及人兜底（见第三节）。这就是"幻觉派"漏掉的后半截。</p>
+
+<h3>两位最懂行的人，说的是同一个词</h3>
+
+<p>杨立昆（图灵奖得主）说：LLM 不具备真正的推理能力。哈萨比斯（AlphaGo 之父）说得更形象：现在的 AI 是<b>参差不齐的智能（Jagged Intelligence）</b>——同一张卷子，博士级的题答对，小学级的题答错。它不是"处处比人差一点"，而是"有的地方超出人，有的地方还是零"。</p>
+
+<div class="fail">
+<b>预失败检验：</b>假设这份"边界论"错了，最可能的<b>单一</b>原因是什么？<br>
+最可能是<b>把今天的边界当成了永久的</b>。ARC-AGI-1 的分数，三年内从 0 涨到 87.5（超过人类平均 66）；ARC-AGI-2 上二十几分的成绩，也可能被下一代模型击穿。<br>
+所以要动态地记这一节：<b>不变的是判断方法</b>——拿"流体智力、符号意义、责任归属"这三件事去问任何新模型；<b>会变的是具体的分数线</b>。看方法，别背数字。
+</div>
+
+<h2>三 · 人的位置：三个不可替代</h2>
+
+<p>课程最后连问三次"AI 可以取代人类了吗"，每次的答案都指向人身上一样 AI 没有的东西。这三样东西，就是普通人最该守的位置。</p>
+
+<figure>
+<svg viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg" font-family="'Songti SC',serif">
+  <text x="400" y="26" text-anchor="middle" font-size="16" font-weight="bold" fill="#1F2421">连问三次"能取代吗"，三个答案</text>
+
+  <g font-size="13">
+    <rect x="24" y="54" width="240" height="180" rx="8" fill="#FFF3EB" stroke="#B4541E"/>
+    <text x="144" y="82" text-anchor="middle" font-size="14.5" font-weight="bold" fill="#B4541E">① 物理规律</text>
+    <text x="44" y="112" fill="#1F2421">AI 没有身体。</text>
+    <text x="44" y="138" fill="#4A4F4B">真实世界的摩擦、重量、</text>
+    <text x="44" y="158" fill="#4A4F4B">意外，要具身去碰才知道。</text>
+    <text x="44" y="186" fill="#8A8579">仿真能练套路，练不出</text>
+    <text x="44" y="206" fill="#8A8579">对物理世界的全部直觉。</text>
+
+    <rect x="280" y="54" width="240" height="180" rx="8" fill="#EDF4F8" stroke="#2E5E7E"/>
+    <text x="400" y="82" text-anchor="middle" font-size="14.5" font-weight="bold" fill="#2E5E7E">② 目的</text>
+    <text x="300" y="112" fill="#1F2421">AI 只有目标，没有"想要"。</text>
+    <text x="300" y="138" fill="#4A4F4B">目标是人给的；给错目标，</text>
+    <text x="300" y="158" fill="#4A4F4B">能力越强，跑偏越快。</text>
+    <text x="300" y="186" fill="#8A8579">"做不做、为什么做"</text>
+    <text x="300" y="206" fill="#8A8579">永远要有人来回答。</text>
+
+    <rect x="536" y="54" width="240" height="180" rx="8" fill="#EDF6EC" stroke="#4A7C59"/>
+    <text x="656" y="82" text-anchor="middle" font-size="14.5" font-weight="bold" fill="#4A7C59">③ 有限性</text>
+    <text x="556" y="112" fill="#1F2421">人会脆弱、痛苦、失败。</text>
+    <text x="556" y="138" fill="#4A4F4B">所以人有同理心，也才能</text>
+    <text x="556" y="158" fill="#4A4F4B">谈责任心——责任只能由</text>
+    <text x="556" y="178" fill="#4A4F4B">"会承受后果的人"来负。</text>
+    <text x="556" y="206" fill="#8A8579">AI 不会输，所以无法担责。</text>
+  </g>
+
+  <rect x="24" y="250" width="752" height="36" rx="7" fill="#1F2421"/>
+  <text x="400" y="273" text-anchor="middle" font-size="13.5" fill="#fff">身体 · 目的 · 后果——这三样交不出去。交不出去的地方，就是人的位置。</text>
+</svg>
+<figcaption>图 8 · 第 ③ 条最深：课程引了一段话——"正因为我们经历有限性——脆弱、痛苦与失败——我们才能够认识到每个人不可侵犯的尊严，并将不义视为一种丑闻。"</figcaption>
+</figure>
+
+<p>把三节合起来，"代劳派"和"幻觉派"各自的正确答案就清楚了：</p>
+
+<ul>
+<li>对"幻觉派"：你说的是快思考的毛病。<b>慢思考 + 工具验证 + 人兜底</b>，幻觉是可管的。不用，是把锤子当废品扔。</li>
+<li>对"代劳派"：你说的是边界内的成绩。<b>流体智力、目的、责任</b>这三处，AI 现在到不了，最后一处原则上就到不了。全交，是把方向盘交给没有目的的东西。</li>
+</ul>
+
+<h2>四 · 一页速查</h2>
+
+<table>
+<thead><tr><th style="width:22%">问题</th><th style="width:40%">答案</th><th style="width:38%">最有用的一句话</th></tr></thead>
+<tbody>
+<tr><td><b>它怎么走到今天</b><br>（过去）</td><td>三段路：专用智能 → 从专用到通用 → 智能体；暗线是"人教规则 → 人给答案 → 只给目标"</td><td>人的介入逐格减少，能力逐格涌现</td></tr>
+<tr><td><b>它正往哪走</b><br>（方向）</td><td>智能体（拆任务、调工具、去动手）→ 物理 AI（进真实世界）；推理能力变成可按需购买的商品</td><td>盯三件事：能力边界、成本结构、变化速率</td></tr>
+<tr><td><b>它到不了哪里</b><br>（边界）</td><td>流体智力（ARC-AGI-2：人类 66，最强模型二十几）；幻觉是结构性的，但可用慢思考、工具、人来管住；智能是"参差不齐"的</td><td>问"这题它需要真懂，还是能蒙对"</td></tr>
+<tr><td><b>人的位置在哪</b><br>（不可替代）</td><td>① 身体与物理世界 ② 目的由人给 ③ 有限性 → 同理心、责任心</td><td>目的我定，后果我担</td></tr>
+</tbody>
+</table>
+
+<h3>怎么用它</h3>
+<p>下次再遇到关于 AI 的说法——群里的、新闻里的、同事说的——试着做三步：</p>
+<ol>
+<li><b>它说的是哪套系统？</b>"AI 又答错了"——是张口就答的错，还是拆完步骤还错？前者常见，后者才是大事。</li>
+<li><b>这事的边界在哪？</b>结果能被自动验证的（代码能跑、数能对），尽管交给 AI；写进人心的、要负责任的，AI 起草、人拍板。</li>
+<li><b>目的和后果归谁？</b>把任何工作交给 AI 之前，先填两个空：目的是谁定的？后果是谁担的？两格都必须是具体的人，填不出来就先别交。</li>
+</ol>
+
+<hr>
+
+<nav class="series">
+<p class="st">相 关 阅 读</p>
+<ol>
+<li><span class="cur"><span class="no">课</span><span class="role">本文</span><span class="tt">看懂 AI：三段路、一条边界、一个位置</span><span class="dd">据 0728 课程整理</span></span></li>
+<li><a href="/gongli/yuanli.html"><span class="no">〇</span><span class="role">方法</span><span class="tt">第一性原理</span><span class="dd">什么才算公理</span></a></li>
+<li><a href="/gongli/santiao.html"><span class="no">一</span><span class="role">公理</span><span class="tt">经济学的三条公理</span><span class="dd">A1 稀缺 · A2 目的性行动 · A3 主观价值</span></a></li>
+<li><a href="/gongli/agi.html"><span class="no">二</span><span class="role">变局</span><span class="tt">AGI 三阶段</span><span class="dd">公理不废，废的是稀缺的标的物</span></a></li>
+</ol>
+</nav>
+
+<div class="backq">
+  <span class="k">读 完 之 后</span>
+  <p>这一页里，哪一句是你原本以为的 AI，现在发现只是个极端？</p>
+  <p class="three">
+    我以为 AI 是：　　____<br>
+    我重新画的边界：____<br>
+    我留给自己的位置：____
+  </p>
+  <p style="font-size:15.5px; color:#4A4F4B; margin-top:18px">
+    三行填不出来，说明这一页对你今天要做的事没用——那就别记，去 <a href="/#ask">回到八问</a>，从你手上那件事开始。
+  </p>
+</div>
+
+<p class="foot">据 0728 课程《AI 与企业》整理 · 三段路、一条边界、三个位置<br>文中分数线与产品节点为课程讲义（2025 年中）所用资料，模型迭代极快——看判断方法，别背具体数字。</p>
+
+</div>
+</body>
+</html>
